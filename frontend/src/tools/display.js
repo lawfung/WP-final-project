@@ -2,7 +2,7 @@ import { message } from 'antd';
 message.config({
     top: 80,
 });
-export default (payload) => {
+export default function display(payload) {
     if (payload.msg) {
       const { type, msg } = payload
       const content = { content: msg, duration: 0.5 }

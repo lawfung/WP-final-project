@@ -24,14 +24,16 @@ const Title = styled.div`
 `;
 
 
-export default function LoginPage(){
+export default function RegisterPage(){
     const [username, setUsername] = useState('')
-    const [passwd, setPasswd] = useState('')  // textBody
+    const [passwd, setPasswd] = useState('')
+    const [passwd2, setPasswd2] = useState('')
     const passwdRef = useRef(null)
+    const passwdRef2 = useRef(null)
     return (
     <Wrapper>
     <Title>
-      <h1>Login</h1>
+      <h1>Register</h1>
     </Title>
     <>
         <Input
@@ -39,27 +41,39 @@ export default function LoginPage(){
             prefix={<UserOutlined />}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            // style={{ marginBottom: 10 }}
             onKeyDown={(e) => { if (e.key === 'Enter') { passwdRef.current.focus() }}}
             size="large" style={{ width: 300, margin : 5 }}
         />
-        <Input.Search
-            ref={passwdRef}
-            value={passwd}
-            enterButton="Sign In"
-            onChange={(e) => setPasswd(e.target.value)}
+        <Input
             placeholder="Password"
+            value={passwd}
+            ref={passwdRef}
+            onChange={(e) => setPasswd(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { passwdRef2.current.focus() }}}
+            size="large" style={{ width: 300, margin : 5 }}
+        />
+        <Input.Search
+            ref={passwdRef2}
+            value={passwd2}
+            enterButton="Submit"
+            onChange={(e) => setPasswd2(e.target.value)}
+            placeholder="Password again"
             size="large" style={{ width: 300, margin : 5 }}
             onSearch={() => {
-                if ( !username || !passwd)
+                if ( !username || !passwd || !passwd2)
                     displayStatus({
                         type: "error",
-                        msg: "Missing username or password",
+                        msg: "Please fill all the blanks"
+                    });
+                else if(passwd != passwd2)
+                    displayStatus({
+                        type: "error",
+                        msg: "Two passwords are not the same"
                     });
                 else
                     displayStatus({
                         type: "success",
-                        msg: `Hello ${username}`,
+                        msg: "Submitted"
                     });
             }}
         />
