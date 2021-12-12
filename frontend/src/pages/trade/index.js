@@ -9,7 +9,7 @@ import RunCircleIcon from '@mui/icons-material/RunCircle';
 
 const AppContainer = styled.section``
 
-export function TradePage() {
+export default function TradePage() {
   return (
     <div style={{flexGrow: 1, background: 'brown', overflow: "auto"}}>
       <AppContainer>

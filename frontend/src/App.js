@@ -1,10 +1,6 @@
-import {SwitchPage} from "./pages/switch";
+import SwitchPage from "./pages/switch";
 import { BrowserRouter, NavLink} from 'react-router-dom'
-import { Toolbar, AppBar } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-
+import { Toolbar, AppBar, Stack, Button, Typography } from '@mui/material';
 
 function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
   return <NavLink to={to} style={{ textDecoration: 'none'}}>
