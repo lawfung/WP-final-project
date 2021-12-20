@@ -65,7 +65,7 @@ export default function RegisterPage(){
                         type: "error",
                         msg: "Please fill all the blanks"
                     });
-                else if(passwd != passwd2)
+                else if(passwd !== passwd2)
                     displayStatus({
                         type: "error",
                         msg: "Two passwords are not the same"
