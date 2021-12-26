@@ -16,12 +16,12 @@ function App() {
       <BrowserRouter>
         <AppBar position="relative" sx={{zIndex: (theme) => 8000, background: 'orange'}}>
           <Toolbar>
+            <LinkedButton to="/home" sty2={{ fontSize: '4vh', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              <Stack spacing={10} direction="row">
-                <LinkedButton to="/home" sty2={{ fontSize: '2rem', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
-                <LinkedButton to="/home" color="secondary" sty2={{ fontSize: '1.2rem', "fontFamily": "Nunito"}} text="Home"/>
-                <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '1.2rem', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/>
-                <LinkedButton to="/setting" color="secondary" sty2={{ fontSize: '1.2rem', "fontFamily": "Nunito"}} text="Setting"/>
+              <Stack spacing={-0} direction="row" sx={{display: "flex", justifyContent: "space-around"}}>
+                <LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>
+                <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/>
+                <LinkedButton to="/setting" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Setting"/>
               </Stack>
             </Typography>
             

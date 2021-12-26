@@ -5,13 +5,17 @@ import styled from 'styled-components'
 import { Divider } from '@mui/material';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import RunCircleIcon from '@mui/icons-material/RunCircle';
+import Monitor from './monitor'
 
 
-const AppContainer = styled.section``
+const AppContainer = styled.section`
+  height: 100%;
+  overflow: auto;
+`
 
 export default function TradePage() {
   return (
-    <div style={{flexGrow: 1, background: 'brown', overflow: "auto"}}>
+    <div style={{flexGrow: 1, overflow: "auto"}}>
       <AppContainer>
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
@@ -38,15 +42,17 @@ export default function TradePage() {
             <NavItem to='/New Backtest' label='New Backtest' exact icon={<ExpandIcon width='0.75rem'/>} clean={false}/>
         </NavItemsContainer>
       </Sidebar>
-      <main>
-      <div className="App">
+      <Monitor></Monitor>
+      {/* <div style={{height: "100%", background: 'bisque'}}> */}
+      {/* <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <img src={logo} className="App-logo" alt="logo" />
           <img src={logo} className="App-logo" alt="logo" />
         </header>
-      </div>
-      </main>
+      </div> */}
+        
+      {/* </div> */}
       </AppContainer>
     </div>
   );
