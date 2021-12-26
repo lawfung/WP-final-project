@@ -1,6 +1,6 @@
 import displayStatus from "../../tools/display";
-import { Input } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Input, Button } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState, useRef } from 'react'
 import 'antd/dist/antd.css'
@@ -28,6 +28,18 @@ export default function LoginPage(){
     const [username, setUsername] = useState('')
     const [passwd, setPasswd] = useState('')  // textBody
     const passwdRef = useRef(null)
+    const signIn = () => {
+        if ( !username || !passwd)
+            displayStatus({
+                type: "error",
+                msg: "Missing username or password",
+            });
+        else
+            displayStatus({
+                type: "success",
+                msg: `Hello ${username}`,
+            });
+    }
     return (
     <Wrapper>
     <Title>
@@ -39,30 +51,25 @@ export default function LoginPage(){
             prefix={<UserOutlined />}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            // style={{ marginBottom: 10 }}
             onKeyDown={(e) => { if (e.key === 'Enter') { passwdRef.current.focus() }}}
             size="large" style={{ width: 300, margin : 5 }}
         />
-        <Input.Search
+        <Input.Password
             ref={passwdRef}
-            value={passwd}
-            enterButton="Sign In"
-            onChange={(e) => setPasswd(e.target.value)}
             placeholder="Password"
+            prefix={<LockOutlined />}
+            value={passwd}
+            onChange={(e) => setPasswd(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') { signIn() }}}
             size="large" style={{ width: 300, margin : 5 }}
-            onSearch={() => {
-                if ( !username || !passwd)
-                    displayStatus({
-                        type: "error",
-                        msg: "Missing username or password",
-                    });
-                else
-                    displayStatus({
-                        type: "success",
-                        msg: `Hello ${username}`,
-                    });
-            }}
         />
+        <Button
+            type="primary"
+            size="large" style={{ width: 100, margin : 5 }}
+            onClick={signIn}
+        >
+            Sign In
+        </Button>
     </>
     </Wrapper>
     )

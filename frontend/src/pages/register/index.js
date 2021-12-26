@@ -1,6 +1,6 @@
 import displayStatus from "../../tools/display";
-import { Input } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Button, Input } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState, useRef } from 'react'
 import 'antd/dist/antd.css'
@@ -30,6 +30,23 @@ export default function RegisterPage(){
     const [passwd2, setPasswd2] = useState('')
     const passwdRef = useRef(null)
     const passwdRef2 = useRef(null)
+    const submit = () => {
+        if ( !username || !passwd || !passwd2)
+            displayStatus({
+                type: "error",
+                msg: "Please fill all the blanks"
+            });
+        else if(passwd !== passwd2)
+            displayStatus({
+                type: "error",
+                msg: "Two passwords must be the same"
+            });
+        else
+            displayStatus({
+                type: "success",
+                msg: "Submitted"
+            });
+    }
     return (
     <Wrapper>
     <Title>
@@ -44,39 +61,31 @@ export default function RegisterPage(){
             onKeyDown={(e) => { if (e.key === 'Enter') { passwdRef.current.focus() }}}
             size="large" style={{ width: 300, margin : 5 }}
         />
-        <Input
-            placeholder="Password"
-            value={passwd}
+        <Input.Password
             ref={passwdRef}
+            placeholder="Password"
+            prefix={<LockOutlined />}
+            value={passwd}
             onChange={(e) => setPasswd(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { passwdRef2.current.focus() }}}
             size="large" style={{ width: 300, margin : 5 }}
         />
-        <Input.Search
+        <Input.Password
             ref={passwdRef2}
+            placeholder="Confirm Password"
+            prefix={<LockOutlined />}
             value={passwd2}
-            enterButton="Submit"
             onChange={(e) => setPasswd2(e.target.value)}
-            placeholder="Password again"
+            onKeyDown={(e) => { if (e.key === 'Enter') { submit() }}}
             size="large" style={{ width: 300, margin : 5 }}
-            onSearch={() => {
-                if ( !username || !passwd || !passwd2)
-                    displayStatus({
-                        type: "error",
-                        msg: "Please fill all the blanks"
-                    });
-                else if(passwd !== passwd2)
-                    displayStatus({
-                        type: "error",
-                        msg: "Two passwords are not the same"
-                    });
-                else
-                    displayStatus({
-                        type: "success",
-                        msg: "Submitted"
-                    });
-            }}
         />
+        <Button
+            type="primary"
+            size="large" style={{ width: 100, margin : 5 }}
+            onClick={submit}
+        >
+            Submit
+        </Button>
     </>
     </Wrapper>
     )
