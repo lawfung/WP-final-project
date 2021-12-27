@@ -1,4 +1,4 @@
-import logo from '../../logo.svg';
+// import logo from '../../logo.svg';
 import '../../App.css';
 import {Sidebar, NavItemsContainer, NavItem, ExpandIcon} from './sidebar';
 import styled from 'styled-components'
