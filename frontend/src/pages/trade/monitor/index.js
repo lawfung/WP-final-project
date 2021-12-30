@@ -2,10 +2,10 @@ import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormCon
 import { useState } from "react";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
+const indexList = ["MA", "EMA"];
 const Monitor = () => {
-    const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day']
     const marks = marksTimes.map((x, i) => ({value: i, label: x}));
-    const indexList = ["MA", "EMA"]
     const [chartType, setChartType] = useState('Histogram');
     const handleChartTypeChange = (event) => { setChartType(event.target.value);};
     const [indexType, setIndexType] = useState([]);
@@ -13,11 +13,11 @@ const Monitor = () => {
         const { target: { value }} = event;
         setIndexType(typeof value === 'string' ? value.split(',') : value);
     };
-    const [startTime, setStartTime] = useState('');
+    const [startTime, setStartTime] = useState('2021-01-01T00:00');
     const handleStratTimeChange = (event) => { setStartTime(event.target.value); };
-    const [endTime, setEndTime] = useState('');
-    const handleEndTimeChange = (event) => { setEndTime(event.target.value); };
-    const [assetType, setAssetType] = useState('');
+    const [endTime, setEndTime] = useState('2022-01-01T00:00');
+    const handleEndTimeChange = (event) => { setEndTime(event.target.value);};
+    const [assetType, setAssetType] = useState('BTC');
     const handleAssetTypeChange = (event) => { setAssetType(event.target.value); };
     return (
         <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
@@ -47,19 +47,9 @@ const Monitor = () => {
                         Next
                     </Button>
                 </Stack>
-                <Slider
-                    // aria-label="Custom marks"
-                    defaultValue={0}
-                    // getAriaValueText={valuetext}
-                    step={null}
-                    marks={marks}
-                    max={marksTimes.length - 1}
-                    sx={{width: "30vw", marginTop: "2vh"}}
-                    track={false}
-                />
             </div>
             <div style={{background: 'antiquewhite', height: "100%", width : "50%", overflow : "auto", display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <Box sx={{ marginTop: "2vh" }}>
+                <Stack spacing={-20} direction="row" sx={{display: "flex", justifyContent: "space-around", marginTop: "2vh", width: "100%"}}>
                     <FormControl variant="filled">
                         <InputLabel>chart type</InputLabel>
                         <Select
@@ -70,9 +60,7 @@ const Monitor = () => {
                             <MenuItem value={"lineChart"}>Line chart</MenuItem>
                         </Select>
                     </FormControl>
-                </Box>
-                <Box sx={{ marginTop: "2vh" }}>
-                    <FormControl variant="filled" sx={{ width: "40vh" }}>
+                    <FormControl variant="filled" sx={{ minWidth: "10vw", minHeight: "12vh" }}>
                         <InputLabel>index type</InputLabel>
                         <Select
                             value={indexType}
@@ -89,21 +77,31 @@ const Monitor = () => {
                             )}
                         </Select>
                     </FormControl>
-                </Box>
+                </Stack>
+                <Slider
+                    // aria-label="Custom marks"
+                    defaultValue={0}
+                    // getAriaValueText={valuetext}
+                    step={null}
+                    marks={marks}
+                    max={marksTimes.length - 1}
+                    sx={{width: "30vw", marginTop: "2vh"}}
+                    track={false}
+                />
                 <div style={{width: "100%"}}>
                 <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1}}>
                     <div style={{margin: "2vh"}}>
                         <Grid container spacing={1}>
-                            <Grid item xs={6} sx={{display: "flex", justifyContent: "space-around"}}>
-                                <TextField label="Start time" value={startTime} onChange={handleStratTimeChange} />
+                            <Grid item xs={8} sx={{display: "flex", justifyContent: "space-around"}}>
+                                <TextField label="Start time" value={startTime} type="datetime-local" onChange={handleStratTimeChange} InputLabelProps={{ shrink: true }}/>
                             </Grid>
-                            <Grid item xs={6} sx={{display: "flex", justifyContent: "space-around"}}>
-                                <TextField label="Asset type" value={assetType} onChange={handleAssetTypeChange} />
+                            <Grid item xs={4} sx={{display: "flex", justifyContent: "space-around"}}>
+                                <TextField label="Asset type" value={assetType} onChange={handleAssetTypeChange}/>
                             </Grid>
-                            <Grid item xs={6} sx={{display: "flex", justifyContent: "space-around"}}>
-                                <TextField label="End time" value={endTime} onChange={handleEndTimeChange} />
+                            <Grid item xs={8} sx={{display: "flex", justifyContent: "space-around"}}>
+                                <TextField label="End time" value={endTime} type="datetime-local" onChange={handleEndTimeChange} InputLabelProps={{ shrink: true }}/>
                             </Grid>
-                            <Grid item xs={6} sx={{display: "flex", justifyContent: "space-around"}}>
+                            <Grid item xs={4} sx={{display: "flex", justifyContent: "space-around"}}>
                                 <Button> Set </Button>
                             </Grid>
                         </Grid>
