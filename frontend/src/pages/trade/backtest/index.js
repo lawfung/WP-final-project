@@ -1,6 +1,6 @@
-import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField } from "@mui/material";
+import { Button, Stack, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
 import { useState } from "react";
-import {ArrowLeft, ArrowRight} from '@mui/icons-material';
+import {PlayArrow, Pause} from '@mui/icons-material';
 import styled from "styled-components";
 const HalfWrapper = styled.div`
     height: 100%;
@@ -20,10 +20,16 @@ const MyStack = styled(Stack)`
     margin-top: 2vh;
     width: 100%;
 `
-const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
 const indexList = ["MA", "EMA"];
-const Monitor = () => {
+const Backtest = () => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
+    const [chartType, setChartType] = useState('Histogram');
+    const [indexType, setIndexType] = useState([]);
+    const handleIndexChange = (event) => {
+        const value = event.target.value;
+        setIndexType(typeof value === 'string' ? value.split(',') : value);
+    };
+    const jumpList = [1, 2, 4, 8, 16];
     const sizeSwitch = 
         <ButtonGroup variant="contained" sx={{marginTop: "2vh"}}>
             <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
@@ -38,16 +44,20 @@ const Monitor = () => {
             <MyGrid item xs={6}>Asset: BTC</MyGrid>
         </Grid>
     const backAndNext =
-        <MyStack spacing={-30} direction="row">
-            <Button variant="contained" startIcon={<ArrowLeft />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Back</Button>
-            <Button variant="contained" endIcon={<ArrowRight />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Next</Button>
-        </MyStack>
-    const [chartType, setChartType] = useState('Histogram');
-    const [indexType, setIndexType] = useState([]);
-    const handleIndexChange = (event) => {
-        const value = event.target.value;
-        setIndexType(typeof value === 'string' ? value.split(',') : value);
-    };
+        <Grid container spacing={1} sx={{marginTop: "2vh"}}>
+            <MyGrid item xs={6}>
+                <Button variant="contained" endIcon={<PlayArrow />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Run</Button>
+            </MyGrid>
+            <MyGrid item xs={6}>
+                <Button variant="contained" endIcon={<Pause />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Pause</Button>
+            </MyGrid>
+        </Grid>
+    const jumpPanel = 
+        <ButtonGroup variant="contained" sx={{marginTop: "2vh"}}>
+            {jumpList.map((x) => 
+                <Button variant="contained" sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} key={x}>Jump {x}</Button>
+            )}
+        </ButtonGroup>
     const chartAndIndex = 
         <MyStack spacing={-20} direction="row">
             <FormControl variant="filled">
@@ -78,50 +88,15 @@ const Monitor = () => {
                 </Select>
             </FormControl>
         </MyStack>
-    const marks = marksTimes.map((x, i) => ({value: i, label: x}));
-    const [timeScale, setTimeScale] = useState(0);
-    const timeScaleSlider = 
-        <Slider
-            // aria-label="Custom marks"
-            value={timeScale}
-            onChange={handleChange(setTimeScale)}
-            // getAriaValueText={valuetext}
-            step={null}
-            marks={marks}
-            max={marksTimes.length - 1}
-            sx={{width: "80%", marginTop: "2vh"}}
-            track={false}
-        />
     const twoButtons = 
         <MyStack spacing={-20} direction="row">
             <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
-            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>Backtest This</Button>
+            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>Monitor This</Button>
         </MyStack>
-    const [startTime, setStartTime] = useState('2021-01-01T00:00');
-    const [endTime, setEndTime] = useState('2022-01-01T00:00');
-    const [assetType, setAssetType] = useState('BTC');
-    const setSet = 
-        <div style={{width: "100%"}}>
-        <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1}}>
-            <div style={{margin: "2vh"}}>
-                <Grid container spacing={1}>
-                    <MyGrid item xs={8}>
-                        <TextField label="Start time" value={startTime} type="datetime-local" onChange={handleChange(setStartTime)} InputLabelProps={{ shrink: true }}/>
-                    </MyGrid>
-                    <MyGrid item xs={4}>
-                        <TextField label="Asset type" value={assetType} onChange={handleChange(setAssetType)}/>
-                    </MyGrid>
-                    <MyGrid item xs={8}>
-                        <TextField label="End time" value={endTime} type="datetime-local" onChange={handleChange(setEndTime)} InputLabelProps={{ shrink: true }}/>
-                    </MyGrid>
-                    <MyGrid item xs={4}>
-                        <Button> Reset Minotor </Button>
-                    </MyGrid>
-                </Grid>
-            </div>
-        </FormControl>
-        </div>
-
+    const [checked, setChecked] = useState(true);
+    const easyMode = 
+        <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
+            setChecked(e.target.checked);}}/>} label="Easy Mode" />
     return (
         <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
@@ -129,15 +104,15 @@ const Monitor = () => {
                 {attrPanel}
                 <div style={{color : "red"}}>Here will be the graph</div>
                 {backAndNext}
+                {jumpPanel}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
+                {easyMode}
                 {chartAndIndex}
-                {timeScaleSlider}
                 {twoButtons}
-                {setSet}
             </HalfWrapper>
         </div>
     )
 }
 
-export default Monitor;
+export default Backtest;
