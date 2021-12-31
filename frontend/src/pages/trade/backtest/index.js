@@ -1,6 +1,7 @@
-import { Button, Stack, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
+import { Button, Stack, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel, Typography } from "@mui/material";
+import { Input, Button as AntdButton } from "antd";
 import { useState } from "react";
-import {PlayArrow, Pause} from '@mui/icons-material';
+import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import styled from "styled-components";
 const HalfWrapper = styled.div`
     height: 100%;
@@ -20,8 +21,16 @@ const MyStack = styled(Stack)`
     margin-top: 2vh;
     width: 100%;
 `
+const MyTitle = styled(Typography)`
+    border-color: coral;
+    border-width: thick;
+    border-style: solid;
+    border-radius: 2vh;
+    padding: 1vh;
+    background: Cornsilk;
+`
 const indexList = ["MA", "EMA"];
-const Backtest = () => {
+const Backtest = ({title="Backtest1"}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const [chartType, setChartType] = useState('Histogram');
     const [indexType, setIndexType] = useState([]);
@@ -30,12 +39,17 @@ const Backtest = () => {
         setIndexType(typeof value === 'string' ? value.split(',') : value);
     };
     const jumpList = [1, 2, 4, 8, 16];
-    const sizeSwitch = 
-        <ButtonGroup variant="contained" sx={{marginTop: "2vh"}}>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go FULL size</Button>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go RIGHT</Button>
-        </ButtonGroup>
+    const TitleSwitch = 
+        <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
+            <MyTitle variant="h5" component="div">
+                <RunCircle /> {title}
+            </MyTitle>
+            <ButtonGroup variant="contained">
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go FULL size</Button>
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go RIGHT</Button>
+            </ButtonGroup>
+        </MyStack>
     const attrPanel = 
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
             <MyGrid item xs={6}>Start time: 2021 Jun 08 20:00:00</MyGrid>
@@ -43,7 +57,7 @@ const Backtest = () => {
             <MyGrid item xs={6}>Time scale: 15s</MyGrid>
             <MyGrid item xs={6}>Asset: BTC</MyGrid>
         </Grid>
-    const backAndNext =
+    const runAndPause =
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
             <MyGrid item xs={6}>
                 <Button variant="contained" endIcon={<PlayArrow />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Run</Button>
@@ -97,17 +111,53 @@ const Backtest = () => {
     const easyMode = 
         <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
             setChecked(e.target.checked);}}/>} label="Easy Mode" />
+    const [buyAmount, setBuyAmount] = useState(1);
+    const [sellAmount, setSellAmount] = useState(1);
+    const BuyAndSell = 
+        <MyStack spacing={-0} direction="row">
+            <Input.Search
+                value={buyAmount}
+                onChange={handleChange(setBuyAmount)}
+                size="large"
+                enterButton={<AntdButton style={{background: "green", color: "white"}}>Buy</AntdButton>}
+                style={{ width: "40%"}}
+                onSearch={(bb) => {
+                    console.log(bb);
+                }}
+            />
+            <Input.Search
+                value={sellAmount}
+                onChange={handleChange(setSellAmount)}
+                size="large"
+                enterButton={<AntdButton style={{background: "red", color: "white"}}>Sell</AntdButton>}
+                style={{ width: "40%"}}
+                onSearch={(bb) => {
+                    console.log(bb);
+                }}
+            />
+        </MyStack>
+    const CodeEditor = <></>
+    const AUM = 
+        <>
+            <div style={{marginTop: "2vh"}}>Assets Under Management</div>
+            <Grid container spacing={1} sx={{marginTop: "2vh"}}>
+                <MyGrid item xs={6}>USDT: 1000</MyGrid>
+                <MyGrid item xs={6}>BTC: 0 (≈ 0 USDT)</MyGrid>
+            </Grid>
+        </>
     return (
         <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
-                {sizeSwitch}
+                {TitleSwitch}
                 {attrPanel}
                 <div style={{color : "red"}}>Here will be the graph</div>
-                {backAndNext}
+                {runAndPause}
                 {jumpPanel}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
                 {easyMode}
+                {checked ? BuyAndSell : CodeEditor}
+                {AUM}
                 {chartAndIndex}
                 {twoButtons}
             </HalfWrapper>

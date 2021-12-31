@@ -1,6 +1,6 @@
-import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField } from "@mui/material";
+import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import {ArrowLeft, ArrowRight} from '@mui/icons-material';
+import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
 import styled from "styled-components";
 const HalfWrapper = styled.div`
     height: 100%;
@@ -20,16 +20,29 @@ const MyStack = styled(Stack)`
     margin-top: 2vh;
     width: 100%;
 `
+const MyTitle = styled(Typography)`
+    border-color: coral;
+    border-width: thick;
+    border-style: solid;
+    border-radius: 2vh;
+    padding: 1vh;
+    background: Cornsilk;
+`
 const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
 const indexList = ["MA", "EMA"];
 const Monitor = () => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
-    const sizeSwitch = 
-        <ButtonGroup variant="contained" sx={{marginTop: "2vh"}}>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go FULL size</Button>
-            <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go RIGHT</Button>
-        </ButtonGroup>
+    const TitleSwitch = 
+        <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
+            <MyTitle variant="h5" component="div">
+                <ShowChart /> Monitor1
+            </MyTitle>
+            <ButtonGroup variant="contained">
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go FULL size</Button>
+                <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go RIGHT</Button>
+            </ButtonGroup>
+        </MyStack>
     const attrPanel = 
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
             <MyGrid item xs={6}>Start time: 2021 Jun 08 20:00:00</MyGrid>
@@ -80,18 +93,21 @@ const Monitor = () => {
         </MyStack>
     const marks = marksTimes.map((x, i) => ({value: i, label: x}));
     const [timeScale, setTimeScale] = useState(0);
-    const timeScaleSlider = 
-        <Slider
-            // aria-label="Custom marks"
-            value={timeScale}
-            onChange={handleChange(setTimeScale)}
-            // getAriaValueText={valuetext}
-            step={null}
-            marks={marks}
-            max={marksTimes.length - 1}
-            sx={{width: "80%", marginTop: "2vh"}}
-            track={false}
-        />
+    const timeScaleSlider =
+        <>
+            Timescale
+            <Slider
+                // aria-label="Custom marks"
+                value={timeScale}
+                onChange={handleChange(setTimeScale)}
+                // getAriaValueText={valuetext}
+                step={null}
+                marks={marks}
+                max={marksTimes.length - 1}
+                sx={{width: "80%", marginTop: "2vh"}}
+                track={false}
+            />
+        </>
     const twoButtons = 
         <MyStack spacing={-20} direction="row">
             <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
@@ -101,7 +117,7 @@ const Monitor = () => {
     const [endTime, setEndTime] = useState('2022-01-01T00:00');
     const [assetType, setAssetType] = useState('BTC');
     const setSet = 
-        <div style={{width: "100%"}}>
+        <>
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1}}>
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={1}>
@@ -120,12 +136,12 @@ const Monitor = () => {
                 </Grid>
             </div>
         </FormControl>
-        </div>
+        </>
 
     return (
         <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
-                {sizeSwitch}
+                {TitleSwitch}
                 {attrPanel}
                 <div style={{color : "red"}}>Here will be the graph</div>
                 {backAndNext}
