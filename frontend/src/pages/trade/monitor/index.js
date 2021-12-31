@@ -30,12 +30,12 @@ const MyTitle = styled(Typography)`
 `
 const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
 const indexList = ["MA", "EMA"];
-const Monitor = () => {
+const Monitor = ({title="Monitor1"}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
             <MyTitle variant="h5" component="div">
-                <ShowChart /> Monitor1
+                <ShowChart /> {title}
             </MyTitle>
             <ButtonGroup variant="contained">
                 <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
