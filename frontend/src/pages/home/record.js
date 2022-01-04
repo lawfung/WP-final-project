@@ -23,6 +23,31 @@ const Title = styled.div`
 `;
 
 export default function Record({ username="" }) {
+  const [allRecord, setAllRecord] = useState(true);
+  const [index, setIndex] = useState(-1);
+  const [dataSource, setDataSource] = useState([{
+      key: 0,
+      name: `Strategy 0`,
+      roi: "30%",
+      action: 0,
+  }]);
+
+  const handleDeleteRecord = (idx) => { // TODO: should write back to database?
+    console.log(`delete ${idx}`);
+    console.log(dataSource);
+    const newDataSource = dataSource.filter(item => item.key !== idx);
+    console.log(newDataSource);
+    setDataSource(newDataSource);
+  };
+
+  const handleEditRecordName = (idx) => { // TODO: should write back to database?
+    console.log(`edit ${idx}`);
+    const objIndex = dataSource.findIndex(item => item.key === idx);
+    const newDataSource = dataSource;
+    // TODO: create a box to type new name
+    newDataSource[objIndex].name = "haha";
+    setDataSource(newDataSource);
+  };
   const columns = [
     {
       title: "Strategy Name",
@@ -37,29 +62,41 @@ export default function Record({ username="" }) {
     {
       title: "",
       dataIndex: "action",
-      render: () => (
+      render: (action) => (
         <>
-          <EditOutlined />
-          <DeleteOutlined />
+          <EditOutlined onClick={() => {handleEditRecordName(action)}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(action)}} />
         </>
       ),
     }
   ];
-  const data = [
-  ];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Strategy ${i}`,
-      roi: "30%",
-    });
-  }
+
+  // for (let i = 0; i < 10; i++) {
+  //   dataSource.push({
+  //     key: i,
+  //     name: `Strategy ${i}`,
+  //     roi: "30%",
+  //     action: i,
+  //   });
+  // }
+
   return (
     <Wrapper>
-      <Title>
-        <h1>{username}'s Record</h1>
-      </Title>
-      <Table columns={columns} dataSource={data} />
+      {
+        allRecord ? (
+          <>
+            <Title>
+              <h1>{username}'s Record</h1>
+            </Title>
+            <Table columns={columns} dataSource={dataSource} onRow={record => ({
+              // onClick: () => {setAllRecord(false); setIndex(record.key);},
+              onClick: () => {},
+            })}/>
+          </>
+        ) : (
+          <></>
+        )
+      }
     </Wrapper>
   );
 }
