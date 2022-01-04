@@ -1,4 +1,4 @@
-import { Button, Table } from "antd";
+import { Button, Table, Modal, Input } from "antd";
 import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import displayStatus from "../../tools/display";
@@ -25,6 +25,10 @@ const Title = styled.div`
 export default function Record({ username="" }) {
   const [allRecord, setAllRecord] = useState(true);
   const [index, setIndex] = useState(-1);
+  const [newStrategyName, setNewStrategyName] = useState("");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editedIndex, setEditedIndex] = useState(-1);
+
   const [dataSource, setDataSource] = useState([{
       key: 0,
       name: `Strategy 0`,
@@ -41,12 +45,33 @@ export default function Record({ username="" }) {
   };
 
   const handleEditRecordName = (idx) => { // TODO: should write back to database?
-    console.log(`edit ${idx}`);
-    const objIndex = dataSource.findIndex(item => item.key === idx);
+  };
+
+  const handleOk = () => {
+    if (newStrategyName === "") {
+      displayStatus({
+        type: "error",
+        msg: "new strategy name cannot be empty!",
+      });
+      return;
+    }
+
+    const objIndex = dataSource.findIndex(item => item.key === editedIndex);
     const newDataSource = dataSource;
-    // TODO: create a box to type new name
-    newDataSource[objIndex].name = "haha";
+    newDataSource[objIndex].name = newStrategyName;
+    console.log(newStrategyName);
     setDataSource(newDataSource);
+    setShowEditModal(false);
+    setNewStrategyName(newStrategyName => "");
+    setEditedIndex(-1);
+    displayStatus({
+      type: "success",
+      msg: "new strategy name is set!",
+    });
+    // TODO: put edited strategy name back to database
+  };
+  const handleCancel = () => {
+    setShowEditModal(false);
   };
   const columns = [
     {
@@ -64,8 +89,8 @@ export default function Record({ username="" }) {
       dataIndex: "action",
       render: (action) => (
         <>
-          <EditOutlined onClick={() => {handleEditRecordName(action)}} />
-          <DeleteOutlined onClick={() => {handleDeleteRecord(action)}} />
+          <EditOutlined onClick={() => {setShowEditModal(true); setEditedIndex(action);}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
         </>
       ),
     }
@@ -92,6 +117,18 @@ export default function Record({ username="" }) {
               // onClick: () => {setAllRecord(false); setIndex(record.key);},
               onClick: () => {},
             })}/>
+            <Modal title="Edit strategy name here" visible={showEditModal} onOk={handleOk} onCancel={handleCancel} >
+              <Input 
+                placeholder="new strategy name"
+                value={newStrategyName}
+                onChange={e => setNewStrategyName(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    handleOk();
+                  }
+                }}
+              />
+            </Modal>
           </>
         ) : (
           <></>
