@@ -5,6 +5,7 @@ type Mutation {
     Login(user: String!, hashPasswd: String!): String!
     Logout(user: String!, cookie: String!): Boolean
     Register(user: String!, hashPasswd: String!): Boolean
+    Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
 }
 type Candles {
     startTime: Int!
