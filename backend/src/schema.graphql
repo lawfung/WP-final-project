@@ -1,0 +1,16 @@
+type Query {
+    Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
+}
+type Mutation {
+    Login(user: String!, hashPasswd: String!): String!
+    Logout(user: String!, cookie: String!): Boolean
+    Register(user: String!, hashPasswd: String!): Boolean
+}
+type Candles {
+    startTime: Int!
+    endTime: Int!
+    start: Float!
+    end: Float!
+    high: Float!
+    low: Float!
+}
