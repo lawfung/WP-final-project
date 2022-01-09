@@ -12,129 +12,80 @@ const Wrapper = styled.div`
   margin: auto;
 `;
 const Title = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    h1  {
-        margin: 50;
-        font-size: 3em;
-    }
+  h1  {
+      margin: 50;
+      font-size: 3em;
+  }
 `;
 
-export default function Record({ username="" }) {
-  const [allRecord, setAllRecord] = useState(true);
-  const [index, setIndex] = useState(-1);
-  const [newStrategyName, setNewStrategyName] = useState("");
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editedIndex, setEditedIndex] = useState(-1);
-
+export default function Record({ strategy="" }) {
+  // TODO: find all records with name strategy from db
   const [dataSource, setDataSource] = useState([{
-      key: 0,
-      name: `Strategy 0`,
-      roi: "30%",
-      action: 0,
+    key: 0,
+    startTime: 20210101,
+    endTime: 20220101,
+    start: 100.05,
+    end: 110.10,
+    high: 112.1,
+    low: 99.5,
+    action: 0,
   }]);
 
-  const handleDeleteRecord = (idx) => { // TODO: should write back to database?
-    console.log(`delete ${idx}`);
-    console.log(dataSource);
-    const newDataSource = dataSource.filter(item => item.key !== idx);
-    console.log(newDataSource);
-    setDataSource(newDataSource);
-  };
-
-  const handleEditRecordName = (idx) => { // TODO: should write back to database?
-  };
-
-  const handleOk = () => {
-    if (newStrategyName === "") {
-      displayStatus({
-        type: "error",
-        msg: "new strategy name cannot be empty!",
-      });
-      return;
-    }
-
-    const objIndex = dataSource.findIndex(item => item.key === editedIndex);
-    const newDataSource = dataSource;
-    newDataSource[objIndex].name = newStrategyName;
-    console.log(newStrategyName);
-    setDataSource(newDataSource);
-    setShowEditModal(false);
-    setNewStrategyName(newStrategyName => "");
-    setEditedIndex(-1);
-    displayStatus({
-      type: "success",
-      msg: "new strategy name is set!",
-    });
-    // TODO: put edited strategy name back to database
-  };
-  const handleCancel = () => {
-    setShowEditModal(false);
-  };
   const columns = [
     {
-      title: "Strategy Name",
-      dataIndex: "name",
-      width: 300,
-    },
-    {
-      title: "ROI",
-      dataIndex: "roi",
+      title: "Start Time",
+      dataIndex: "startTime",
       width: 150,
     },
     {
-      title: "",
-      dataIndex: "action",
-      render: (action) => (
-        <>
-          <EditOutlined onClick={() => {setShowEditModal(true); setEditedIndex(action);}} />
-          <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
-        </>
-      ),
-    }
+      title: "End Time",
+      dataIndex: "endTime",
+      width: 150,
+    },
+    {
+      title: "Start",
+      dataIndex: "start",
+      width: 150,
+    },
+    {
+      title: "End",
+      dataIndex: "end",
+      width: 150,
+    },
+    {
+      title: "High",
+      dataIndex: "high",
+      width: 150,
+    },
+    {
+      title: "Low",
+      dataIndex: "low",
+      width: 150,
+    },
+    // {
+    //   title: "",
+    //   dataIndex: "action",
+    //   // render: (action) => (
+    //   //   <>
+    //   //     <EditOutlined onClick={() => {setShowEditModal(true); setEditedIndex(action);}} />
+    //   //     <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
+    //   //   </>
+    //   // ),
+    // }
   ];
-
-  // for (let i = 0; i < 10; i++) {
-  //   dataSource.push({
-  //     key: i,
-  //     name: `Strategy ${i}`,
-  //     roi: "30%",
-  //     action: i,
-  //   });
-  // }
-
   return (
     <Wrapper>
-      {
-        allRecord ? (
-          <>
-            <Title>
-              <h1>{username}'s Record</h1>
-            </Title>
-            <Table columns={columns} dataSource={dataSource} onRow={record => ({
-              // onClick: () => {setAllRecord(false); setIndex(record.key);},
-              onClick: () => {},
-            })}/>
-            <Modal title="Edit strategy name here" visible={showEditModal} onOk={handleOk} onCancel={handleCancel} >
-              <Input 
-                placeholder="new strategy name"
-                value={newStrategyName}
-                onChange={e => setNewStrategyName(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === "Enter") {
-                    handleOk();
-                  }
-                }}
-              />
-            </Modal>
-          </>
-        ) : (
-          <></>
-        )
-      }
+      <Title>
+        <h1>{strategy}</h1>
+      </Title>
+      <Table columns={columns} dataSource={dataSource} onRow={record => ({
+        // onClick: () => {setAllRecord(false); setIndex(record.key);},
+        onClick: () => {},
+      })}/>
     </Wrapper>
   );
 }
-

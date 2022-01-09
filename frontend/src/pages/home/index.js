@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useState, useRef } from 'react';
 import { Sidebar, NavItemsContainer, NavItem, AlignLeftOutIcon } from './sidebar';
 import Profile from "./profile";
-import Record from "./record";
+import Strategy from "./strategy";
 import 'antd/dist/antd.css';
 
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -29,7 +29,7 @@ export default function Homepage() {
         </NavItemsContainer>
       </Sidebar>
       {content === "record" ? 
-        <Record /> :
+        <Strategy /> :
         <Profile username="" />
       }
     </Wrapper>
