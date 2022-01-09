@@ -1,0 +1,136 @@
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+// mui
+import AdapterMoment from "@mui/lab/AdapterMoment";
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Slider } from "@mui/material";
+// constants
+// import { TODO } from "../../constants";
+// const TODO = "TODO";
+// const INPROGRESS = "INPROGRESS";
+// const DONE = "DONE";
+// graphql
+// import { useMutation } from "@apollo/react-hooks";
+// TODO 4.2 Uncomment the following line
+// import { GET_TASKS_QUERY, CREATE_TASK_MUTATION } from "../../graphql";
+
+// const TITLE = "title";
+// const CONTENT = "content";
+// const DUEDATE = "dueDate";
+
+// const initialFormData = {
+//   [TITLE]: "",
+//   [CONTENT]: "",
+//   [DUEDATE]: "",
+// };
+const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
+
+export default function CreateTaskModal({ open, openMB, handleCloseCreate }) {
+  // form data control
+  const handleChange = (f) => ((e) => {f(e.target.value);})
+  const [startTime, setStartTime] = useState('2021-01-01T00:00');
+  const [endTime, setEndTime] = useState('2022-01-01T00:00');
+  const [assetType, setAssetType] = useState('BTC');
+  const marks = marksTimes.map((x, i) => ({value: i, label: x}));
+  const [timeScale, setTimeScale] = useState(0);
+//   const [formData, setFormData] = useState(initialFormData);
+//   const [displayError, setDisplayError] = useState(false);
+
+//   const handleChangeFormData = (key, value) => {
+//     setDisplayError(false);
+//     setFormData({
+//       ...formData,
+//       [key]: value,
+//     });
+//   };
+
+  // TODO 4.2 Uncomment the following lines
+//   const [createTask] = useMutation(CREATE_TASK_MUTATION);
+//   const handleCreate = () => {
+//     if (Object.values(formData).some((v) => !v)) {
+//       setDisplayError(true);
+//       return;
+//     }
+//     // TODO 4.2 Uncomment the following lines
+//     createTask({
+//       variables: {
+//         input: {
+//           id: uuidv4(),
+//           title: formData.title,
+//           content: formData.content,
+//           dueDate: parseInt(formData.dueDate.format("x")),
+//           status: TODO,
+//         },
+//       },
+//       refetchQueries: [GET_TASKS_QUERY], // refetch after createTask
+//       onCompleted: () => {
+//         handleClose();
+//       },
+//     });
+//   };
+
+  const handleClose = () => {
+    // reset data
+    // setFormData(initialFormData);
+    handleCloseCreate();
+  };
+
+  return (
+    <Dialog open={open} onClose={handleClose} fullWidth>
+      <DialogTitle>Create a new {openMB ? "Backtest" : "Monitor"}</DialogTitle>
+      <DialogContent>
+      {/* <TextField label="Start time" value={startTime} type="datetime-local" onChange={handleChange(setStartTime)} InputLabelProps={{ shrink: true }}/> */}
+        <TextField
+        //   error={displayError && !formData[TITLE]}
+          autoFocus
+          margin="dense"
+          label="Start time"
+          fullWidth
+          variant="standard"
+          type="datetime-local"
+          value={startTime}
+          onChange={handleChange(setStartTime)}
+        //   helperText={displayError && "The field can't be empty!"}
+        />
+        <TextField
+          margin="dense"
+          label="End Time"
+          fullWidth
+          variant="standard"
+          type="datetime-local"
+          value={endTime}
+          onChange={handleChange(setEndTime)}
+        />
+        <TextField
+          margin="dense"
+          label="Asset type"
+          fullWidth
+          variant="standard"
+          value={assetType}
+          onChange={handleChange(setAssetType)}
+        />
+        Time Scale
+        <Slider
+            value={timeScale}
+            onChange={handleChange(setTimeScale)}
+            step={null}
+            marks={marks}
+            max={marksTimes.length - 1}
+            sx={{width: "100%", marginTop: "0vh"}}
+            track={false}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={()=>{}}>Create</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
