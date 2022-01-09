@@ -203,15 +203,17 @@ function App() {
   useEffect(() => {
     const chart = echarts.init(myChart.current)
     chart.setOption(option)
+
+    window.onresize = () => { chart.resize(); }
   }, [option])
 
   return (
     <div
       ref={myChart}
       style={{
-        height: "700%",
-      }
-    }
+        height: "100vh",
+        width: "100vw"
+      }}
     ></div>
   )
 }
