@@ -26,7 +26,7 @@ export default function Homepage() {
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
           <NavItem label="Profile" onClick={() => {setContent("profile");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
-          <NavItem label="Record" onClick={() => {setContent("strategy");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
+          <NavItem label="Strategy" onClick={() => {setContent("strategy");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
           <NavItem label="Setting" onClick={() => {setContent("setting");}} icon={<SettingsIcon width="0.75rem" />} />
         </NavItemsContainer>
       </Sidebar>
@@ -39,7 +39,6 @@ export default function Homepage() {
               <Setting username="" />
           }
           </>
-        
       }
     </Wrapper>
   );

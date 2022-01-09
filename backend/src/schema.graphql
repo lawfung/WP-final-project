@@ -1,12 +1,23 @@
 type Query {
     Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
+    GetRecord(name: String!): [Candles!]!
 }
 type Mutation {
     Login(user: String!, hashPasswd: String!): String!
     Logout(user: String!, cookie: String!): Boolean
     Register(user: String!, hashPasswd: String!): Boolean
     Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
+    DeleteStrategy(id: ID!): ID!
+    EditStrategy(id: ID!): String!
+    DeleteRecord(id: ID!): ID!
 }
+
+type Subscription {
+    RecordCreated: Candles!
+    RecordEdited: Candles!
+    RecordDeleted: ID!
+}
+
 type Candles {
     startTime: Int!
     endTime: Int!

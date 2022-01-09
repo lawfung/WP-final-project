@@ -95,7 +95,6 @@ const Monitor = ({title="Monitor1"}) => {
     const [timeScale, setTimeScale] = useState(0);
     const timeScaleSlider =
         <>
-            Timescale
             <Slider
                 // aria-label="Custom marks"
                 value={timeScale}
@@ -104,7 +103,7 @@ const Monitor = ({title="Monitor1"}) => {
                 step={null}
                 marks={marks}
                 max={marksTimes.length - 1}
-                sx={{width: "80%", marginTop: "2vh"}}
+                sx={{width: "90%", marginTop: "0vh"}}
                 track={false}
             />
         </>
@@ -120,7 +119,13 @@ const Monitor = ({title="Monitor1"}) => {
         <>
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1}}>
             <div style={{margin: "2vh"}}>
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
+                    <MyGrid item xs={12}>
+                        Time Scale
+                    </MyGrid>
+                    <MyGrid item xs={12}>
+                        {timeScaleSlider}
+                    </MyGrid>
                     <MyGrid item xs={8}>
                         <TextField label="Start time" value={startTime} type="datetime-local" onChange={handleChange(setStartTime)} InputLabelProps={{ shrink: true }}/>
                     </MyGrid>
@@ -148,7 +153,7 @@ const Monitor = ({title="Monitor1"}) => {
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
                 {chartAndIndex}
-                {timeScaleSlider}
+                {/* {timeScaleSlider} */}
                 {twoButtons}
                 {setSet}
             </HalfWrapper>
