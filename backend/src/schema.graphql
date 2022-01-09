@@ -1,6 +1,6 @@
 type Query {
     Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
-    GetRecord(name: String!): [Candles!]!
+    GetRecord(name: String!): [Record!]!
 }
 type Mutation {
     Login(user: String!, hashPasswd: String!): String!
@@ -19,6 +19,15 @@ type Subscription {
 }
 
 type Candles {
+    startTime: Int!
+    endTime: Int!
+    start: Float!
+    end: Float!
+    high: Float!
+    low: Float!
+}
+
+type Record {
     startTime: Int!
     endTime: Int!
     start: Float!
