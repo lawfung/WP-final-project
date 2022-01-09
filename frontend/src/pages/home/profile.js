@@ -1,8 +1,10 @@
-import { Input, Button } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Table, Modal, Input } from "antd";
+import { Button } from "@mui/material";
+import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
+import Record from "./record";
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,80 +14,79 @@ const Wrapper = styled.div`
   margin: auto;
 `;
 const Title = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    h1  {
-        margin: 50;
-        font-size: 3em;
-    }
+  h1  {
+      margin: 50;
+      font-size: 3em;
+  }
 `;
 
 export default function Profile({ username="" }) {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmedPassword, setConfirmedPassword] = useState("");
+  // TODO: find all record from db
+  const [dataSource, setDataSource] = useState([{
+    key: 0,
+    startTime: 20210101,
+    endTime: 20220101,
+    start: 100.05,
+    end: 110.10,
+    high: 112.1,
+    low: 99.5,
+    action: 0,
+  }]);
 
-  const saveChange = () => {
-    // TODO: find {username, password} from database and check whether it is the same as input old password
-
-    if (newPassword === "") {
-      displayStatus({
-        type: "error",
-        msg: "new password cannot be empty!",
-      });
-      return;
-    }
-    if (newPassword !== confirmedPassword) {
-      displayStatus({
-        type: "error",
-        msg: "confirmed password wrong!",
-      });
-      return;
-    }
-
-    displayStatus({
-      type: "success",
-      msg: "new password is set!",
-    });
-    // TODO: save new password into database
-  };
+  const columns = [
+    {
+      title: "Start Time",
+      dataIndex: "startTime",
+      width: 150,
+    },
+    {
+      title: "End Time",
+      dataIndex: "endTime",
+      width: 150,
+    },
+    {
+      title: "Start",
+      dataIndex: "start",
+      width: 150,
+    },
+    {
+      title: "End",
+      dataIndex: "end",
+      width: 150,
+    },
+    {
+      title: "High",
+      dataIndex: "high",
+      width: 150,
+    },
+    {
+      title: "Low",
+      dataIndex: "low",
+      width: 150,
+    },
+    // {
+    //   title: "",
+    //   dataIndex: "action",
+    //   // render: (action) => (
+    //   //   <>
+    //   //     <EditOutlined onClick={() => {setShowEditModal(true); setEditedIndex(action);}} />
+    //   //     <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
+    //   //   </>
+    //   // ),
+    // }
+  ];
   return (
     <Wrapper>
-      <Title>
-        <h1>{username}'s profile</h1>
-      </Title>
-      <>
-        <Input.Password
-          placeholder="Current Password"
-          prefix={<LockOutlined />}
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
-          size="large" style={{ width: 300, margin : 5 }}
-        />
-        <Input.Password
-          placeholder="New Password"
-          prefix={<LockOutlined />}
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          size="large" style={{ width: 300, margin : 5 }}
-        />
-        <Input.Password
-          placeholder="Confirmed Password"
-          prefix={<LockOutlined />}
-          value={confirmedPassword}
-          onChange={(e) => setConfirmedPassword(e.target.value)}
-          size="large" style={{ width: 300, margin : 5 }}
-        />
-        <Button
-          type="primary"
-          size="small" style={{ width: 100, margin : 5 }}
-          onClick={saveChange}
-        >
-          Save Change
-        </Button>
-      </>
+      <h1>{username}'s profile</h1>
+      <Table columns={columns} dataSource={dataSource} onRow={record => ({
+        // onClick: () => {setAllRecord(false); setIndex(record.key);},
+        onClick: () => {},
+      })}/>
     </Wrapper>
   );
 }
+

@@ -4,8 +4,9 @@ import { UserOutlined, LockOutlined} from "@ant-design/icons";
 import styled from "styled-components";
 import { useState, useRef } from 'react';
 import { Sidebar, NavItemsContainer, NavItem, AlignLeftOutIcon } from './sidebar';
-import Profile from "./profile";
+import Setting from "./setting";
 import Strategy from "./strategy";
+import Profile from "./profile";
 import 'antd/dist/antd.css';
 
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -24,13 +25,21 @@ export default function Homepage() {
     <Wrapper>
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
-          <NavItem label="Record" onClick={() => {setContent("record");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
-          <NavItem label="Profile" onClick={() => {setContent("profile");}} icon={<SettingsIcon width="0.75rem" />} />
+          <NavItem label="Profile" onClick={() => {setContent("profile");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
+          <NavItem label="Record" onClick={() => {setContent("strategy");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
+          <NavItem label="Setting" onClick={() => {setContent("setting");}} icon={<SettingsIcon width="0.75rem" />} />
         </NavItemsContainer>
       </Sidebar>
-      {content === "record" ? 
-        <Strategy /> :
-        <Profile username="" />
+      {content === "profile" ? 
+        <Profile /> : 
+          <>
+          {
+            content === "strategy" ? 
+              <Strategy /> :
+              <Setting username="" />
+          }
+          </>
+        
       }
     </Wrapper>
   );
