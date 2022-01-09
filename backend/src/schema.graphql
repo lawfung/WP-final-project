@@ -20,9 +20,9 @@ type Subscription {
 
 type Candles {
     startTime: Int!
-    endTime: Int!
-    start: Float!
-    end: Float!
+    scale: String!
+    open: Float!
     high: Float!
     low: Float!
+    close: Float!
 }
