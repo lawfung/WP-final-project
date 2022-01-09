@@ -1,5 +1,4 @@
-import { Table, Modal, Input } from "antd";
-import { Button } from "@mui/material";
+import { Button, Table, Modal, Input } from "antd";
 import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import displayStatus from "../../tools/display";
@@ -81,7 +80,7 @@ export default function Strategy({ username="" }) {
       dataIndex: "name",
       width: 300,
       render: (name) => (
-        <Button variant="text" onClick={() => {setAllRecord(false); setName(name);}}>{name}</Button>
+        <Button type="link" onClick={() => {setAllRecord(false); setName(name);}}>{name}</Button>
       ),
     },
     {
@@ -137,7 +136,7 @@ export default function Strategy({ username="" }) {
           </>
         ) : (
           <>
-            <Record strategy={name} />
+            <Record strategy={name} setName={setName} allRecord={allRecord} setAllRecord={setAllRecord} />
           </>
         )
       }

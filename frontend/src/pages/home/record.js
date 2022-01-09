@@ -22,7 +22,7 @@ const Title = styled.div`
   }
 `;
 
-export default function Record({ strategy="" }) {
+export default function Record({ strategy="", setName, allRecord, setAllRecord }) {
   // TODO: find all records with name strategy from db
   const [dataSource, setDataSource] = useState([{
     key: 0,
@@ -93,6 +93,9 @@ export default function Record({ strategy="" }) {
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
       })}/>
+      <Button onClick={() => {setAllRecord(true); setName("");}}>
+        Last Page
+      </Button>
     </Wrapper>
   );
 }
