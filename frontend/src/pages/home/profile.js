@@ -37,6 +37,13 @@ export default function Profile({ username="" }) {
     action: 0,
   }]);
 
+  const handleDeleteRecord = (idx) => { // TODO: should write back to database?
+    console.log(`delete ${idx}`);
+    console.log(dataSource);
+    const newDataSource = dataSource.filter(item => item.key !== idx);
+    console.log(newDataSource);
+    setDataSource(newDataSource);
+  };
   const columns = [
     {
       title: "Start Time",
@@ -68,16 +75,15 @@ export default function Profile({ username="" }) {
       dataIndex: "low",
       width: 150,
     },
-    // {
-    //   title: "",
-    //   dataIndex: "action",
-    //   // render: (action) => (
-    //   //   <>
-    //   //     <EditOutlined onClick={() => {setShowEditModal(true); setEditedIndex(action);}} />
-    //   //     <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
-    //   //   </>
-    //   // ),
-    // }
+    {
+      title: "",
+      dataIndex: "action",
+      render: (action) => (
+        <>
+          <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
+        </>
+      ),
+    }
   ];
   return (
     <Wrapper>
