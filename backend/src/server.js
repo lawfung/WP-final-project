@@ -4,7 +4,8 @@ import { GraphQLServer, PubSub } from "graphql-yoga";
 import Query from "./resolvers/Query.js";
 import Mutation from "./resolvers/Mutation.js";
 // db
-import database from "./models/task.js";
+import userDatabase from "./models/user.js";
+import cookieDatabase from "./models/cookie.js";
 
 const pubSub = new PubSub();
 
@@ -15,7 +16,8 @@ const server = new GraphQLServer({
     Mutation
   },
   context: {
-    database,
+    userDatabase,
+    cookieDatabase,
     pubSub,
   },
 });
