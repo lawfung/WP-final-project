@@ -2,6 +2,7 @@ import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormCon
 import { useState } from "react";
 import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
 import styled from "styled-components";
+import Lines from './lines';
 const HalfWrapper = styled.div`
     height: 100%;
     width : 50%;
@@ -148,7 +149,8 @@ const Monitor = ({title="Monitor1"}) => {
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
-                <div style={{color : "red"}}>Here will be the graph</div>
+                <Lines/>
+                {/* <div style={{color : "red"}}>Here will be the graph</div> */}
                 {backAndNext}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
