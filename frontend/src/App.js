@@ -14,7 +14,7 @@ function App() {
   return (
     <div style={{ display: "flex", flexDirection: "column",height: "100vh" }}>
       <BrowserRouter>
-        <AppBar position="relative" sx={{zIndex: (theme) => 8000, background: 'orange'}}>
+        <AppBar position="relative" sx={{zIndex: (theme) => 1299, background: 'orange'}}>
           <Toolbar>
             <LinkedButton to="/home" sty2={{ fontSize: '4vh', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

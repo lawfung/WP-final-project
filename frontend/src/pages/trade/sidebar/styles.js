@@ -122,11 +122,11 @@ nav {
     }
 }
 
-& + * {
+& ~ * {
     transition: margin-left var(--transition-settings-1, 0.2s ease);
     margin-left: 3rem;
 }
-&.expand-mode + * {
+&.expand-mode ~ * {
     margin-left: calc(var(--sidebar-max-width, 20vw) + 0.0rem);
 }
 
