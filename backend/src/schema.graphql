@@ -7,15 +7,16 @@ type Mutation {
     Logout(user: String!, cookie: String!): Boolean
     Register(user: String!, hashPasswd: String!): Boolean
     Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
-    DeleteStrategy(id: ID!): ID!
-    EditStrategy(id: ID!): String!
-    DeleteRecord(id: ID!): ID!
+
+    CreateRecord(startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Record!
+    DeleteRecord(id: ID!): Boolean
+    DeleteStrategy(id: ID!): Boolean
+    RenameStrategy(id: ID!, name: String!): Boolean
 }
 
-type Subscription {
-    RecordCreated: Candles!
-    RecordEdited: Candles!
-    RecordDeleted: ID!
+type Strategy {
+    id: ID!
+    name: String!
 }
 
 type Candles {
@@ -28,6 +29,8 @@ type Candles {
 }
 
 type Record {
+    id: ID!
+    strategyID: ID!
     startTime: Int!
     endTime: Int!
     start: Float!

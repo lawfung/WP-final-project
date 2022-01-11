@@ -6,6 +6,7 @@ import Mutation from "./resolvers/Mutation.js";
 // db
 import userDatabase from "./models/user.js";
 import cookieDatabase from "./models/cookie.js";
+import recordDatabase from "./models/record.js";
 
 const pubSub = new PubSub();
 
@@ -18,6 +19,7 @@ const server = new GraphQLServer({
   context: {
     userDatabase,
     cookieDatabase,
+    recordDatabase,
     pubSub,
   },
 });

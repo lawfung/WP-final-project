@@ -38,8 +38,6 @@ const Mutation = {
     }
   },
 
-  
-
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {
     return;
   }
