@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const RecordSchema = new Schema({
     id: String,
     strategyID: String,
-    startTime: Int,
-    endTime: Int,
-    start: Float,
-    end: Float,
-    high: Float,
-    low: Float
+    startTime: Number,
+    endTime: Number,
+    start: Number,
+    end: Number,
+    high: Number,
+    low: Number
 });
 
 export default mongoose.model('Records', RecordSchema);

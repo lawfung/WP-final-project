@@ -20,7 +20,7 @@ const GetKline = async (url) => {
 }
 
 const Query = {
-  async Candlestick(parent, {asset, startTime, endTime, scale, cookie}, { db }, info) {
+  async Candlestick(parent, {asset, startTime, endTime, scale, cookie}, {}, info) {
 
     let ftx_base_url = 'https://ftx.com/api/markets/' + asset + '/candles?'
     let resolution = resolution_dict[scale];
@@ -41,6 +41,14 @@ const Query = {
       low: item['low'],
       close: item['close']
     }))
+  },
+  async GetRecord(parent, {strategyID}, { recordDatabase }, info) {
+    const list = recordDatabase.find({strategyID});
+    return list;
+  },
+  async GetStrategy(parent, {id}, { strategyDatabase }, info) {
+    const result = strategyDatabase.findOne({id});
+    return result;
   }
 };
 

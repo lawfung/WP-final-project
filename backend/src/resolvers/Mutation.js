@@ -16,14 +16,12 @@ const Mutation = {
     newCookie.save();
     return cookie;
   },
-
   async Logout(parent, {user, cookie}, {cookieDatabase}, info) {
     const isExist = await cookieDatabase.findOne({user, cookie});
     if (!isExist) return false;
     await cookieDatabase.deleteOne(isExist);
     return true;
-  },  
-
+  },
   async Register(parent, {user, hashPasswd}, {userDatabase}, info) {
     console.log(user, {user})
     const isExist = await userDatabase.findOne({user});
@@ -37,7 +35,38 @@ const Mutation = {
       return true;
     }
   },
-
+  async CreateStrategy(parent, {name}, {strategyDatabase}, info) {
+    const id = uuidv4();
+    const newStrategy = new strategyDatabase({id, name});
+    newStrategy.save();
+    return newStrategy;
+  },
+  async DeleteStrategy(parent, {id}, {strategyDatabase}, info) {
+    const isExist = await strategyDatabase.findOne({id});
+    if (!isExist) return false;
+    await strategyDatabase.deleteOne(isExist);
+    return true;
+  },
+  async RenameStrategy(parent, {id, name}, {strategyDatabase}, info) {
+    const isExist = await strategyDatabase.findOne({id});
+    if (!isExist) return false;
+    await strategyDatabase.deleteOne(isExist);
+    const newStrategy = new strategyDatabase({id, name});
+    newStrategy.save();
+    return true;
+  },
+  async CreateRecord(parent, {strategyID, startTime, endTime, start, end, high, low}, {recordDatabase}, info) {
+    const id = uuidv4();
+    const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
+    newRecord.save();
+    return newRecord;
+  },
+  async DeleteRecord(parent, {id}, {recordDatabase}, info) {
+    const isExist = await recordDatabase.findOne({id});
+    if (!isExist) return false;
+    await recordDatabase.deleteOne(isExist);
+    return true;
+  },
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {
     return;
   }

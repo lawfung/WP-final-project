@@ -1,6 +1,7 @@
 type Query {
     Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
-    GetRecord(name: String!): [Record!]!
+    GetRecord(strategyID: String!): [Record!]!
+    GetStrategy(id: String!): Strategy!
 }
 type Mutation {
     Login(user: String!, hashPasswd: String!): String!
@@ -8,10 +9,12 @@ type Mutation {
     Register(user: String!, hashPasswd: String!): Boolean
     Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
 
-    CreateRecord(startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Record!
-    DeleteRecord(id: ID!): Boolean
+    CreateStrategy(name: String!): Strategy!
     DeleteStrategy(id: ID!): Boolean
     RenameStrategy(id: ID!, name: String!): Boolean
+
+    CreateRecord(strategyID: ID!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Record!
+    DeleteRecord(id: ID!): Boolean
 }
 
 type Strategy {
