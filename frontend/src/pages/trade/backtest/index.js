@@ -30,7 +30,7 @@ const MyTitle = styled(Typography)`
     background: Cornsilk;
 `
 const indexList = ["MA", "EMA"];
-const Backtest = ({title="Backtest1"}) => {
+const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC"}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const [chartType, setChartType] = useState('Histogram');
     const [indexType, setIndexType] = useState([]);
@@ -52,10 +52,10 @@ const Backtest = ({title="Backtest1"}) => {
         </MyStack>
     const attrPanel = 
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
-            <MyGrid item xs={6}>Start time: 2021 Jun 08 20:00:00</MyGrid>
-            <MyGrid item xs={6}>End time:  2021 Jun 08 20:00:00</MyGrid>
-            <MyGrid item xs={6}>Time scale: 15s</MyGrid>
-            <MyGrid item xs={6}>Asset: BTC</MyGrid>
+            <MyGrid item xs={6}>Start time: {XStart_time}</MyGrid>
+            <MyGrid item xs={6}>End time: {XEnd_time}</MyGrid>
+            <MyGrid item xs={6}>Time scale: {XTime_scale}</MyGrid>
+            <MyGrid item xs={6}>Asset: {XAsset}</MyGrid>
         </Grid>
     const runAndPause =
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>

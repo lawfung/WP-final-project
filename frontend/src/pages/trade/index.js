@@ -43,7 +43,7 @@ export default function TradePage() {
             <NavItem to='/New Monitor' label='New Monitor' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(0);setOpen(true);}}/>
             <Divider style={{ background: 'orange' }}/>
             {dummyB.map((I, i) =>
-              <NavItem to='' label={backtestList[i][0]} key={backtestList[i][0]} exact icon={<RunCircle width='0.75rem'/>} onClickAll={()=>{setIdid(I);setMorB(1);}} onClickClean={()=>{deleteBacktest(i);}} key={"backtest"+backtestList[i][2]}/> )
+              <NavItem to='' label={backtestList[i][0]} exact icon={<RunCircle width='0.75rem'/>} onClickAll={()=>{setIdid(I);setMorB(1);}} onClickClean={()=>{deleteBacktest(i);}} key={"backtest"+backtestList[i][2]}/> )
             }
             <NavItem to='/New Backtest' label='New Backtest' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(1);setOpen(true);}}/>
         </NavItemsContainer>

@@ -133,7 +133,7 @@ function calculateMA(data0, dayCount) {
 const option = (data0)=> ({
 //   title: { text: '上证指数', left: 0 },
   tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
-  legend: { data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'] },
+  legend: { data: ['日K', 'MA5', 'MA10'] },
   grid: { left: '10%', right: '10%', bottom: '15%' },
   xAxis: {
     type: 'category',
@@ -211,7 +211,7 @@ function App({data=defaultData}) {
     chart.setOption(option(splitData(dd.map(i =>([...i])))))
 
     window.onresize = () => { chart.resize(); }
-  }, [option])
+  }, [option, dd])
 
   return (
     <div
