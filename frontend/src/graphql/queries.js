@@ -21,3 +21,16 @@ export const STRATEGY_QUERY = gql`
   }
 `;
 
+export const Candlestick_QUERY = gql`
+  query Candlestick($asset: String!, $startTime: Int!, $endTime: Int!, $scale: String!, $cookie: String!) {
+    Candlestick(asset: $asset, startTime: $startTime, endTime: $endTime, scale: $scale, cookie: $cookie) {
+      startTime
+      scale
+      open
+      high
+      low
+      close
+    }
+  }
+`
+

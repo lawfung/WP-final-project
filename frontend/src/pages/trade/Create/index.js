@@ -37,7 +37,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
   const handleChange = (f) => ((e) => {setDisplayError(false);f(e.target.value);})
   const [tabName, settabName] = useState('');
   const [startTime, setStartTime] = useState('2021-01-01T00:00');
-  const [endTime, setEndTime] = useState('2022-01-01T00:00');
+  const [endTime, setEndTime] = useState('2021-01-01T02:00');
   const [assetType, setAssetType] = useState('BTC');
   const marks = marksTimes.map((x, i) => ({value: i, label: x}));
   const [timeScale, setTimeScale] = useState(0);
@@ -149,7 +149,8 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
               setDisplayError(true);
               return;
             }
-            handleCreate({tabName, startTime, endTime, assetType, timeScale, openMB});
+            handleClose();
+            handleCreate({tabName, startTime, endTime, assetType, timeScale, openMB, timeScaleString: marksTimes[timeScale]});
           }}>Create</Button>
       </DialogActions>
     </Dialog>

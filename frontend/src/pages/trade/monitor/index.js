@@ -31,7 +31,7 @@ const MyTitle = styled(Typography)`
 `
 const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
 const indexList = ["MA", "EMA"];
-const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC"}) => {
+const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
@@ -149,7 +149,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
-                <Lines/>
+                <Lines data={data}/>
                 {/* <div style={{color : "red"}}>Here will be the graph</div> */}
                 {backAndNext}
             </HalfWrapper>

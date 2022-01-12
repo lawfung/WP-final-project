@@ -5,6 +5,8 @@ import { ShowChart, RunCircle} from '@mui/icons-material/';
 import {Sidebar, NavItemsContainer, NavItem, ExpandIcon} from './sidebar';
 import usePages from './usePages';
 import CreateNew from './Create';
+import { Candlestick_QUERY } from '../../graphql';
+import { useApolloClient  } from "@apollo/client";
 
 const AppContainer = styled.section`
   height: 100%;
@@ -24,12 +26,22 @@ export default function TradePage() {
   const handleCloseCreate = () => {
     setOpen(false);
   }
-  const handleCreate = ({tabName, startTime, endTime, assetType, timeScale, openMB}) => {
+  const client = useApolloClient();
+  const handleCreate = async ({tabName, startTime, endTime, assetType, timeScale, openMB, timeScaleString}) => {
+    const epochS = Date.parse(startTime) / 1000
+    const epochE = Date.parse(endTime) / 1000
+    console.log(epochS, epochE, timeScaleString)
     if(openMB){
-      addBacktestList({title:tabName, startTime, endTime, assetType, timeScale})
+      addBacktestList({title:tabName, startTime, endTime, assetType, timeScale});
     }
     else{
-      addMonitorList({title:tabName, startTime, endTime, assetType, timeScale})
+      const req = await client.query({
+        query: Candlestick_QUERY,
+        variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
+      });
+      const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
+      addMonitorList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data});
+      // console.log(data);
     }
   }
   return (
