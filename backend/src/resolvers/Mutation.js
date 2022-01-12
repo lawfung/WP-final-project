@@ -67,6 +67,12 @@ const Mutation = {
     await recordDatabase.deleteOne(isExist);
     return true;
   },
+  async DeleteRecordByStrategyID(parent, {strategyID}, {recordDatabase}, info) {
+    const isExist = await recordDatabase.findOne({strategyID});
+    if (!isExist) return false;
+    await recordDatabase.deleteMany({strategyID});
+    return true;
+  },
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {
     return;
   }
