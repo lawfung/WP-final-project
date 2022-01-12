@@ -6,6 +6,14 @@ import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
 
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useApolloClient  } from "@apollo/client";
+
+import {
+  RECORD_QUERY,
+  DELETE_RECORD_MUTATION
+} from "../../graphql";
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -26,23 +34,35 @@ const Title = styled.div`
 
 export default function Profile({ username="" }) {
   // TODO: find all record from db
-  const [dataSource, setDataSource] = useState([{
-    key: 0,
-    startTime: 20210101,
-    endTime: 20220101,
-    start: 100.05,
-    end: 110.10,
-    high: 112.1,
-    low: 99.5,
-    action: 0,
-  }]);
+  const { loading, error, data } = useQuery(RECORD_QUERY, {variables: {strategyID: ""}});
+  const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
+  console.log(loading);
+  console.log(data);
+  // const client = useApolloClient();
+  // const req = client.query({
+  //   query: RECORD_QUERY,
+  //   variables: {strategyID: "1234"}
+  // });
+  // console.log(req);
 
-  const handleDeleteRecord = (idx) => { // TODO: should write back to database?
-    console.log(`delete ${idx}`);
-    console.log(dataSource);
-    const newDataSource = dataSource.filter(item => item.key !== idx);
-    console.log(newDataSource);
-    setDataSource(newDataSource);
+  // const [dataSource, setDataSource] = useState([{
+  //   startTime: 20210101,
+  //   endTime: 20220101,
+  //   start: 100.05,
+  //   end: 110.10,
+  //   high: 112.1,
+  //   low: 99.5,
+  //   id: 0,
+  // }]);
+
+  const handleDeleteRecord = (id) => { // TODO: should write back to database?
+    
+    console.log(`delete ${id}`);
+    deleteRecord({variables: {id: id}});
+    // console.log(dataSource);
+    // const newDataSource = dataSource.filter(item => item.key !== idx);
+    // console.log(newDataSource);
+    // setDataSource(newDataSource);
   };
   const columns = [
     {
@@ -77,10 +97,10 @@ export default function Profile({ username="" }) {
     },
     {
       title: "",
-      dataIndex: "action",
-      render: (action) => (
+      dataIndex: "id",
+      render: (id) => (
         <>
-          <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(id);}} />
         </>
       ),
     }
@@ -88,10 +108,11 @@ export default function Profile({ username="" }) {
   return (
     <Wrapper>
       <h1>{username}'s profile</h1>
-      <Table columns={columns} dataSource={dataSource} onRow={record => ({
+      {loading === true ? "Loading..." : (
+      <Table columns={columns} dataSource={data.GetRecord} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
-      })}/>
+      })}/>)}
     </Wrapper>
   );
 }

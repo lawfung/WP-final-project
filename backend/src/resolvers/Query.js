@@ -43,11 +43,17 @@ const Query = {
     }))
   },
   async GetRecord(parent, {strategyID}, { recordDatabase }, info) {
+    console.log("strategyID = " + strategyID);
+    if (strategyID === "") 
+      return recordDatabase.find();
     const list = recordDatabase.find({strategyID});
     return list;
   },
   async GetStrategy(parent, {id}, { strategyDatabase }, info) {
-    const result = strategyDatabase.findOne({id});
+    console.log("id = " + id);
+    if (id === "")
+      return strategyDatabase.find();
+    const result = strategyDatabase.find({id});
     return result;
   }
 };
