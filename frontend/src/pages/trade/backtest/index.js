@@ -148,9 +148,9 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
             </Grid>
         </>
     const [dd, setDD] = useState(data)
-    const graph = <Lines data={data}/>
+    const graph = <Lines data={dd}/>
     return (
-        <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
+        <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}

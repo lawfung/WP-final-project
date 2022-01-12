@@ -145,7 +145,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
         </>
 
     return (
-        <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
+        <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
