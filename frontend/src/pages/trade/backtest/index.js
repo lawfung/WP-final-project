@@ -1,43 +1,19 @@
-import { Button, Stack, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel, Typography } from "@mui/material";
+import { Button, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
 import { Input, Button as AntdButton } from "antd";
 import { useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
-import styled from "styled-components";
 import Lines from '../lines';
 import { Candlestick_QUERY } from '../../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
-const HalfWrapper = styled.div`
-    height: 100%;
-    width : 50%;
-    overflow : auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-const MyGrid = styled(Grid)`
-    display: flex;
-    justify-content: space-around;
-`
-const MyStack = styled(Stack)`
-    display: flex;
-    justify-content: space-around;
-    margin-top: 2vh;
-    width: 100%;
-`
-const MyTitle = styled(Typography)`
-    border-color: coral;
-    border-width: thick;
-    border-style: solid;
-    border-radius: 2vh;
-    padding: 1vh;
-    background: Cornsilk;
-`
+import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
+
 const indexList = ["MA", "EMA"];
-const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data=[[1, 2]], next}) => {
+const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const [price, setPrice] = useState(data[data.length - 1][1])
     const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
+    const [nextTime, setNextTime] = useState(next);
     const onTrade = (amount) => {
         setPocket({USDT: pocket['USDT'] - amount * price, [XAsset]: pocket[XAsset] + amount });
     }
@@ -47,6 +23,14 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
         const value = event.target.value;
         setIndexType(typeof value === 'string' ? value.split(',') : value);
     };
+    // const handlejump = (step) => {
+    //     const req = await client.query({
+    //         query: Candlestick_QUERY,
+    //         variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
+    //     });
+
+
+    // }
     const jumpList = [1, 2, 4, 8, 16];
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
@@ -178,7 +162,6 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
-                {/* <div style={{color : "red"}}>Here will be the graph</div> */}
                 {graph}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>

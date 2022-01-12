@@ -8,28 +8,20 @@ import CreateNew from './Create';
 import { Candlestick_QUERY, CACHE } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
+import { resolution_dict } from '../../tools/constant';
 
 const AppContainer = styled.section`
   height: 100%;
   overflow: auto;
 `
-const resolution_dict = {
-  '1 min' : 60, 
-  '5 min' : 60 * 5, 
-  '15 min' : 60 * 15, 
-  '30 min' : 60 * 30, 
-  '1 hr' : 60 * 60, 
-  '2 hr' : 60 * 60 * 2, 
-  '4 hr' : 60 * 60 * 4, 
-  '1 day' : 86400
-}
 
 export default function TradePage() {
-  const {monitorList, backtestList, addMonitorList, deleteMonitor, addBacktestList, deleteBacktest, dummyM, dummyB,  setMorB, setIdid, MorB, idid} = usePages();
+  const {MorB, setMorB, idid, setIdid, dummyM, dummyB, monitorList, backtestList, addMonitorList, addBacktestList, deleteMonitor, deleteBacktest} = usePages();
+  const easyMap = (ls, MBT, name) => ls.map( (y) => <div key={name +(y)[2]} style={{height:"100%", display:(MorB===MBT && idid===y[2] ? 'flex' : 'none')}}>{(y)[1]}</div> )
   const content = (
     <>
-      {monitorList.map( (y) => <div key={"monitor" +(y)[2]} style={{height:"100%", display:(MorB===0 && idid===y[2] ? 'flex' : 'none')}}>{(y)[1]}</div> )}
-      {backtestList.map((y) => <div key={"backtest"+(y)[2]} style={{height:"100%", display:(MorB===1 && idid===y[2] ? 'flex' : 'none')}}>{(y)[1]}</div> )}
+      {easyMap(monitorList, 0, "monitor")}
+      {easyMap(backtestList, 1, "backtest")}
     </>
   )
   const [open, setOpen] = useState(false);
@@ -39,7 +31,7 @@ export default function TradePage() {
   }
   const client = useApolloClient();
   const [doCache] = useMutation(CACHE);
-  const handleCreate = async ({tabName, startTime, endTime, assetType, timeScale, openMB, timeScaleString}) => {
+  const handleCreate = async ({tabName, startTime, endTime, assetType, openMB, timeScaleString}) => {
     const epochS = Date.parse(startTime) / 1000
     const epochE = Date.parse(endTime) / 1000
     console.log(epochS, epochE, timeScaleString)
@@ -60,7 +52,6 @@ export default function TradePage() {
       });
       const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
       addMonitorList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data});
-      // console.log(data);
     }
   }
   return (
@@ -68,15 +59,15 @@ export default function TradePage() {
       <AppContainer>
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
-            {dummyM.map((I, i) =>{
-              return <NavItem to='' label={monitorList[i][0]} exact icon={<ShowChart width='0.75rem'/>} onClickAll={()=>{setIdid(I);setMorB(0);}} onClickClean={()=>{deleteMonitor(i);}} key={"monitor"+monitorList[i][2]}/> })
+            {dummyM.map((I, i) =>
+              <NavItem label={monitorList[i][0]} exact icon={<ShowChart width='0.75rem'/>} onClickAll={()=>{setIdid(I);setMorB(0);}} onClickClean={()=>{deleteMonitor(i);}} key={"monitor"+monitorList[i][2]}/> )
             }
-            <NavItem to='/New Monitor' label='New Monitor' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(0);setOpen(true);}}/>
+            <NavItem label='New Monitor' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(0);setOpen(true);}}/>
             <Divider style={{ background: 'orange' }}/>
             {dummyB.map((I, i) =>
               <NavItem to='' label={backtestList[i][0]} exact icon={<RunCircle width='0.75rem'/>} onClickAll={()=>{setIdid(I);setMorB(1);}} onClickClean={()=>{deleteBacktest(i);}} key={"backtest"+backtestList[i][2]}/> )
             }
-            <NavItem to='/New Backtest' label='New Backtest' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(1);setOpen(true);}}/>
+            <NavItem label='New Backtest' exact icon={<ExpandIcon width='0.75rem'/>} clean={false} onClickAll={()=>{setOpenMB(1);setOpen(true);}}/>
         </NavItemsContainer>
       </Sidebar>
       {content}

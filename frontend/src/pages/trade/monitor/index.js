@@ -1,34 +1,9 @@
-import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField, Typography } from "@mui/material";
+import { Button, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField } from "@mui/material";
 import { useState } from "react";
 import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
-import styled from "styled-components";
 import Lines from '../lines';
-const HalfWrapper = styled.div`
-    height: 100%;
-    width : 50%;
-    overflow : auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-const MyGrid = styled(Grid)`
-    display: flex;
-    justify-content: space-around;
-`
-const MyStack = styled(Stack)`
-    display: flex;
-    justify-content: space-around;
-    margin-top: 2vh;
-    width: 100%;
-`
-const MyTitle = styled(Typography)`
-    border-color: coral;
-    border-width: thick;
-    border-style: solid;
-    border-radius: 2vh;
-    padding: 1vh;
-    background: Cornsilk;
-`
+import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
+
 const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
 const indexList = ["MA", "EMA"];
 const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {

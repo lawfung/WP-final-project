@@ -150,7 +150,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
               return;
             }
             handleClose();
-            handleCreate({tabName, startTime, endTime, assetType, timeScale, openMB, timeScaleString: marksTimes[timeScale]});
+            handleCreate({tabName, startTime, endTime, assetType, openMB, timeScaleString: marksTimes[timeScale]});
           }}>Create</Button>
       </DialogActions>
     </Dialog>
