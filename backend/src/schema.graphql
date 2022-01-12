@@ -15,6 +15,7 @@ type Mutation {
 
     CreateRecord(strategyID: ID!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Record!
     DeleteRecord(id: ID!): Boolean
+    DeleteRecordByStrategyID(strategyID: ID!): Boolean
 }
 
 type Strategy {
