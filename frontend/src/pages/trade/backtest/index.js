@@ -4,6 +4,9 @@ import { useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import styled from "styled-components";
 import Lines from '../lines';
+import { Candlestick_QUERY } from '../../../graphql';
+import { useApolloClient  } from "@apollo/client";
+import { useMutation } from '@apollo/client';
 const HalfWrapper = styled.div`
     height: 100%;
     width : 50%;
@@ -31,8 +34,13 @@ const MyTitle = styled(Typography)`
     background: Cornsilk;
 `
 const indexList = ["MA", "EMA"];
-const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
+const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data=[[1, 2]], next}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
+    const [price, setPrice] = useState(data[data.length - 1][1])
+    const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
+    const onTrade = (amount) => {
+        setPocket({USDT: pocket['USDT'] - amount * price, [XAsset]: pocket[XAsset] + amount });
+    }
     const [chartType, setChartType] = useState('Histogram');
     const [indexType, setIndexType] = useState([]);
     const handleIndexChange = (event) => {
@@ -123,7 +131,15 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
                 enterButton={<AntdButton style={{background: "green", color: "white"}}>Buy</AntdButton>}
                 style={{ width: "40%"}}
                 onSearch={(bb) => {
-                    console.log(bb);
+                    // console.log(bb);
+                    // assert
+                    const tmp = Number(bb)
+                    if(tmp && tmp > 0){
+                        onTrade(tmp)
+                    }
+                    // else {
+                        //display error
+                    // }
                 }}
             />
             <Input.Search
@@ -133,7 +149,15 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
                 enterButton={<AntdButton style={{background: "red", color: "white"}}>Sell</AntdButton>}
                 style={{ width: "40%"}}
                 onSearch={(bb) => {
-                    console.log(bb);
+                    // console.log(bb);
+                    // assert
+                    const tmp = Number(bb)
+                    if(tmp && tmp > 0){
+                        onTrade(-tmp)
+                    }
+                    // else {
+                        //display error
+                    // }
                 }}
             />
         </MyStack>
@@ -142,9 +166,9 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
         <>
             <div style={{marginTop: "2vh"}}>Assets Under Management</div>
             <Grid container spacing={1} sx={{marginTop: "2vh"}}>
-                <MyGrid item xs={6}>USDT: 1000</MyGrid>
-                <MyGrid item xs={6}>{XAsset}: 0 (≈ 0 USDT)</MyGrid>
-                <MyGrid item xs={6}>Sum: 0 USDT</MyGrid>
+                <MyGrid item xs={6}>USDT: {pocket['USDT']}</MyGrid>
+                <MyGrid item xs={6}>{XAsset}: {pocket[XAsset]} (≈ {pocket[XAsset] * price} USDT)</MyGrid>
+                <MyGrid item xs={6}>Sum: {pocket['USDT'] + pocket[XAsset] * price} USDT</MyGrid>
             </Grid>
         </>
     const [dd, setDD] = useState(data)
