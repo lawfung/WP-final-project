@@ -3,6 +3,7 @@ import { Input, Button as AntdButton } from "antd";
 import { useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import styled from "styled-components";
+import Lines from '../lines';
 const HalfWrapper = styled.div`
     height: 100%;
     width : 50%;
@@ -30,7 +31,7 @@ const MyTitle = styled(Typography)`
     background: Cornsilk;
 `
 const indexList = ["MA", "EMA"];
-const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC"}) => {
+const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     const [chartType, setChartType] = useState('Histogram');
     const [indexType, setIndexType] = useState([]);
@@ -142,17 +143,19 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
             <div style={{marginTop: "2vh"}}>Assets Under Management</div>
             <Grid container spacing={1} sx={{marginTop: "2vh"}}>
                 <MyGrid item xs={6}>USDT: 1000</MyGrid>
-                <MyGrid item xs={6}>BTC: 0 (≈ 0 USDT)</MyGrid>
+                <MyGrid item xs={6}>{XAsset}: 0 (≈ 0 USDT)</MyGrid>
+                <MyGrid item xs={6}>Sum: 0 USDT</MyGrid>
             </Grid>
         </>
+    const [dd, setDD] = useState(data)
+    const graph = <Lines data={data}/>
     return (
         <div style={{display: "flex", height: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
-                <div style={{color : "red"}}>Here will be the graph</div>
-                {runAndPause}
-                {jumpPanel}
+                {/* <div style={{color : "red"}}>Here will be the graph</div> */}
+                {graph}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
                 {easyMode}
@@ -160,6 +163,8 @@ const Backtest = ({title="Backtest1", XStart_time="2021 Jun 08 21:00:00", XEnd_t
                 {AUM}
                 {chartAndIndex}
                 {twoButtons}
+                {runAndPause}
+                {jumpPanel}
             </HalfWrapper>
         </div>
     )

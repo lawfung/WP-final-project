@@ -35,3 +35,9 @@ export const DELETE_RECORD_MUTATION = gql`
     DeleteRecord(id: $id)
   }
 `;
+
+export const CACHE = gql`
+  mutation Cache($asset: String!, $startTime: Int!, $endTime: Int!, $scale: String!, $cookie: String!) {
+    Cache(asset: $asset, startTime: $startTime, endTime: $endTime, scale: $scale, cookie: $cookie)
+}
+`

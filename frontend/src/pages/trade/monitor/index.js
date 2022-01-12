@@ -2,7 +2,7 @@ import { Button, Stack, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormCon
 import { useState } from "react";
 import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
 import styled from "styled-components";
-import Lines from './lines';
+import Lines from '../lines';
 const HalfWrapper = styled.div`
     height: 100%;
     width : 50%;

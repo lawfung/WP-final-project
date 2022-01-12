@@ -5,13 +5,24 @@ import { ShowChart, RunCircle} from '@mui/icons-material/';
 import {Sidebar, NavItemsContainer, NavItem, ExpandIcon} from './sidebar';
 import usePages from './usePages';
 import CreateNew from './Create';
-import { Candlestick_QUERY } from '../../graphql';
+import { Candlestick_QUERY, CACHE } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
+import { useMutation } from '@apollo/client';
 
 const AppContainer = styled.section`
   height: 100%;
   overflow: auto;
 `
+const resolution_dict = {
+  '1 min' : 60, 
+  '5 min' : 60 * 5, 
+  '15 min' : 60 * 15, 
+  '30 min' : 60 * 30, 
+  '1 hr' : 60 * 60, 
+  '2 hr' : 60 * 60 * 2, 
+  '4 hr' : 60 * 60 * 4, 
+  '1 day' : 86400
+}
 
 export default function TradePage() {
   const {monitorList, backtestList, addMonitorList, deleteMonitor, addBacktestList, deleteBacktest, dummyM, dummyB,  setMorB, setIdid, MorB, idid} = usePages();
@@ -27,12 +38,20 @@ export default function TradePage() {
     setOpen(false);
   }
   const client = useApolloClient();
+  const [doCache] = useMutation(CACHE);
   const handleCreate = async ({tabName, startTime, endTime, assetType, timeScale, openMB, timeScaleString}) => {
     const epochS = Date.parse(startTime) / 1000
     const epochE = Date.parse(endTime) / 1000
     console.log(epochS, epochE, timeScaleString)
     if(openMB){
-      addBacktestList({title:tabName, startTime, endTime, assetType, timeScale});
+      doCache({variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
+      const delta = resolution_dict[timeScaleString];
+      const req = await client.query({
+        query: Candlestick_QUERY,
+        variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
+      });
+      const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
+      addBacktestList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta})
     }
     else{
       const req = await client.query({
