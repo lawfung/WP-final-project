@@ -4,6 +4,14 @@ import { useState } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useApolloClient  } from "@apollo/client";
+
+import {
+  RECORD_QUERY,
+  DELETE_RECORD_MUTATION
+} from "../../graphql";
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -22,25 +30,29 @@ const Title = styled.div`
   }
 `;
 
-export default function Record({ strategy="", setName, allRecord, setAllRecord }) {
+export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
   // TODO: find all records with name strategy from db
-  const [dataSource, setDataSource] = useState([{
-    key: 0,
-    startTime: 20210101,
-    endTime: 20220101,
-    start: 100.05,
-    end: 110.10,
-    high: 112.1,
-    low: 99.5,
-    action: 0,
-  }]);
+  const { loading, error, data } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
+  const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
+  // const [dataSource, setDataSource] = useState([{
+  //   key: 0,
+  //   startTime: 20210101,
+  //   endTime: 20220101,
+  //   start: 100.05,
+  //   end: 110.10,
+  //   high: 112.1,
+  //   low: 99.5,
+  //   action: 0,
+  // }]);
 
-  const handleDeleteRecord = (idx) => { // TODO: should write back to database?
-    console.log(`delete ${idx}`);
-    console.log(dataSource);
-    const newDataSource = dataSource.filter(item => item.key !== idx);
-    console.log(newDataSource);
-    setDataSource(newDataSource);
+  const handleDeleteRecord = (id) => { // TODO: should write back to database?
+    console.log(`delete ${id}`);
+    deleteRecord({variables: {id: id}});
+    // console.log(`delete ${idx}`);
+    // console.log(dataSource);
+    // const newDataSource = dataSource.filter(item => item.key !== idx);
+    // console.log(newDataSource);
+    // setDataSource(newDataSource);
   };
 
   const columns = [
@@ -76,10 +88,10 @@ export default function Record({ strategy="", setName, allRecord, setAllRecord }
     },
     {
       title: "",
-      dataIndex: "action",
-      render: (action) => (
+      dataIndex: "id",
+      render: (id) => (
         <>
-          <DeleteOutlined onClick={() => {handleDeleteRecord(action);}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(id);}} />
         </>
       ),
     }
@@ -87,13 +99,13 @@ export default function Record({ strategy="", setName, allRecord, setAllRecord }
   return (
     <Wrapper>
       <Title>
-        <h1>{strategy}</h1>
+        <h1>{strategyName}</h1>
       </Title>
-      <Table columns={columns} dataSource={dataSource} onRow={record => ({
+      <Table columns={columns} dataSource={data.GetRecord} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
       })}/>
-      <Button onClick={() => {setAllRecord(true); setName("");}}>
+      <Button onClick={() => {setAllRecord(true); setStrategyName(""); setStrategyID("");}}>
         Last Page
       </Button>
     </Wrapper>
