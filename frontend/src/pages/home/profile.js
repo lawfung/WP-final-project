@@ -66,6 +66,10 @@ export default function Profile({ username="" }) {
   };
   const columns = [
     {
+      title: "No.",
+      dataIndex: "num",
+    },
+    {
       title: "Start Time",
       dataIndex: "startTime",
       width: 150,
@@ -109,7 +113,7 @@ export default function Profile({ username="" }) {
     <Wrapper>
       <h1>{username}'s profile</h1>
       {loading === true ? "Loading..." : (
-      <Table columns={columns} dataSource={data.GetRecord} onRow={record => ({
+      <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
       })}/>)}

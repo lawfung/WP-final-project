@@ -18,6 +18,7 @@ export const STRATEGY_QUERY = gql`
   query GetStrategy($id: ID!) {
     GetStrategy(id: $id) {
       name
+      id
     }
   }
 `;
