@@ -1,13 +1,8 @@
-import { Table, Modal, Input } from "antd";
-import { Button } from "@mui/material";
-import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import displayStatus from "../../tools/display";
+import { Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import Record from "./record";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { useApolloClient  } from "@apollo/client";
 
 import {
   RECORD_QUERY,
@@ -34,7 +29,7 @@ const Title = styled.div`
 
 export default function Profile({ username="" }) {
   // TODO: find all record from db
-  const { loading, error, data } = useQuery(RECORD_QUERY, {variables: {strategyID: ""}});
+  const { loading, data } = useQuery(RECORD_QUERY, {variables: {strategyID: ""}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   console.log(loading);
   console.log(data);
@@ -111,7 +106,9 @@ export default function Profile({ username="" }) {
   ];
   return (
     <Wrapper>
-      <h1>{username}'s profile</h1>
+      <Title>
+        <h1>{username}'s profile</h1>
+      </Title>
       {loading === true ? "Loading..." : (
       <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},

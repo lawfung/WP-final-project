@@ -1,8 +1,5 @@
-import displayStatus from "../../tools/display";
-import { Input, Button } from "antd";
-import { UserOutlined, LockOutlined} from "@ant-design/icons";
 import styled from "styled-components";
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Sidebar, NavItemsContainer, NavItem, AlignLeftOutIcon } from './sidebar';
 import Setting from "./setting";
 import Strategy from "./strategy";
