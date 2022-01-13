@@ -19,6 +19,7 @@ type Mutation {
 }
 type Subscription {
   updateStrategy: StrategySubscriptionPayload!
+  updateRecord: RecordSubscriptionPayload!
 }
 
 type Strategy {
@@ -55,4 +56,9 @@ enum MutationType {
 type StrategySubscriptionPayload {
   type: MutationType!
   info: Strategy!
+}
+
+type RecordSubscriptionPayload {
+  type: MutationType!
+  info: Record!
 }
