@@ -43,4 +43,10 @@ export const CACHE = gql`
   mutation Cache($asset: String!, $startTime: Int!, $endTime: Int!, $scale: String!, $cookie: String!) {
     Cache(asset: $asset, startTime: $startTime, endTime: $endTime, scale: $scale, cookie: $cookie)
 }
-`
+`;
+
+export const REGISTER_USER = gql`
+mutation Register($user: String!, $hashPasswd: String!) {
+  Register(user: $user, hashPasswd: $hashPasswd)
+}
+`;

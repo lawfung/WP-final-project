@@ -2,6 +2,8 @@ import displayStatus from "../../tools/display";
 import { Button, Input } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { REGISTER_USER } from '../../graphql/mutations.js'
+import { useMutation } from '@apollo/client';
 import { useState, useRef } from 'react'
 import 'antd/dist/antd.css'
 
@@ -28,9 +30,10 @@ export default function RegisterPage(){
     const [username, setUsername] = useState('')
     const [passwd, setPasswd] = useState('')
     const [passwd2, setPasswd2] = useState('')
+    const [registerUser] = useMutation(REGISTER_USER);
     const passwdRef = useRef(null)
     const passwdRef2 = useRef(null)
-    const submit = () => {
+    const submit = async () => {
         if ( !username || !passwd || !passwd2)
             displayStatus({
                 type: "error",
@@ -41,11 +44,20 @@ export default function RegisterPage(){
                 type: "error",
                 msg: "Two passwords must be the same"
             });
-        else
+        else {
+            console.log("register here", username, passwd)
+            var tmp = await registerUser({
+                variables: {
+                    user: username, hashPasswd: passwd
+                }
+            });
+            console.log('tmp: ', tmp);
             displayStatus({
                 type: "success",
                 msg: "Submitted"
             });
+        }
+            
     }
     return (
     <Wrapper>
