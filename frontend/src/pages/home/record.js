@@ -1,13 +1,17 @@
 import { Button, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { useEffect } from "react";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 
 import {
   RECORD_QUERY,
-  DELETE_RECORD_MUTATION
+  DELETE_RECORD_MUTATION,
+  RECORD_SUBSCRIPTION
 } from "../../graphql";
+
+import { TimestampToDate } from "../../tools/constant";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,28 +32,33 @@ const Title = styled.div`
 `;
 
 export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
-  // TODO: find all records with name strategy from db
-  const { loading, data } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
+  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
-  // const [dataSource, setDataSource] = useState([{
-  //   key: 0,
-  //   startTime: 20210101,
-  //   endTime: 20220101,
-  //   start: 100.05,
-  //   end: 110.10,
-  //   high: 112.1,
-  //   low: 99.5,
-  //   action: 0,
-  // }]);
 
-  const handleDeleteRecord = (id) => { // TODO: should write back to database?
+  useEffect(() => {
+    console.log("here start");
+    subscribeToMore({
+      document: RECORD_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log("here keep subscribing");
+        console.log({prev: prev, subscriptionData: subscriptionData});
+        if (!subscriptionData) return prev;
+
+        const type = subscriptionData.data.updateRecord.type;
+        const id = subscriptionData.data.updateRecord.info.id;
+        if (type === "DELETED") {
+          return {
+            ...prev,
+            GetRecord: prev.GetRecord.filter(item => item.id !== id)
+          };
+        }
+      }
+    });
+  }, [subscribeToMore]);
+
+  const handleDeleteRecord = (id) => {
     console.log(`delete ${id}`);
     deleteRecord({variables: {id: id}});
-    // console.log(`delete ${idx}`);
-    // console.log(dataSource);
-    // const newDataSource = dataSource.filter(item => item.key !== idx);
-    // console.log(newDataSource);
-    // setDataSource(newDataSource);
   };
 
   const columns = [
@@ -61,11 +70,13 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       title: "Start Time",
       dataIndex: "startTime",
       width: 150,
+      render: (time) => (TimestampToDate(time))
     },
     {
       title: "End Time",
       dataIndex: "endTime",
       width: 150,
+      render: (time) => (TimestampToDate(time))
     },
     {
       title: "Start",

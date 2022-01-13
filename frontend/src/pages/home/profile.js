@@ -1,13 +1,17 @@
 import { Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { useEffect } from "react";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 
 import {
   RECORD_QUERY,
-  DELETE_RECORD_MUTATION
+  DELETE_RECORD_MUTATION,
+  RECORD_SUBSCRIPTION
 } from "../../graphql";
+
+import { TimestampToDate } from "../../tools/constant";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,36 +32,33 @@ const Title = styled.div`
 `;
 
 export default function Profile({ username="" }) {
-  // TODO: find all record from db
-  const { loading, data } = useQuery(RECORD_QUERY, {variables: {strategyID: ""}});
+  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: ""}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
-  console.log(loading);
-  console.log(data);
-  // const client = useApolloClient();
-  // const req = client.query({
-  //   query: RECORD_QUERY,
-  //   variables: {strategyID: "1234"}
-  // });
-  // console.log(req);
 
-  // const [dataSource, setDataSource] = useState([{
-  //   startTime: 20210101,
-  //   endTime: 20220101,
-  //   start: 100.05,
-  //   end: 110.10,
-  //   high: 112.1,
-  //   low: 99.5,
-  //   id: 0,
-  // }]);
+  useEffect(() => {
+    console.log("start to subscribe");
+    subscribeToMore({
+      document: RECORD_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log("keep subscribing");
+        console.log({prev: prev, subscriptionData: subscriptionData});
+        if (!subscriptionData) return prev;
+
+        const type = subscriptionData.data.updateRecord.type;
+        const id = subscriptionData.data.updateRecord.info.id;
+        if (type === "DELETED") {
+          return {
+            ...prev,
+            GetRecord: prev.GetRecord.filter(item => item.id !== id)
+          };
+        }
+      }
+    });
+  }, [subscribeToMore]);
 
   const handleDeleteRecord = (id) => { // TODO: should write back to database?
-    
     console.log(`delete ${id}`);
     deleteRecord({variables: {id: id}});
-    // console.log(dataSource);
-    // const newDataSource = dataSource.filter(item => item.key !== idx);
-    // console.log(newDataSource);
-    // setDataSource(newDataSource);
   };
   const columns = [
     {
@@ -68,11 +69,13 @@ export default function Profile({ username="" }) {
       title: "Start Time",
       dataIndex: "startTime",
       width: 150,
+      render: (time) => (TimestampToDate(time))
     },
     {
       title: "End Time",
       dataIndex: "endTime",
       width: 150,
+      render: (time) => (TimestampToDate(time))
     },
     {
       title: "Start",
