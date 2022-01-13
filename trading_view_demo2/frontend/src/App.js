@@ -3,9 +3,9 @@ import './App.css';
 import * as echarts from 'echarts';
 import React, { useRef, useEffect } from "react"
 
-const upColor = '#ec0000';
+const upColor = '#00da3c';
 const upBorderColor = '#8A0000';
-const downColor = '#00da3c';
+const downColor = '#ec0000';
 const downBorderColor = '#008F28';
 
 function splitData(rawData) {
@@ -110,7 +110,9 @@ const data0 = splitData([
   ['2013/6/5', 2270.71, 2270.93, 2260.87, 2276.86],
   ['2013/6/6', 2264.43, 2242.11, 2240.07, 2266.69],
   ['2013/6/7', 2242.26, 2210.9, 2205.07, 2250.63],
-  ['2013/6/13', 2190.1, 2148.35, 2126.22, 2190.1]
+  ['2013/6/13', 2190.1, 2148.35, 2126.22, 2190.1],
+  ['2013/6/14', 2286.33, 2299.99, 2281.9, 2309.39],
+  ['2013/6/15', 2303.75, 2302.4, 2292.43, 2314.18],
 ]);
 
 function calculateMA(dayCount) {
@@ -126,13 +128,23 @@ function calculateMA(dayCount) {
     }
     result.push(sum / dayCount);
   }
+  console.log("QQ", result);
   return result;
 }
+
+function lastPrice(dayCount) {
+  var result = [];
+  for (var i = 0; i < data0.values.length; i++)
+    result.push(data0.values[data0.values.length - 1][1]);
+  console.log("TT", result, data0.values.length - 1, data0[data0.values.length - 1]);
+  return result;
+}
+
 var option = {
   title: { text: '上证指数', left: 0 },
   tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
   legend: { data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'] },
-  grid: { left: '10%', right: '10%', bottom: '15%' },
+  grid: { left: '10%', right: '10%', bottom: '15%', tooltip: {show: false} },
   xAxis: {
     type: 'category',
     data: data0.categoryData,
@@ -174,9 +186,9 @@ var option = {
         ],
         tooltip: { formatter: function (param) { return param.name + '<br>' + (param.data.coord || ''); } }
       },
-      markLine: {
-        symbol: ['none', 'none'],
-        data: [
+      // markLine: {
+        // symbol: ['none', 'none'],
+        // data: [
           // [
           //   { name: 'from lowest to highest', type: 'min', valueDim: 'lowest', symbol: 'circle', symbolSize: 10,
           //     label: { show: false },
@@ -189,10 +201,11 @@ var option = {
           // ],
           // { name: 'min line on close', type: 'min', valueDim: 'close' },
           // { name: 'max line on close', type: 'max', valueDim: 'close' },
-          { name: 'last price', type: 'min', valueDim: 'close' }
-        ]
-      }
+          // lastPrice()
+        // ]
+      // }
     },
+    { name: 'LastPrice', type: 'line', data: lastPrice(), lineStyle: { type: 'dotted', dashOffset: 2 } },
     { name: 'MA5', type: 'line', data: calculateMA(5), smooth: true, lineStyle: { opacity: 0.5 } },
     { name: 'MA10', type: 'line', data: calculateMA(10), smooth: true, lineStyle: { opacity: 0.5 } },
     { name: 'MA20', type: 'line', data: calculateMA(20), smooth: true, lineStyle: { opacity: 0.5 } },
