@@ -52,7 +52,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], endEpoch), cookie: "123", scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
-        console.log(data2)
+        // console.log(data2)
         if(data2.length > 0) {
             setPrice(data2[data2.length - 1][2])
             setDD([...dd, ...data2]);

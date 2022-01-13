@@ -8,6 +8,11 @@ import { marksTimes } from "../../../tools/constant";
 const indexList = ["MA", "EMA"];
 const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
+    const onCreateBacktest = () => {
+        // const epochS = Date.parse(startTime) / 1000
+        // const epochE = Date.parse(endTime) / 1000
+        // createBacktest({tabName: title+"-Backtest", startTime: XStart_time, endTime: XEnd_time, assetType: XAsset, timeScaleString: XTime_scale, epochS, epochE})
+    }
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
             <MyTitle variant="h5" component="div">
@@ -86,7 +91,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
     const twoButtons = 
         <MyStack spacing={-20} direction="row">
             <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
-            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>Backtest This</Button>
+            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}} onClick={onCreateBacktest}>Backtest This</Button>
         </MyStack>
     const [startTime, setStartTime] = useState('2021-01-01T00:00');
     const [endTime, setEndTime] = useState('2022-01-01T00:00');
