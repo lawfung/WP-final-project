@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client';
 import { resolution_dict } from '../../tools/constant';
 import { v4 as uuidv4 } from "uuid";
 import { TimestampToDate } from '../../tools/constant';
+import display from '../../tools/display';
 
 const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
 // const defaultBacktest = [["b1", <Backtest title="b1"/>, 0 ]];
@@ -43,9 +44,14 @@ const usePages = () => {
         const delta = resolution_dict[timeScaleString];
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
+            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: Math.min(epochS + delta, epochE), cookie: "123", scale: timeScaleString}
         });
-        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        const tmp = req.data.Candlestick;
+        if(!tmp || tmp.length === 0){
+            display({type: "error", msg: "create fail"});
+            return;
+        }
+        const data = tmp.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high]);
         addBacktestList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, epochS, epochE})
     }
     const createMonitor = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
@@ -53,7 +59,12 @@ const usePages = () => {
             query: Candlestick_QUERY,
             variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
         });
-        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        const tmp = req.data.Candlestick;
+        if(!tmp || tmp.length === 0){
+            display({type: "error", msg: "create fail"});
+            return;
+        }
+        const data = tmp.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high]);
         addMonitorList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, createBacktest});
     }
     return {MorB, setMorB, idid, setIdid, dummyM, dummyB, monitorList, backtestList, createBacktest, createMonitor, deleteMonitor, deleteBacktest};

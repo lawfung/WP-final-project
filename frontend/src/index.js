@@ -11,6 +11,7 @@ import {
 } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { UsernameProvider } from './tools/useUsername';
 
 const httpLink = new HttpLink({ uri: 'http://localhost:5000/' });
 const wsLink = new WebSocketLink({ uri: `ws://localhost:5000/`, options: { reconnect: true } });
@@ -34,7 +35,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <UsernameProvider>
+        <App />
+      </UsernameProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
