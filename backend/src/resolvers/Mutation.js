@@ -35,24 +35,45 @@ const Mutation = {
       return true;
     }
   },
-  async CreateStrategy(parent, {name}, {strategyDatabase}, info) {
+  async CreateStrategy(parent, {name}, {strategyDatabase, pubSub}, info) {
     const id = uuidv4();
     const newStrategy = new strategyDatabase({id, name});
     newStrategy.save();
+
+    console.log(pubSub);
+    await pubSub.publish("Strategy", {
+      updateStrategy: {
+        type: "CREATED",
+        info: newStrategy
+      }
+    });
     return newStrategy;
   },
-  async DeleteStrategy(parent, {id}, {strategyDatabase}, info) {
+  async DeleteStrategy(parent, {id}, {strategyDatabase, pubSub}, info) {
     const isExist = await strategyDatabase.findOne({id});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
+
+    await pubSub.publish("Strategy", {
+      updateStrategy: {
+        type: "DELETED"
+      }
+    });
     return true;
   },
-  async RenameStrategy(parent, {id, name}, {strategyDatabase}, info) {
+  async RenameStrategy(parent, {id, name}, {strategyDatabase, pubSub}, info) {
     const isExist = await strategyDatabase.findOne({id});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
     const newStrategy = new strategyDatabase({id, name});
     newStrategy.save();
+
+    await pubSub.publish("Strategy", {
+      updateStrategy: {
+        type: "UPDATED",
+        info: newStrategy
+      }
+    });
     return true;
   },
   async CreateRecord(parent, {strategyID, startTime, endTime, start, end, high, low}, {recordDatabase}, info) {

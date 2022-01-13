@@ -17,6 +17,9 @@ type Mutation {
     DeleteRecord(id: ID!): Boolean
     DeleteRecordByStrategyID(strategyID: ID!): Boolean
 }
+type Subscription {
+  updateStrategy: StrategySubscriptionPayload!
+}
 
 type Strategy {
     id: ID!
@@ -41,4 +44,15 @@ type Record {
     end: Float!
     high: Float!
     low: Float!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type StrategySubscriptionPayload {
+  type: MutationType!
+  info: Strategy!
 }
