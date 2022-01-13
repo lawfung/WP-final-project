@@ -28,19 +28,21 @@ const Query = {
     if (resolution === undefined) return null;
 
     let url = ftx_base_url + 'resolution=' + resolution + '&start_time=' + start_time + '&end_time=' + end_time;
-    console.log(url);
 
-    const data = await GetKline(url);
-    console.log(data['result']);
-
-    return data['result'].map(item => ({
-      startTime: item['time'] / 1000,
-      scale: scale,
-      open: item['open'],
-      high: item['high'],
-      low: item['low'],
-      close: item['close']
-    }))
+    try {
+      const data = await GetKline(url);
+      return data['result'].map(item => ({
+        startTime: item['time'] / 1000,
+        scale: scale,
+        open: item['open'],
+        high: item['high'],
+        low: item['low'],
+        close: item['close']
+      }))
+    } catch {
+      return null;
+    }
+    
   },
   async GetRecord(parent, {strategyID}, { recordDatabase }, info) {
     console.log("strategyID = " + strategyID);
