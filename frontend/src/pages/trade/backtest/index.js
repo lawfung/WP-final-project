@@ -7,13 +7,16 @@ import { Candlestick_QUERY } from '../../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
+import { resolution_dict } from "../../../tools/constant";
+import display from "../../../tools/display"
 
 const indexList = ["MA", "EMA"];
-const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next}) => {
+const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, endEpoch}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
-    const [price, setPrice] = useState(data[data.length - 1][1])
+    const [price, setPrice] = useState(data[data.length - 1][2])
     const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
     const [nextTime, setNextTime] = useState(next);
+    const [dd, setDD] = useState(data);
     const onTrade = (amount) => {
         setPocket({USDT: pocket['USDT'] - amount * price, [XAsset]: pocket[XAsset] + amount });
     }
@@ -23,14 +26,27 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         const value = event.target.value;
         setIndexType(typeof value === 'string' ? value.split(',') : value);
     };
-    // const handlejump = (step) => {
-    //     const req = await client.query({
-    //         query: Candlestick_QUERY,
-    //         variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
-    //     });
-
-
-    // }
+    const client = useApolloClient();
+    const goEnd = () => {
+        display({ type: 'success', msg: 'You have reached the end' })
+    }
+    const handlejump = async (step) => {
+        if(nextTime >= endEpoch) {
+            goEnd();
+            return;
+        }
+        console.log(nextTime + step * resolution_dict[XTime_scale], endEpoch)
+        const req = await client.query({
+            query: Candlestick_QUERY,
+            variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], endEpoch), cookie: "123", scale: XTime_scale}
+        });
+        const data2 = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
+        if(data2.length > 0) {
+            setPrice(data2[data2.length - 1][2])
+            setDD([...dd, ...data2]);
+        }
+        setNextTime(nextTime + step * resolution_dict[XTime_scale]);
+    }
     const jumpList = [1, 2, 4, 8, 16];
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
@@ -62,7 +78,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     const jumpPanel = 
         <ButtonGroup variant="contained" sx={{marginTop: "2vh"}}>
             {jumpList.map((x) => 
-                <Button variant="contained" sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} key={x}>Jump {x}</Button>
+                <Button variant="contained" sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} key={x} onClick={()=>{handlejump(x);}}>Jump {x}</Button>
             )}
         </ButtonGroup>
     const chartAndIndex = 
@@ -155,7 +171,6 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 <MyGrid item xs={6}>Sum: {pocket['USDT'] + pocket[XAsset] * price} USDT</MyGrid>
             </Grid>
         </>
-    const [dd, setDD] = useState(data)
     const graph = <Lines data={dd}/>
     return (
         <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>

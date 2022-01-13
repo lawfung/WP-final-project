@@ -43,7 +43,7 @@ export default function TradePage() {
         variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
       });
       const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
-      addBacktestList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta})
+      addBacktestList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, endEpoch: epochE})
     }
     else{
       const req = await client.query({
