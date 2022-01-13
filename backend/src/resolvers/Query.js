@@ -57,6 +57,11 @@ const Query = {
       return strategyDatabase.find();
     const result = strategyDatabase.find({id});
     return result;
+  },
+  async GetUsername(parent, {cookie}, { cookieDatabase }, info) {
+    const isExist = await cookieDatabase.findOne({cookie});
+    if (!isExist) return null;
+    else return isExist['user'];
   }
 };
 
