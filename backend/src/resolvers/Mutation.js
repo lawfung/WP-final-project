@@ -78,31 +78,31 @@ const Mutation = {
     return true;
   },
   async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low}, {recordDatabase, strategyDatabase}, info) {
-    // const recordID = uuidv4();
-    // const strategyExist = strategyDatabase.findOne({name: strategyName});
-    // console.log(strategyExist);
-    // if (strategyExist) return true;
-    // else return false;
-    // if (strategyExist) {
-    //   const newRecord = new recordDatabase({recordID, strategyExist.id, startTime, endTime, start, end, high, low});
-    //   try {
-    //     newRecord.save();
-    //     return true;
-    //   } catch (error) {
-    //     console.log("error: " + error);
-    //     return false;
-    //   }
-    // } else {
-    //   const StrategyID = uuidv4();
-    //   const newRecord = new recordDatabase({recordID, strategyID, startTime, endTime, start, end, high, low});
-    //   const newStrategy = new strategyDatabase({strategyID, strategyName});
-    //   newRecord.save();
-    //   newStrategy.save();
-    //   return true;
-    // } catch (error) {
-    //   console.log("error: " + error);
-    //   return false;
-    // }
+    const id = uuidv4();
+    const strategyExist = await strategyDatabase.findOne({name: strategyName});
+    if (strategyExist) {
+      const strategyID = strategyExist.id;
+      const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
+      try {
+        newRecord.save();
+        return true;
+      } catch (error) {
+        console.log("error: " + error);
+        return false;
+      }
+    } else {
+      try {
+        const strategyID = uuidv4();
+        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
+        const newStrategy = new strategyDatabase({id: strategyID, name: strategyName});
+        newRecord.save();
+        newStrategy.save();
+        return true;
+      } catch (error) {
+        console.log("error: " + error);
+        return false;
+      }
+    }
   },
   async DeleteRecord(parent, {id}, {recordDatabase}, info) {
     const isExist = await recordDatabase.findOne({id});
