@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Record from "./record";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-// import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 
 import {
   STRATEGY_QUERY,
@@ -60,7 +60,7 @@ export default function Strategy({ username="" }) {
     deleteRecordByStrategyID({variables: {strategyID: id}});
   };
 
-  // const client = useApolloClient();
+  const client = useApolloClient();
   const handleRenameStrategy = async () => { // TODO: should write back to database?
     if (newStrategyName === "") {
       displayStatus({
@@ -70,10 +70,19 @@ export default function Strategy({ username="" }) {
       return;
     }
     // TODO: name can not be duplicated
-    // const req = await client.query({
-    //   query: STRATEGY_QUERY,
-    //   variables: {id: ""}
-    // });
+    const req = await client.query({
+      query: STRATEGY_QUERY,
+      variables: {id: ""}
+    });
+    console.log(req.data.GetStrategy);
+    const nameExisted = req.data.GetStrategy.find(item => item.name === newStrategyName);
+    if (nameExisted) {
+      displayStatus({
+        type: "error",
+        msg: "strategy name existed!",
+      });
+      return;
+    }
     // req contain all strategy name, we should check if there exists newStrategyName
 
     renameStrategy({variables: {id: editedID, name: newStrategyName}});
