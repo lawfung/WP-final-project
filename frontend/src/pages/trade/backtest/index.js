@@ -14,8 +14,11 @@ import { TimestampToDate } from "../../../tools/constant";
 const indexList = ["MA", "EMA"];
 const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, endEpoch}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
+    const [finished, setFinished] = useState(false);
     const [price, setPrice] = useState(data[data.length - 1][2])
     const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
+    const [Record, setRecord] = useState({start: 0, end: 0, high: 0, low: 0});
+    const getTotal = (p) => (pocket['USDT'] + p * pocket[XAsset]);
     const [nextTime, setNextTime] = useState(next);
     const [dd, setDD] = useState(data);
     const onTrade = (amount) => {
@@ -36,23 +39,31 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     }
     const goEnd = () => {
         // stopRun();
-        display({ type: 'success', msg: 'You have reached the end' });
+        display({ type: 'success', msg: `${Record.low} ${Record.high}` });
+        setFinished(true);
     }
     // const nxtRef = useRef(null);
     // const ddRef = useRef(null);
     // nxtRef.current = nextTime;
     // ddRef.current = dd;
-
+    const updateRecord = (lst) => {
+        const tmp = lst.map((x) => getTotal(x[2]));
+        const low = Math.min(...tmp, Record.low);
+        const high = Math.max(...tmp, Record.high);
+        setRecord({...Record, low, high});
+        console.log(tmp)
+    }
     const handlejump = async (step) => {
         if(nextTime >= endEpoch) {
             goEnd();
-            return "finished";
+            return;
         }
         const req = await client.query({
             query: Candlestick_QUERY,
             variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], endEpoch), cookie: "123", scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        updateRecord(data2);
         // console.log(data2)
         if(data2.length > 0) {
             setPrice(data2[data2.length - 1][2])
@@ -184,10 +195,31 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             <Grid container spacing={1} sx={{marginTop: "2vh"}}>
                 <MyGrid item xs={6}>USDT: {pocket['USDT']}</MyGrid>
                 <MyGrid item xs={6}>{XAsset}: {pocket[XAsset]} (≈ {pocket[XAsset] * price} USDT)</MyGrid>
-                <MyGrid item xs={6}>Sum: {pocket['USDT'] + pocket[XAsset] * price} USDT</MyGrid>
+                <MyGrid item xs={6}>Sum: {getTotal(price)} USDT</MyGrid>
             </Grid>
         </>
     const graph = <Lines data={dd}/>
+    const REC = 
+        <>
+            {/* <div style={{marginTop: "2vh"}}>Assets Under Management</div> */}
+            <Grid container spacing={1} sx={{marginTop: "0vh"}}>
+                <MyGrid item xs={6}>Low: {Record['low']}</MyGrid>
+                <MyGrid item xs={6}>High: {Record['high']}</MyGrid>
+            </Grid>
+        </>
+    const [strategy, setStrategy] = useState("")
+    const SendRecord = 
+        <Input.Search
+            value={strategy}
+            onChange={handleChange(setStrategy)}
+            size="large"
+            placeholder="Strategy (may leave blank)"
+            enterButton={<AntdButton style={{background: "blue", color: "white"}}>Save Record</AntdButton>}
+            style={{ width: "80%", marginTop: "2vh"}}
+            onSearch={(bb) => {
+                
+            }}
+        />
     return (
         <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
@@ -199,10 +231,12 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 {easyMode}
                 {checked ? BuyAndSell : CodeEditor}
                 {AUM}
-                {chartAndIndex}
-                {twoButtons}
-                {runAndPause}
-                {jumpPanel}
+                {/* {chartAndIndex} */}
+                {/* {twoButtons} */}
+                {/* {runAndPause} */}
+                {REC}
+                {finished ? SendRecord : jumpPanel}
+                {!finished ? SendRecord : jumpPanel}
             </HalfWrapper>
         </div>
     )

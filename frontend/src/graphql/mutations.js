@@ -22,11 +22,8 @@ export const RENAME_STRATEGY_MUTATION = gql`
 `;
 
 export const CREATE_RECORD_MUTATION = gql`
-  mutation CreateRecord($strategyID: ID!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!) {
-    CreateRecord(strategyID: $strategyID, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low) {
-      # TODO
-      abc
-    }
+  mutation CreateRecord($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!) {
+    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low)
   }
 `;
 
