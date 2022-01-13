@@ -45,17 +45,21 @@ export default function RegisterPage(){
                 msg: "Two passwords must be the same"
             });
         else {
-            console.log("register here", username, passwd)
             var tmp = await registerUser({
                 variables: {
                     user: username, hashPasswd: passwd
                 }
             });
-            console.log('tmp: ', tmp);
-            displayStatus({
-                type: "success",
-                msg: "Submitted"
-            });
+            if (tmp['data']['Register'] === true)
+                displayStatus({
+                    type: "success",
+                    msg: "Register Succeed"
+                });
+            else 
+                displayStatus({
+                    type: "error",
+                    msg: "Deprecated Username"
+                });
         }
             
     }
