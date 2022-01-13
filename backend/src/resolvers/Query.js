@@ -23,7 +23,7 @@ const Query = {
   async Candlestick(parent, {asset, startTime, endTime, scale, cookie}, {}, info) {
 
     let ftx_base_url = 'https://ftx.com/api/markets/' + asset + '/candles?'
-    let start_time = startTime, end_time = endTime, resolution = resolution_dict[scale];
+    let start_time = startTime, end_time = endTime - 1, resolution = resolution_dict[scale];
 
     if (resolution === undefined) return null;
 
