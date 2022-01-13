@@ -3,7 +3,7 @@ import { Input, Button as AntdButton } from "antd";
 import { useRef, useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import Lines from '../lines';
-import { Candlestick_QUERY } from '../../../graphql';
+import { Candlestick_QUERY, CREATE_RECORD_MUTATION } from '../../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
@@ -12,8 +12,9 @@ import display from "../../../tools/display"
 import { TimestampToDate } from "../../../tools/constant";
 
 const indexList = ["MA", "EMA"];
-const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, endEpoch}) => {
-    const handleChange = (f) => ((e) => {f(e.target.value);})
+const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, epochS, epochE}) => {
+    const handleChange = (f) => ((e) => {f(e.target.value);});
+    const [createRecordMutation] = useMutation(CREATE_RECORD_MUTATION);
     const [finished, setFinished] = useState(false);
     const [price, setPrice] = useState(data[data.length - 1][2])
     const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
@@ -39,7 +40,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     }
     const goEnd = () => {
         // stopRun();
-        display({ type: 'success', msg: `${Record.low} ${Record.high}` });
+        display({ type: 'success', msg: "You have reached the end" });
         setFinished(true);
     }
     // const nxtRef = useRef(null);
@@ -51,16 +52,15 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         const low = Math.min(...tmp, Record.low);
         const high = Math.max(...tmp, Record.high);
         setRecord({...Record, low, high});
-        console.log(tmp)
     }
     const handlejump = async (step) => {
-        if(nextTime >= endEpoch) {
+        if(nextTime >= epochE) {
             goEnd();
             return;
         }
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], endEpoch), cookie: "123", scale: XTime_scale}
+            variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie: "123", scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
         updateRecord(data2);
@@ -207,7 +207,8 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 <MyGrid item xs={6}>High: {Record['high']}</MyGrid>
             </Grid>
         </>
-    const [strategy, setStrategy] = useState("")
+    const [strategy, setStrategy] = useState("");
+
     const SendRecord = 
         <Input.Search
             value={strategy}
@@ -216,8 +217,14 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             placeholder="Strategy (may leave blank)"
             enterButton={<AntdButton style={{background: "blue", color: "white"}}>Save Record</AntdButton>}
             style={{ width: "80%", marginTop: "2vh"}}
-            onSearch={(bb) => {
-                
+            onSearch={ async (name) => {
+                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: "123", ...Record, end: getTotal(price)} });
+                if(ret.data.CreateRecord) {
+                    display({ type: 'success', msg: "Save successfully" });
+                }
+                else {
+                    display({ type: 'error', msg: "Save failed" });
+                }
             }}
         />
     return (
@@ -236,7 +243,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 {/* {runAndPause} */}
                 {REC}
                 {finished ? SendRecord : jumpPanel}
-                {!finished ? SendRecord : jumpPanel}
+                {/* {!finished ? SendRecord : jumpPanel} */}
             </HalfWrapper>
         </div>
     )
