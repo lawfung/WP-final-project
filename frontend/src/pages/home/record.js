@@ -1,11 +1,8 @@
-import { Button, Table, Modal, Input } from "antd";
-import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import displayStatus from "../../tools/display";
+import { Button, Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { useApolloClient  } from "@apollo/client";
 
 import {
   RECORD_QUERY,
@@ -32,7 +29,7 @@ const Title = styled.div`
 
 export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
   // TODO: find all records with name strategy from db
-  const { loading, error, data } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
+  const { loading, data } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   // const [dataSource, setDataSource] = useState([{
   //   key: 0,
@@ -56,6 +53,10 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
   };
 
   const columns = [
+    {
+      title: "No.",
+      dataIndex: "num",
+    },
     {
       title: "Start Time",
       dataIndex: "startTime",
@@ -101,10 +102,12 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       <Title>
         <h1>{strategyName}</h1>
       </Title>
-      <Table columns={columns} dataSource={data.GetRecord} onRow={record => ({
+      {loading ? <p>Loading...</p> :
+      <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
       })}/>
+      }
       <Button onClick={() => {setAllRecord(true); setStrategyName(""); setStrategyID("");}}>
         Last Page
       </Button>

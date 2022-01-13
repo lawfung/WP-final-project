@@ -1,12 +1,12 @@
 import { Button, Table, Modal, Input } from "antd";
-import { UserOutlined, LockOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { useApolloClient } from "@apollo/client";
+// import { useApolloClient } from "@apollo/client";
 
 import {
   STRATEGY_QUERY,
@@ -35,7 +35,7 @@ const Title = styled.div`
 `;
 
 export default function Strategy({ username="" }) {
-  const { loading, error, data } = useQuery(STRATEGY_QUERY, {variables: {id: ""}});
+  const { loading, data } = useQuery(STRATEGY_QUERY, {variables: {id: ""}});
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
   const [newStrategyName, setNewStrategyName] = useState("");
@@ -49,10 +49,10 @@ export default function Strategy({ username="" }) {
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);
-  const [dataSource, setDataSource] = useState([{
-    id: "8415d7ac-32ef-4ec8-805f-ee0491e73f0d",
-    name: `Strategy 0`
-  }]);
+  // const [dataSource, setDataSource] = useState([{
+  //   id: "8415d7ac-32ef-4ec8-805f-ee0491e73f0d",
+  //   name: `Strategy 0`
+  // }]);
 
   const handleDeleteStrategy = (id) => { // TODO: should write back to database?
     console.log(`delete ${id}`);
@@ -60,7 +60,7 @@ export default function Strategy({ username="" }) {
     deleteRecordByStrategyID({variables: {strategyID: id}});
   };
 
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const handleRenameStrategy = async () => { // TODO: should write back to database?
     if (newStrategyName === "") {
       displayStatus({
