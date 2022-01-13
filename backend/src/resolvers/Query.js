@@ -28,21 +28,19 @@ const Query = {
     if (resolution === undefined) return null;
 
     let url = ftx_base_url + 'resolution=' + resolution + '&start_time=' + start_time + '&end_time=' + end_time;
+    console.log(url);
 
-    try {
-      const data = await GetKline(url);
-      return data['result'].map(item => ({
-        startTime: item['time'] / 1000,
-        scale: scale,
-        open: item['open'],
-        high: item['high'],
-        low: item['low'],
-        close: item['close']
-      }))
-    } catch {
-      return null;
-    }
-    
+    const data = await GetKline(url);
+    console.log(data['result']);
+
+    return data['result'].map(item => ({
+      startTime: item['time'] / 1000,
+      scale: scale,
+      open: item['open'],
+      high: item['high'],
+      low: item['low'],
+      close: item['close']
+    }))
   },
   async GetRecord(parent, {strategyID}, { recordDatabase }, info) {
     console.log("strategyID = " + strategyID);
@@ -54,14 +52,9 @@ const Query = {
   async GetStrategy(parent, {id}, { strategyDatabase }, info) {
     console.log("id = " + id);
     if (id === "")
-      return strategyDatabase.find();
+      return strategyDatabase.find({name: {$ne: ""}});
     const result = strategyDatabase.find({id});
     return result;
-  },
-  async GetUsername(parent, {cookie}, { cookieDatabase }, info) {
-    const isExist = await cookieDatabase.findOne({cookie});
-    if (!isExist) return null;
-    else return isExist['user'];
   }
 };
 
