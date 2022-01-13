@@ -1,19 +1,19 @@
 import { Button, Table, Modal, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
-// import { useApolloClient } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 
 import {
   STRATEGY_QUERY,
   RENAME_STRATEGY_MUTATION,
   DELETE_STRATEGY_MUTATION,
-  DELETE_RECORD_MUTATION,
-  DELETE_RECORD_BY_STRATEGY_ID_MUTATION
+  DELETE_RECORD_BY_STRATEGY_ID_MUTATION,
+  STRATEGY_SUBSCRIPTION
 } from "../../graphql";
 
 const Wrapper = styled.div`
@@ -35,7 +35,7 @@ const Title = styled.div`
 `;
 
 export default function Strategy({ username="" }) {
-  const { loading, data } = useQuery(STRATEGY_QUERY, {variables: {id: ""}});
+  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: ""}});
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
   const [newStrategyName, setNewStrategyName] = useState("");
@@ -43,11 +43,31 @@ export default function Strategy({ username="" }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedID, setEditedID] = useState("");
 
+  useEffect(() => {
+    console.log("hi");
+    subscribeToMore({
+      document: STRATEGY_SUBSCRIPTION,
+      updateQuery: (prev, { subscriptionData }) => {
+        console.log({prev: prev, subscriptionData: subscriptionData });
+        if (!subscriptionData) return prev;
+
+        const type = subscriptionData.data.updateStrategy.type;
+        const id = subscriptionData.data.updateStrategy.info.id;
+        console.log("type = " + type + ", id = " + id);
+        if (type === "UPDATED") return prev;
+        else if (type === "DELETED") {
+          return {
+            ...prev,
+            GetStrategy: prev.GetStrategy.filter(item => item.id !== id)
+          };
+        }
+      }
+    });
+  }, [subscribeToMore]);
   console.log(loading);
   console.log(data);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
-  const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);
   // const [dataSource, setDataSource] = useState([{
   //   id: "8415d7ac-32ef-4ec8-805f-ee0491e73f0d",
@@ -60,7 +80,7 @@ export default function Strategy({ username="" }) {
     deleteRecordByStrategyID({variables: {strategyID: id}});
   };
 
-  // const client = useApolloClient();
+  const client = useApolloClient();
   const handleRenameStrategy = async () => { // TODO: should write back to database?
     if (newStrategyName === "") {
       displayStatus({
@@ -69,12 +89,20 @@ export default function Strategy({ username="" }) {
       });
       return;
     }
-    // TODO: name can not be duplicated
-    // const req = await client.query({
-    //   query: STRATEGY_QUERY,
-    //   variables: {id: ""}
-    // });
-    // req contain all strategy name, we should check if there exists newStrategyName
+
+    const req = await client.query({
+      query: STRATEGY_QUERY,
+      variables: {id: ""}
+    });
+    console.log(req.data.GetStrategy);
+    const nameExisted = req.data.GetStrategy.find(item => item.name === newStrategyName);
+    if (nameExisted) {
+      displayStatus({
+        type: "error",
+        msg: "strategy name existed!",
+      });
+      return;
+    }
 
     renameStrategy({variables: {id: editedID, name: newStrategyName}});
 
@@ -104,8 +132,8 @@ export default function Strategy({ username="" }) {
       dataIndex: "name",
       width: 300,
       align: "center",
-      render: (name) => (
-        <Button type="link" onClick={() => {setAllRecord(false); setStrategyName(name);}}>{name}</Button>
+      render: (name, row) => (
+        <Button type="link" onClick={() => {console.log(row.id); setStrategyName(strategyName => name); setStrategyID(strategyID => row.id); setAllRecord(false);}}>{name}</Button>
       ),
     },
     {
@@ -120,15 +148,6 @@ export default function Strategy({ username="" }) {
     }
   ];
 
-  // for (let i = 0; i < 10; i++) {
-  //   dataSource.push({
-  //     key: i,
-  //     name: `Strategy ${i}`,
-  //     roi: "30%",
-  //     action: i,
-  //   });
-  // }
-
   return (
     <Wrapper>
       {
@@ -140,7 +159,6 @@ export default function Strategy({ username="" }) {
             {
               loading ? <p>Loading...</p> : 
               <Table columns={columns} dataSource={data.GetStrategy.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
-                // onClick: () => {setAllRecord(false); setIndex(record.key);},
                 onClick: () => {},
               })}/>
             }
