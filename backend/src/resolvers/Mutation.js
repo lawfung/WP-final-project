@@ -35,36 +35,85 @@ const Mutation = {
       return true;
     }
   },
-  async CreateStrategy(parent, {name}, {strategyDatabase}, info) {
-    const id = uuidv4();
-    const newStrategy = new strategyDatabase({id, name});
-    newStrategy.save();
-    return newStrategy;
-  },
-  async DeleteStrategy(parent, {id}, {strategyDatabase}, info) {
+  // CreateStrategy(name: String!): Strategy!
+  // async CreateStrategy(parent, {name}, {strategyDatabase, pubSub}, info) {
+  //   const id = uuidv4();
+  //   const newStrategy = new strategyDatabase({id, name});
+  //   newStrategy.save();
+
+  //   console.log(pubSub);
+  //   await pubSub.publish("Strategy", {
+  //     updateStrategy: {
+  //       type: "CREATED",
+  //       info: newStrategy
+  //     }
+  //   });
+  //   return newStrategy;
+  // },
+  async DeleteStrategy(parent, {id}, {strategyDatabase, pubSub}, info) {
     const isExist = await strategyDatabase.findOne({id});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
+
+    await pubSub.publish("Strategy", {
+      updateStrategy: {
+        type: "DELETED"
+      }
+    });
     return true;
   },
-  async RenameStrategy(parent, {id, name}, {strategyDatabase}, info) {
+  async RenameStrategy(parent, {id, name}, {strategyDatabase, pubSub}, info) {
     const isExist = await strategyDatabase.findOne({id});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
     const newStrategy = new strategyDatabase({id, name});
     newStrategy.save();
+
+    await pubSub.publish("Strategy", {
+      updateStrategy: {
+        type: "UPDATED",
+        info: newStrategy
+      }
+    });
     return true;
   },
-  async CreateRecord(parent, {strategyID, startTime, endTime, start, end, high, low}, {recordDatabase}, info) {
-    const id = uuidv4();
-    const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
-    newRecord.save();
-    return newRecord;
+  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low}, {recordDatabase, strategyDatabase}, info) {
+    // const recordID = uuidv4();
+    // const strategyExist = strategyDatabase.findOne({name: strategyName});
+    // console.log(strategyExist);
+    // if (strategyExist) return true;
+    // else return false;
+    // if (strategyExist) {
+    //   const newRecord = new recordDatabase({recordID, strategyExist.id, startTime, endTime, start, end, high, low});
+    //   try {
+    //     newRecord.save();
+    //     return true;
+    //   } catch (error) {
+    //     console.log("error: " + error);
+    //     return false;
+    //   }
+    // } else {
+    //   const StrategyID = uuidv4();
+    //   const newRecord = new recordDatabase({recordID, strategyID, startTime, endTime, start, end, high, low});
+    //   const newStrategy = new strategyDatabase({strategyID, strategyName});
+    //   newRecord.save();
+    //   newStrategy.save();
+    //   return true;
+    // } catch (error) {
+    //   console.log("error: " + error);
+    //   return false;
+    // }
   },
   async DeleteRecord(parent, {id}, {recordDatabase}, info) {
     const isExist = await recordDatabase.findOne({id});
     if (!isExist) return false;
     await recordDatabase.deleteOne(isExist);
+    return true;
+  },
+  async DeleteRecordByStrategyID(parent, {strategyID}, {recordDatabase}, info) {
+    const isExist = await recordDatabase.findOne({strategyID});
+    if (!isExist) return false;
+    await recordDatabase.deleteMany({strategyID});
     return true;
   },
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {

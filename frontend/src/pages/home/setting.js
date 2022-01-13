@@ -1,5 +1,5 @@
 import { Input, Button } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { LockOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";

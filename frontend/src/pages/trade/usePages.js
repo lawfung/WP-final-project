@@ -1,6 +1,12 @@
 import Monitor from './monitor'
 import Backtest from './backtest';
 import { useState } from 'react';
+import { Candlestick_QUERY, CACHE } from '../../graphql';
+import { useApolloClient  } from "@apollo/client";
+import { useMutation } from '@apollo/client';
+import { resolution_dict } from '../../tools/constant';
+import { v4 as uuidv4 } from "uuid";
+import { TimestampToDate } from '../../tools/constant';
 
 const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
 // const defaultBacktest = [["b1", <Backtest title="b1"/>, 0 ]];
@@ -10,11 +16,10 @@ const usePages = () => {
     // Title, dom
     const [MorB, setMorB] = useState(0);
     const [idid, setIdid] = useState(0);
-    const [count, setCount] = useState(10);
     const addOne = (Type, setList, dummy, setDummy) => (props) => {
-        setList((til) => [...til, [props.title, <Type {...props}/>, count]]);
-        setDummy([...dummy, count]);
-        setCount(count + 1);
+        const id = uuidv4();
+        setList((til) => [...til, [props.title, <Type {...props}/>, id]]);
+        setDummy([...dummy, id]);
     }
     const copyDeleteI = (ls, id) => (ls.slice(0, id).concat(ls.slice(id + 1)));
     const deleteOne = (MBT, dummy, setList, ls, setDummy) => (id) => {
@@ -31,6 +36,26 @@ const usePages = () => {
     const addBacktestList = addOne(Backtest, setBacktestList, dummyB, setDummyB);
     const deleteMonitor = deleteOne(0, dummyM, setMonitorList, monitorList, setDummyM);
     const deleteBacktest = deleteOne(1, dummyB, setBacktestList, backtestList, setDummyB);
-    return {MorB, setMorB, idid, setIdid, dummyM, dummyB, monitorList, backtestList, addMonitorList, addBacktestList, deleteMonitor, deleteBacktest};
+    const client = useApolloClient();
+    const [doCache] = useMutation(CACHE);
+    const createBacktest = async ({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE}) => {
+        doCache({variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
+        const delta = resolution_dict[timeScaleString];
+        const req = await client.query({
+        query: Candlestick_QUERY,
+        variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
+        });
+        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        addBacktestList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, endEpoch: epochE})
+    }
+    const createMonitor = async ({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE}) => {
+        const req = await client.query({
+            query: Candlestick_QUERY,
+            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
+        });
+        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        addMonitorList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, createBacktest});
+    }
+    return {MorB, setMorB, idid, setIdid, dummyM, dummyB, monitorList, backtestList, createBacktest, createMonitor, deleteMonitor, deleteBacktest};
 }
 export default usePages;
