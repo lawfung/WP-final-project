@@ -9,11 +9,10 @@ type Mutation {
     Register(user: String!, hashPasswd: String!): Boolean
     Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
 
-    CreateStrategy(name: String!): Strategy!
     DeleteStrategy(id: ID!): Boolean
     RenameStrategy(id: ID!, name: String!): Boolean
 
-    CreateRecord(strategyID: ID!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Record!
+    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!): Boolean
     DeleteRecord(id: ID!): Boolean
     DeleteRecordByStrategyID(strategyID: ID!): Boolean
 }
