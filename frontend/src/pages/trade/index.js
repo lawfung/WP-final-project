@@ -29,10 +29,10 @@ export default function TradePage() {
     const epochS = Date.parse(startTime) / 1000
     const epochE = Date.parse(endTime) / 1000
     if(openMB){
-      await createBacktest({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE});
+      await createBacktest({tabName, assetType, timeScaleString, epochS, epochE});
     }
     else{
-      await createMonitor({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE});
+      await createMonitor({tabName, assetType, timeScaleString, epochS, epochE});
     }
   }
   return (

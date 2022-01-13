@@ -16,6 +16,6 @@ export const TimestampToDate = (timestamp) => {
     var dd = ("0" + date.getDate()).substr(-2);
     var hr = ("0" + date.getHours()).substr(-2);
     var mm = ("0" + date.getMinutes()).substr(-2);
-    var ss = date.getSeconds();
+    // var ss = date.getSeconds();
     return `${yy}/${mn}/${dd} ${hr}:${mm}`
 }

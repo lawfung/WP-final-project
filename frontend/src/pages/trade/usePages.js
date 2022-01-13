@@ -38,17 +38,17 @@ const usePages = () => {
     const deleteBacktest = deleteOne(1, dummyB, setBacktestList, backtestList, setDummyB);
     const client = useApolloClient();
     const [doCache] = useMutation(CACHE);
-    const createBacktest = async ({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE}) => {
-        doCache({variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
+    const createBacktest = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
+        await doCache({variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
         const delta = resolution_dict[timeScaleString];
         const req = await client.query({
-        query: Candlestick_QUERY,
-        variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
+            query: Candlestick_QUERY,
+            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
         });
         const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
         addBacktestList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, epochS, epochE})
     }
-    const createMonitor = async ({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE}) => {
+    const createMonitor = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
         const req = await client.query({
             query: Candlestick_QUERY,
             variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}

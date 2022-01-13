@@ -5,7 +5,7 @@ message.config({
 export default function display(payload) {
     if (payload.msg) {
       const { type, msg } = payload
-      const content = { content: msg, duration: 0.5 }
+      const content = { content: msg, duration: 1.5 }
       switch (type) {
         case 'success':
           message.success(content)

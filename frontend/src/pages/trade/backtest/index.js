@@ -158,15 +158,13 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 enterButton={<AntdButton style={{background: "green", color: "white"}}>Buy</AntdButton>}
                 style={{ width: "40%"}}
                 onSearch={(bb) => {
-                    // console.log(bb);
-                    // assert
                     const tmp = Number(bb)
                     if(tmp && tmp > 0){
                         onTrade(tmp)
                     }
-                    // else {
-                        //display error
-                    // }
+                    else {
+                        display({type:"error", msg: "buying amount should be a positive number"});
+                    }
                 }}
             />
             <Input.Search
@@ -176,15 +174,13 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 enterButton={<AntdButton style={{background: "red", color: "white"}}>Sell</AntdButton>}
                 style={{ width: "40%"}}
                 onSearch={(bb) => {
-                    // console.log(bb);
-                    // assert
                     const tmp = Number(bb)
                     if(tmp && tmp > 0){
                         onTrade(-tmp)
                     }
-                    // else {
-                        //display error
-                    // }
+                    else {
+                        display({type:"error", msg: "selling amount should be a positive number"});
+                    }
                 }}
             />
         </MyStack>
