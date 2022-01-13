@@ -8,3 +8,4 @@ export const resolution_dict = {
     '4 hr' : 60 * 60 * 4, 
     '1 day' : 86400
 }
+export const marksTimes = ['1 min', '5 min', '15 min', '1 hr', '4 hr', '1 day'];

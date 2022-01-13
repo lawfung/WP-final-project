@@ -1,6 +1,6 @@
 import { Button, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
 import { Input, Button as AntdButton } from "antd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import Lines from '../lines';
 import { Candlestick_QUERY } from '../../../graphql';
@@ -27,25 +27,40 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         setIndexType(typeof value === 'string' ? value.split(',') : value);
     };
     const client = useApolloClient();
-    const goEnd = () => {
-        display({ type: 'success', msg: 'You have reached the end' })
+    // const [intervalID, setID] = useState(0);
+    const stopRun = () => {
+        // console.log("hello");
+        // console.log(intervalID);
+        // clearInterval(intervalID);
     }
+    const goEnd = () => {
+        // stopRun();
+        display({ type: 'success', msg: 'You have reached the end' });
+    }
+    // const nxtRef = useRef(null);
+    // const ddRef = useRef(null);
+    // nxtRef.current = nextTime;
+    // ddRef.current = dd;
+
     const handlejump = async (step) => {
         if(nextTime >= endEpoch) {
             goEnd();
-            return;
+            return "finished";
         }
-        console.log(nextTime + step * resolution_dict[XTime_scale], endEpoch)
         const req = await client.query({
             query: Candlestick_QUERY,
             variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], endEpoch), cookie: "123", scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
+        console.log(data2)
         if(data2.length > 0) {
             setPrice(data2[data2.length - 1][2])
             setDD([...dd, ...data2]);
         }
         setNextTime(nextTime + step * resolution_dict[XTime_scale]);
+    }
+    const autoRun = () => {
+        // setID(setInterval(handlejump, 1000, 2));
     }
     const jumpList = [1, 2, 4, 8, 16];
     const TitleSwitch = 
@@ -69,10 +84,10 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     const runAndPause =
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
             <MyGrid item xs={6}>
-                <Button variant="contained" endIcon={<PlayArrow />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Run</Button>
+                <Button variant="contained" endIcon={<PlayArrow />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} onClick={autoRun}>Run</Button>
             </MyGrid>
             <MyGrid item xs={6}>
-                <Button variant="contained" endIcon={<Pause />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Pause</Button>
+                <Button variant="contained" endIcon={<Pause />} sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} onClick={stopRun}>Pause</Button>
             </MyGrid>
         </Grid>
     const jumpPanel = 

@@ -30,7 +30,7 @@ import { Slider } from "@mui/material";
 //   [CONTENT]: "",
 //   [DUEDATE]: "",
 // };
-const marksTimes = ['1 min', '5 min', '15 min', '30 min', '1 hr', '2 hr', '4 hr', '1 day'];
+import { marksTimes } from "../../../tools/constant";
 
 export default function CreateTaskModal({ open, openMB, handleCloseCreate, handleCreate }) {
   // form data control
