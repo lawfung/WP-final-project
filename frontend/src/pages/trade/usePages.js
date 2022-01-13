@@ -6,6 +6,7 @@ import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
 import { resolution_dict } from '../../tools/constant';
 import { v4 as uuidv4 } from "uuid";
+import { TimestampToDate } from '../../tools/constant';
 
 const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
 // const defaultBacktest = [["b1", <Backtest title="b1"/>, 0 ]];
@@ -44,16 +45,16 @@ const usePages = () => {
         query: Candlestick_QUERY,
         variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochS + delta, cookie: "123", scale: timeScaleString}
         });
-        const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
-        addBacktestList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, endEpoch: epochE})
+        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        addBacktestList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, next: epochS + delta, endEpoch: epochE})
     }
     const createMonitor = async ({tabName, startTime, endTime, assetType, timeScaleString, epochS, epochE}) => {
         const req = await client.query({
             query: Candlestick_QUERY,
             variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
         });
-        const data = req.data.Candlestick.map((x) => [x.startTime, x.open, x.close, x.low, x.high])
-        addMonitorList({title:tabName, XStart_time:startTime, XEnd_time:endTime, XAsset:assetType, XTime_scale:timeScaleString, data, createBacktest});
+        const data = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
+        addMonitorList({title:tabName, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XAsset:assetType, XTime_scale:timeScaleString, data, createBacktest});
     }
     return {MorB, setMorB, idid, setIdid, dummyM, dummyB, monitorList, backtestList, createBacktest, createMonitor, deleteMonitor, deleteBacktest};
 }
