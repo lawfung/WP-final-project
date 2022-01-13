@@ -104,8 +104,8 @@ export default function Strategy({ username="" }) {
       dataIndex: "name",
       width: 300,
       align: "center",
-      render: (name) => (
-        <Button type="link" onClick={() => {setAllRecord(false); setStrategyName(name);}}>{name}</Button>
+      render: (name, row) => (
+        <Button type="link" onClick={() => {console.log(row.id); setStrategyName(strategyName => name); setStrategyID(strategyID => row.id); setAllRecord(false);}}>{name}</Button>
       ),
     },
     {
