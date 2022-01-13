@@ -160,34 +160,36 @@ var option = {
       markPoint: {
         label: { formatter: function (param) { return param != null ? Math.round(param.value) + '' : ''; } },
         data: [
-          {
-            name: 'Mark',
-            coord: ['2013/5/31', 2300],
-            value: 2300,
-            itemStyle: {
-              color: 'rgb(41,60,85)'
-            }
-          },
-          { name: 'highest value', type: 'max', valueDim: 'highest' },
-          { name: 'lowest value', type: 'min', valueDim: 'lowest' },
-          { name: 'average value on close', type: 'average', valueDim: 'close' }
+          // {
+          //   name: 'Mark',
+          //   coord: ['2013/5/31', 2300],
+          //   value: 2300,
+          //   itemStyle: {
+          //     color: 'rgb(41,60,85)'
+          //   }
+          // },
+          // { name: 'highest value', type: 'max', valueDim: 'highest' },
+          // { name: 'lowest value', type: 'min', valueDim: 'lowest' },
+          // { name: 'average value on close', type: 'average', valueDim: 'close' }
         ],
         tooltip: { formatter: function (param) { return param.name + '<br>' + (param.data.coord || ''); } }
       },
       markLine: {
         symbol: ['none', 'none'],
-        data: [ [
-            { name: 'from lowest to highest', type: 'min', valueDim: 'lowest', symbol: 'circle', symbolSize: 10,
-              label: { show: false },
-              emphasis: { label: { show: false } }
-            },
-            { type: 'max', valueDim: 'highest', symbol: 'circle', symbolSize: 10,
-              label: { show: false },
-              emphasis: { label: { show: false } }
-            }
-          ],
-          { name: 'min line on close', type: 'min', valueDim: 'close' },
-          { name: 'max line on close', type: 'max', valueDim: 'close' }
+        data: [
+          // [
+          //   { name: 'from lowest to highest', type: 'min', valueDim: 'lowest', symbol: 'circle', symbolSize: 10,
+          //     label: { show: false },
+          //     emphasis: { label: { show: false } }
+          //   },
+          //   { type: 'max', valueDim: 'highest', symbol: 'circle', symbolSize: 10,
+          //     label: { show: false },
+          //     emphasis: { label: { show: false } }
+          //   }
+          // ],
+          // { name: 'min line on close', type: 'min', valueDim: 'close' },
+          // { name: 'max line on close', type: 'max', valueDim: 'close' },
+          { name: 'last price', type: 'min', valueDim: 'close' }
         ]
       }
     },
