@@ -78,7 +78,7 @@ const Mutation = {
     });
     return true;
   },
-  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low}, {recordDatabase, strategyDatabase, pubSub}, info) {
+  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, pubSub}, info) {
     const id = uuidv4();
     const strategyExist = await strategyDatabase.findOne({name: strategyName});
     if (strategyExist) {

@@ -41,11 +41,11 @@ const usePages = () => {
     const client = useApolloClient();
     const [doCache] = useMutation(CACHE);
     const createBacktest = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
-        await doCache({variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie, scale: timeScaleString}})
+        await doCache({variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: cookie.session, scale: timeScaleString}})
         const delta = resolution_dict[timeScaleString];
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: Math.min(epochS + delta, epochE), cookie, scale: timeScaleString}
+            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: Math.min(epochS + delta, epochE), cookie: cookie.session, scale: timeScaleString}
         });
         const tmp = req.data.Candlestick;
         if(!tmp || tmp.length === 0){
@@ -58,7 +58,7 @@ const usePages = () => {
     const createMonitor = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie, scale: timeScaleString}
+            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: cookie.session, scale: timeScaleString}
         });
         const tmp = req.data.Candlestick;
         if(!tmp || tmp.length === 0){

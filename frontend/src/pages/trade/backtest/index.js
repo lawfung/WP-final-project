@@ -61,7 +61,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         }
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : nameConvert(XAsset), startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie, scale: XTime_scale}
+            variables: {asset : nameConvert(XAsset), startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie: cookie.session, scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
         updateRecord(data2);
@@ -215,7 +215,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             enterButton={<AntdButton style={{background: "blue", color: "white"}}>Save Record</AntdButton>}
             style={{ width: "80%", marginTop: "2vh"}}
             onSearch={ async (name) => {
-                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie, ...Record, end: getTotal(price)} });
+                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: cookie.session, ...Record, end: getTotal(price)} });
                 if(ret.data.CreateRecord) {
                     display({ type: 'success', msg: "Save successfully" });
                 }
