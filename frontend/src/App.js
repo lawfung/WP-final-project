@@ -1,6 +1,12 @@
 import SwitchPage from "./pages/switch";
 import { BrowserRouter, NavLink} from 'react-router-dom'
 import { Toolbar, AppBar, Stack, Button, Typography } from '@mui/material';
+import { useEffect } from "react";
+import { useUsername } from "./tools/useUsername";
+import { useCookies } from 'react-cookie';
+import { useApolloClient  } from "@apollo/client";
+import { Username_QUERY } from "./graphql";
+// import { Input } from "@mui/material";
 
 function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
   return <NavLink to={to} style={{ textDecoration: 'none'}}>
@@ -11,6 +17,33 @@ function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
 }
 
 function App() {
+  const [cookies, _] = useCookies(['session']); 
+  const {changeUsername} = useUsername();
+  const client = useApolloClient();
+  useEffect( () =>{
+      async function dummy() {
+          console.log("get username");
+          const cookie = cookies.session;
+          if(cookie) {
+              console.log("gogo")
+              const res = await client.query({
+                  query: Username_QUERY,
+                  variables: {cookie}
+              });
+              const name = res.data.GetUsername;
+              if(name){
+                  changeUsername(name);
+                  return;
+              }
+          }
+          changeUsername("");
+      }
+      dummy();
+  }, [client, changeUsername, cookies]);
+  // TODO :
+  // (only when enter this website or refresh)
+  // check cookie for auto-login (need to ask backend) (then setUserName and setLogin)
+  // otherwise, clear cookie
   return (
     <div style={{ display: "flex", flexDirection: "column",height: "100vh" }}>
       <BrowserRouter>
@@ -21,13 +54,14 @@ function App() {
               <Stack spacing={-0} direction="row" sx={{display: "flex", justifyContent: "space-around"}}>
                 <LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>
                 <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/>
-                <LinkedButton to="/setting" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Setting"/>
+                {/* <LinkedButton to="/setting" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Setting"/> */}
               </Stack>
             </Typography>
             
-            <Stack spacing={2} direction="row">
+            <Stack spacing={3} direction="row">
               <LinkedButton to="/register" variant="contained" text="Register"/>
               <LinkedButton to="/login" variant="contained" text="Login"/>
+              <Button color="error" style={{height: "100%"}} variant="contained"> Logout </Button>
             </Stack>
           </Toolbar>
         </AppBar>
@@ -36,5 +70,20 @@ function App() {
     </div>
   )
 }
+// export default function App() {
+//     const [cookies, setCookie] = useCookies(['name']); 
+//     function onChange(X) {
+//         const newName = X.target.value
+//         console.log(newName)
+//       setCookie('name', newName, { path: '/' });
+//     }
+
+//     return (
+//       <div>
+//         <Input value={cookies.name} onChange={onChange} />
+//         {cookies.name && <h1>Hello {cookies.name}!</h1>}
+//       </div>
+//     );
+// }
 
 export default App;
