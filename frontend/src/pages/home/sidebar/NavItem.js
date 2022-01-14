@@ -1,3 +1,4 @@
+import React from "react";
 import { IconContainer, NavItemContainer } from "./styles"
 
 export function NavItem({ children, to, label, icon, onClick=()=>{}, clean = true, ...props }) {
