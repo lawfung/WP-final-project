@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { Candlestick_QUERY, CACHE } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
-import { resolution_dict } from '../../tools/constant';
+import { resolution_dict, TimestampToDate, nameConvert } from '../../tools/constant';
 import { v4 as uuidv4 } from "uuid";
-import { TimestampToDate } from '../../tools/constant';
 import display from '../../tools/display';
 
 const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
@@ -40,11 +39,11 @@ const usePages = () => {
     const client = useApolloClient();
     const [doCache] = useMutation(CACHE);
     const createBacktest = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
-        await doCache({variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
+        await doCache({variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}})
         const delta = resolution_dict[timeScaleString];
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: Math.min(epochS + delta, epochE), cookie: "123", scale: timeScaleString}
+            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: Math.min(epochS + delta, epochE), cookie: "123", scale: timeScaleString}
         });
         const tmp = req.data.Candlestick;
         if(!tmp || tmp.length === 0){
@@ -57,7 +56,7 @@ const usePages = () => {
     const createMonitor = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : assetType + "/USDT", startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
+            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: "123", scale: timeScaleString}
         });
         const tmp = req.data.Candlestick;
         if(!tmp || tmp.length === 0){

@@ -7,9 +7,8 @@ import { Candlestick_QUERY, CREATE_RECORD_MUTATION } from '../../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
-import { resolution_dict } from "../../../tools/constant";
-import display from "../../../tools/display"
-import { TimestampToDate } from "../../../tools/constant";
+import { resolution_dict, nameConvert, TimestampToDate } from "../../../tools/constant";
+import display from "../../../tools/display";
 
 const indexList = ["MA", "EMA"];
 const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, epochS, epochE}) => {
@@ -60,7 +59,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         }
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : XAsset + "/USDT", startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie: "123", scale: XTime_scale}
+            variables: {asset : nameConvert(XAsset), startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie: "123", scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
         updateRecord(data2);

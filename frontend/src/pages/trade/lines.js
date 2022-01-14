@@ -1,9 +1,9 @@
 import ReactECharts from 'echarts-for-react';
 
 const upColor = '#ec0000';
-const upBorderColor = '#008F28';
+const upBorderColor = '#8A0000';
 const downColor = '#00da3c';
-const downBorderColor = '#8A0000';
+const downBorderColor = '#008F28';
 
 const defaultData = [
     ['2013/1/24', 2320.26, 2320.26, 2287.3, 2362.94],
@@ -138,7 +138,7 @@ function lastPrice(data0) {
 const option = (data0)=> ({
 //   title: { text: '上证指数', left: 0 },
   tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
-  legend: { data: ['MA5', 'MA10'] },
+  legend: { data: ['LastPrice', 'MA5', 'MA10'] },
   grid: { left: '10%', right: '10%', bottom: '15%', tooltip: {show: false} },
   xAxis: {
     type: 'category',
@@ -157,7 +157,7 @@ const option = (data0)=> ({
   ],
   series: [
     {
-      name: '日K',
+      name: 'candle',
       type: 'candlestick',
       data: data0.values,
       itemStyle: {
