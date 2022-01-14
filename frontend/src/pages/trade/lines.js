@@ -1,9 +1,9 @@
 import ReactECharts from 'echarts-for-react';
 
 const upColor = '#ec0000';
-const upBorderColor = '#8A0000';
+const upBorderColor = '#008F28';
 const downColor = '#00da3c';
-const downBorderColor = '#008F28';
+const downBorderColor = '#8A0000';
 
 const defaultData = [
     ['2013/1/24', 2320.26, 2320.26, 2287.3, 2362.94],
@@ -127,10 +127,18 @@ function calculateMA(data0, dayCount) {
   }
   return result;
 }
+
+function lastPrice(data0) {
+  var result = [];
+  for (var i = 0; i < data0.values.length; i++)
+    result.push(data0.values[data0.values.length - 1][1]);
+  return result;
+}
+
 const option = (data0)=> ({
 //   title: { text: '上证指数', left: 0 },
   tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
-  legend: { data: ['日K', 'MA5', 'MA10'] },
+  legend: { data: ['MA5', 'MA10'] },
   grid: { left: '10%', right: '10%', bottom: '15%' },
   xAxis: {
     type: 'category',
@@ -186,11 +194,12 @@ const option = (data0)=> ({
         //       emphasis: { label: { show: false } }
         //     }
         //   ],
-          { name: 'min line on close', type: 'min', valueDim: 'close' },
-          { name: 'max line on close', type: 'max', valueDim: 'close' }
+          // { name: 'min line on close', type: 'min', valueDim: 'close' },
+          // { name: 'max line on close', type: 'max', valueDim: 'close' }
         ]
       }
     },
+    { name: 'LastPrice', type: 'line', data: lastPrice(data0), lineStyle: { type: 'dotted', dashOffset: 2 } },
     { name: 'MA5', type: 'line', data: calculateMA(data0, 5), smooth: true, lineStyle: { opacity: 0.5 } },
     { name: 'MA10', type: 'line', data: calculateMA(data0, 10), smooth: true, lineStyle: { opacity: 0.5 } },
     // { name: 'MA20', type: 'line', data: calculateMA(20), smooth: true, lineStyle: { opacity: 0.5 } },
