@@ -1,5 +1,5 @@
 import { Button, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
 import Lines from '../lines';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';

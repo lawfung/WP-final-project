@@ -1,6 +1,6 @@
 import Monitor from './monitor'
 import Backtest from './backtest';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Candlestick_QUERY, CACHE } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';

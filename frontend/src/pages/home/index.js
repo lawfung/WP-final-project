@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Sidebar, NavItemsContainer, NavItem, AlignLeftOutIcon } from './sidebar';
 import Setting from "./setting";
 import Strategy from "./strategy";

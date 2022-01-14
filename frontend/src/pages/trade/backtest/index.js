@@ -1,6 +1,6 @@
 import { Button, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
 import { Input, Button as AntdButton } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import Lines from '../lines';
 import { Candlestick_QUERY, CREATE_RECORD_MUTATION } from '../../../graphql';

@@ -1,6 +1,6 @@
 import { Button, Table, Modal, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";

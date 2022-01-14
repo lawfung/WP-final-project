@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactECharts from 'echarts-for-react';
 
 const upColor = '#ec0000';

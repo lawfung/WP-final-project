@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components'
 import { Divider } from '@mui/material';
 import { ShowChart, RunCircle} from '@mui/icons-material/';

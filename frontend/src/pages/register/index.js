@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { REGISTER_USER } from '../../graphql/mutations.js'
 import { useMutation } from '@apollo/client';
-import { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import 'antd/dist/antd.css'
 
 const Wrapper = styled.div`

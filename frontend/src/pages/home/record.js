@@ -1,7 +1,7 @@
 import { Button, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 
