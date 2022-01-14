@@ -155,6 +155,22 @@ const Mutation = {
   },
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {
     return;
+  },
+  async ChangePassword(parent, {hashPasswd, cookie}, {cookieDatabase, userDatabase}, info) {
+    const user = await cookieDatabase.findOne({cookie});
+    if (!user) return false;
+
+    const user_info = await userDatabase.findOne(user['user']);
+    if (!user_info) return false;
+
+    const action = await bcrypt.compare(hashPasswd, user_info['hashPasswd']);
+    if (!action) return false;
+
+    const newUser = new userDatabase({user: user['user'], hashPasswd});
+    const data = await userDatabase.findOneAndUpdate(user_info, newUser);
+    
+    if (!data) return false;
+    return true;
   }
 };
 
