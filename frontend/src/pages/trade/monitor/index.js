@@ -1,28 +1,30 @@
-import { Button, Grid, ButtonGroup, Slider, InputLabel, MenuItem, FormControl, Select, Box, Chip, TextField } from "@mui/material";
+import { Button, Grid, Slider, FormControl, TextField, Switch, FormControlLabel } from "@mui/material";
+// import { ButtonGroup, InputLabel, MenuItem, Select, Box, Chip } from "@mui/material";
 import React, { useState } from "react";
-import {ArrowLeft, ArrowRight, ShowChart} from '@mui/icons-material';
+import { ShowChart } from '@mui/icons-material';
+// import { ArrowLeft, ArrowRight } from '@mui/icons-material';
 import Lines from '../lines';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
 import { marksTimes } from "../../../tools/constant";
 
-const indexList = ["MA", "EMA"];
+// const indexList = ["MA", "EMA"];
 const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
-    const onCreateBacktest = () => {
-        // const epochS = Date.parse(startTime) / 1000
-        // const epochE = Date.parse(endTime) / 1000
-        // createBacktest({tabName: title+"-Backtest", startTime: XStart_time, endTime: XEnd_time, assetType: XAsset, timeScaleString: XTime_scale, epochS, epochE})
-    }
+    // const onCreateBacktest = () => {
+    //     const epochS = Date.parse(startTime) / 1000
+    //     const epochE = Date.parse(endTime) / 1000
+    //     createBacktest({tabName: title+"-Backtest", startTime: XStart_time, endTime: XEnd_time, assetType: XAsset, timeScaleString: XTime_scale, epochS, epochE})
+    // }
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
             <MyTitle variant="h5" component="div">
                 <ShowChart /> {title}
             </MyTitle>
-            <ButtonGroup variant="contained">
+            {/* <ButtonGroup variant="contained">
                 <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
                 <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go FULL size</Button>
                 <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go RIGHT</Button>
-            </ButtonGroup>
+            </ButtonGroup> */}
         </MyStack>
     const attrPanel = 
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
@@ -31,47 +33,47 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
             <MyGrid item xs={6}>Time scale: {XTime_scale}</MyGrid>
             <MyGrid item xs={6}>Asset: {XAsset}</MyGrid>
         </Grid>
-    const backAndNext =
-        <MyStack spacing={-30} direction="row">
-            <Button variant="contained" startIcon={<ArrowLeft />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Back</Button>
-            <Button variant="contained" endIcon={<ArrowRight />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Next</Button>
-        </MyStack>
-    const [chartType, setChartType] = useState('Histogram');
-    const [indexType, setIndexType] = useState([]);
-    const handleIndexChange = (event) => {
-        const value = event.target.value;
-        setIndexType(typeof value === 'string' ? value.split(',') : value);
-    };
-    const chartAndIndex = 
-        <MyStack spacing={-20} direction="row">
-            <FormControl variant="filled">
-                <InputLabel>chart type</InputLabel>
-                <Select
-                    value={chartType}
-                    onChange={handleChange(setChartType)}
-                >
-                    <MenuItem value={"Histogram"}>Histogram</MenuItem>
-                    <MenuItem value={"lineChart"}>Line chart</MenuItem>
-                </Select>
-            </FormControl>
-            <FormControl variant="filled" sx={{ minWidth: "25%", minHeight: "12vh" }}>
-                <InputLabel>index type</InputLabel>
-                <Select
-                    value={indexType}
-                    onChange={handleIndexChange}
-                    multiple
-                    renderValue={(selected) => (
-                        <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                            {selected.map((value) => (<Chip key={value} label={value} />))}
-                        </Box>
-                    )}
-                >
-                    {indexList.map(
-                        (x) => (<MenuItem value={x} key={x}>{x}</MenuItem>)
-                    )}
-                </Select>
-            </FormControl>
-        </MyStack>
+    // const backAndNext =
+    //     <MyStack spacing={-30} direction="row">
+    //         <Button variant="contained" startIcon={<ArrowLeft />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Back</Button>
+    //         <Button variant="contained" endIcon={<ArrowRight />} sx={{ fontSize: '2vh', "fontFamily": "", textTransform: "none"}}>Next</Button>
+    //     </MyStack>
+    // const [chartType, setChartType] = useState('Histogram');
+    // const [indexType, setIndexType] = useState([]);
+    // const handleIndexChange = (event) => {
+    //     const value = event.target.value;
+    //     setIndexType(typeof value === 'string' ? value.split(',') : value);
+    // };
+    // const chartAndIndex = 
+    //     <MyStack spacing={-20} direction="row">
+    //         <FormControl variant="filled">
+    //             <InputLabel>chart type</InputLabel>
+    //             <Select
+    //                 value={chartType}
+    //                 onChange={handleChange(setChartType)}
+    //             >
+    //                 <MenuItem value={"Histogram"}>Histogram</MenuItem>
+    //                 <MenuItem value={"lineChart"}>Line chart</MenuItem>
+    //             </Select>
+    //         </FormControl>
+    //         <FormControl variant="filled" sx={{ minWidth: "25%", minHeight: "12vh" }}>
+    //             <InputLabel>index type</InputLabel>
+    //             <Select
+    //                 value={indexType}
+    //                 onChange={handleIndexChange}
+    //                 multiple
+    //                 renderValue={(selected) => (
+    //                     <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
+    //                         {selected.map((value) => (<Chip key={value} label={value} />))}
+    //                     </Box>
+    //                 )}
+    //             >
+    //                 {indexList.map(
+    //                     (x) => (<MenuItem value={x} key={x}>{x}</MenuItem>)
+    //                 )}
+    //             </Select>
+    //         </FormControl>
+    //     </MyStack>
     const marks = marksTimes.map((x, i) => ({value: i, label: x}));
     const [timeScale, setTimeScale] = useState(0);
     const timeScaleSlider =
@@ -88,11 +90,17 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
                 track={false}
             />
         </>
-    const twoButtons = 
-        <MyStack spacing={-20} direction="row">
-            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
-            <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}} onClick={onCreateBacktest}>Backtest This</Button>
-        </MyStack>
+    // const twoButtons = 
+    //     <MyStack spacing={-20} direction="row">
+    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
+    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}} onClick={onCreateBacktest}>Backtest This</Button>
+    //     </MyStack>
+
+    const [checked, setChecked] = useState(false);
+    const viewRawData = 
+        <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
+            setChecked(e.target.checked);}}/>} label="View raw data" />
+
     const [startTime, setStartTime] = useState('2021-01-01T00:00');
     const [endTime, setEndTime] = useState('2022-01-01T00:00');
     const [assetType, setAssetType] = useState('BTC');
@@ -131,13 +139,15 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
                 {attrPanel}
                 <Lines data={data}/>
                 {/* <div style={{color : "red"}}>Here will be the graph</div> */}
-                {backAndNext}
+                {/* {backAndNext} */}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
-                {chartAndIndex}
+                {/* {chartAndIndex} */}
                 {/* {timeScaleSlider} */}
-                {twoButtons}
                 {setSet}
+                {/* {twoButtons} */}
+                {viewRawData}
+                {checked ? <div>[Time, open, close, low, high] {data.map((i)=><div>["{i.join('", "')}"],</div> )}</div> : <></>}
             </HalfWrapper>
         </div>
     )

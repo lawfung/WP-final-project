@@ -35,7 +35,7 @@ import { marksTimes } from "../../../tools/constant";
 export default function CreateTaskModal({ open, openMB, handleCloseCreate, handleCreate }) {
   // form data control
   const handleChange = (f) => ((e) => {setDisplayError(false);f(e.target.value);})
-  const [tabName, settabName] = useState('');
+  const [tabName, settabName] = useState('name');
   const [startTime, setStartTime] = useState('2021-01-01T00:00');
   const [endTime, setEndTime] = useState('2021-01-01T02:00');
   const [assetType, setAssetType] = useState('BTC');

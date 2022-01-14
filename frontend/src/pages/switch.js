@@ -10,10 +10,11 @@ export default function SwitchPage() {
     const {username} = useUsername();
     return (
         <Routes>
+            <Route path="/" element={username ? <>This is home</> : <Navigate replace to="/login" /> }/>
             <Route path="/home" element={username ? <HomePage/> : <Navigate replace to="/login" /> }/>
             <Route path="/trade" element={username ? <TradePage/> : <Navigate replace to="/login" />}/>
-            <Route path="/register" element={<RegisterPage/>}/>
-            <Route path="/login" element={<LoginPage/>}/>
+            <Route path="/register" element={!username ? <RegisterPage/> : <Navigate replace to="/" />}/>
+            <Route path="/login" element={!username ? <LoginPage/> : <Navigate replace to="/" />}/>
         </Routes>
     )
 }

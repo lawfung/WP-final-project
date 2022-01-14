@@ -25,10 +25,10 @@ function App() {
   const client = useApolloClient();
   useEffect( () =>{
       async function dummy() {
-          console.log("get username");
+          // console.log("get username");
           const cookie = cookies.session;
           if(cookie) {
-              console.log("gogo")
+              // console.log("gogo")
               const res = await client.query({
                   query: Username_QUERY,
                   variables: {cookie}
@@ -36,7 +36,7 @@ function App() {
               const name = res.data.GetUsername;
               if(name){
                   changeUsername(name);
-                  console.log(name);
+                  // console.log(name);
                   return;
               }
           }
@@ -71,9 +71,7 @@ function App() {
             </Typography>
             
             <Stack spacing={3} direction="row">
-              <LinkedButton to="/register" variant="contained" text="Register"/>
-              <LinkedButton to="/login" variant="contained" text="Login"/>
-              {username ? <Button color="error" style={{height: "100%"}} variant="contained" onClick={logout}> Logout </Button>: <></> }
+              {username ? <Button color="error" style={{height: "100%"}} variant="contained" onClick={logout}> Logout </Button>: <><LinkedButton to="/register" variant="contained" text="Register"/> <LinkedButton to="/login" variant="contained" text="Login"/></> }
             </Stack>
           </Toolbar>
         </AppBar>

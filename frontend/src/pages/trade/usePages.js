@@ -9,7 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 import display from '../../tools/display';
 import { useCookies } from 'react-cookie';
 
-const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
+// const defaultMonitor = [["m1", <Monitor title="m1"/>,0],["m2", <Monitor title="m2"/>,1],["m3", <Monitor title="m3"/>,2]];
+const defaultMonitor = [];
 // const defaultBacktest = [["b1", <Backtest title="b1"/>, 0 ]];
 const defaultBacktest = [];
 
