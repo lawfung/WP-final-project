@@ -78,11 +78,7 @@ const Mutation = {
     });
     return true;
   },
-<<<<<<< HEAD
-  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, pubSub}, info) {
-=======
-  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, username}, {recordDatabase, strategyDatabase, pubSub}, info) {
->>>>>>> 7f25678 ([backend] add username in schema/resolver)
+  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie, username}, {recordDatabase, strategyDatabase, pubSub}, info) {
     const id = uuidv4();
     const strategyExist = await strategyDatabase.findOne({name: strategyName});
     if (strategyExist) {

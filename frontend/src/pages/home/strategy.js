@@ -1,9 +1,10 @@
 import { Button, Table, Modal, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
+import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useApolloClient } from "@apollo/client";
@@ -35,13 +36,14 @@ const Title = styled.div`
 `;
 
 export default function Strategy({ username="" }) {
-  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: ""}});
+  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", username: username}});
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
   const [newStrategyName, setNewStrategyName] = useState("");
   const [strategyID, setStrategyID] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedID, setEditedID] = useState("");
+  const { deletedTag, changeDeletedTag } = useDeletedTag();
 
   useEffect(() => {
     console.log("hi");
@@ -63,7 +65,7 @@ export default function Strategy({ username="" }) {
         }
       }
     });
-  }, [subscribeToMore]);
+  }, [subscribeToMore, deletedTag]);
   console.log(loading);
   console.log(data);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
@@ -142,7 +144,7 @@ export default function Strategy({ username="" }) {
       render: (id) => (
         <>
           <EditOutlined onClick={() => {setShowEditModal(true); setEditedID(id);}} />
-          <DeleteOutlined onClick={() => {handleDeleteStrategy(id);}} />
+          <DeleteOutlined onClick={() => {handleDeleteStrategy(id); changeDeletedTag(deletedTag);}} />
         </>
       ),
     }

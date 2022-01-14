@@ -1,41 +1,32 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_STRATEGY_MUTATION = gql`
-  mutation CreateStrategy($name: String!) {
-    CreateStrategy(name: $name) {
-      # TODO
-      abc
-    }
-  }
-`;
-
 export const DELETE_STRATEGY_MUTATION = gql`
-  mutation DeleteStrategy($id: ID!) {
-    DeleteStrategy(id: $id)
+  mutation DeleteStrategy($id: ID!, $username: String!) {
+    DeleteStrategy(id: $id, username: $username)
   }
 `;
 
 export const RENAME_STRATEGY_MUTATION = gql`
-  mutation RenameStrategy($id: ID!, $name: String!) {
-    RenameStrategy(id: $id, name: $name)
+  mutation RenameStrategy($id: ID!, $name: String!, $username: String!) {
+    RenameStrategy(id: $id, name: $name, username: $username)
   }
 `;
 
 export const CREATE_RECORD_MUTATION = gql`
-  mutation ($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!) {
-    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie)
+  mutation ($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!, $username: String!) {
+    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie, username: $username)
   }
 `;
 
 export const DELETE_RECORD_MUTATION = gql`
-  mutation DeleteRecord($id: ID!) {
-    DeleteRecord(id: $id)
+  mutation DeleteRecord($id: ID!, $username: String!) {
+    DeleteRecord(id: $id, username: $username)
   }
 `;
 
 export const DELETE_RECORD_BY_STRATEGY_ID_MUTATION = gql`
-  mutation DeleteRecordByStrategyID($strategyID: ID!) {
-    DeleteRecordByStrategyID(strategyID: $strategyID)
+  mutation DeleteRecordByStrategyID($strategyID: ID!, $username: String!) {
+    DeleteRecordByStrategyID(strategyID: $strategyID, username: $username)
   }
 `;
 

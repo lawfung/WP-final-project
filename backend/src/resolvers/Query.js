@@ -44,18 +44,23 @@ const Query = {
     }
 
   },
-  async GetRecord(parent, {strategyID}, { recordDatabase }, info) {
-    console.log("strategyID = " + strategyID);
-    if (strategyID === "") 
-      return recordDatabase.find();
-    const list = recordDatabase.find({strategyID});
+  async GetRecord(parent, {strategyID, username}, { recordDatabase }, info) {
+    console.log("strategyID = " + strategyID + ", username = " + username);
+    if (strategyID === "") {
+      const list = await recordDatabase.find({username});
+      console.log(list);
+      return list;
+    }
+    const list = await recordDatabase.find({strategyID, username});
     return list;
   },
-  async GetStrategy(parent, {id}, { strategyDatabase }, info) {
+  async GetStrategy(parent, {id, username}, { strategyDatabase }, info) {
     console.log("id = " + id);
-    if (id === "")
-      return strategyDatabase.find({name: {$ne: ""}});
-    const result = strategyDatabase.find({id});
+    if (id === "") {
+      const result = await strategyDatabase.find({name: {$ne: ""}, username: username});
+      return result
+    }
+    const result = await strategyDatabase.find({id, username});
     return result;
   },
   async GetUsername(parent, {cookie}, { cookieDatabase }, info) {

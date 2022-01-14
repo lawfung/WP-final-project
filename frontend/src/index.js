@@ -12,6 +12,7 @@ import {
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { UsernameProvider } from './tools/useUsername';
+import { DeletedTagProvider } from './tools/useDeletedTag';
 import { CookiesProvider } from 'react-cookie';
 
 const httpLink = new HttpLink({ uri: 'http://localhost:5000/' });
@@ -38,7 +39,9 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <CookiesProvider>
         <UsernameProvider>
-          <App />
+          <DeletedTagProvider>
+            <App />
+          </DeletedTagProvider>
         </UsernameProvider>
       </CookiesProvider>
     </ApolloProvider>

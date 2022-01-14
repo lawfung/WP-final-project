@@ -2,6 +2,7 @@ import { Button, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import React, { useEffect } from "react";
+import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 
@@ -31,9 +32,10 @@ const Title = styled.div`
   }
 `;
 
-export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
-  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID}});
+export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord, username }) {
+  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID, username: username}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
+  const { deletedTag, changeDeletedTag } = useDeletedTag();
 
   useEffect(() => {
     console.log("here start");
@@ -51,10 +53,15 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
             ...prev,
             GetRecord: prev.GetRecord.filter(item => item.id !== id)
           };
+        } else if (type === "CREATED") {
+          return {
+            ...prev,
+            GetRecord: [...prev.GetRecord, subscriptionData.data.updateRecord.info]
+          }
         }
       }
     });
-  }, [subscribeToMore]);
+  }, [subscribeToMore, deletedTag]);
 
   const handleDeleteRecord = (id) => {
     console.log(`delete ${id}`);
@@ -103,7 +110,7 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       dataIndex: "id",
       render: (id) => (
         <>
-          <DeleteOutlined onClick={() => {handleDeleteRecord(id);}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(id); changeDeletedTag(deletedTag);}} />
         </>
       ),
     }

@@ -9,7 +9,8 @@ const RecordSchema = new Schema({
     start: Number,
     end: Number,
     high: Number,
-    low: Number
+    low: Number,
+    username: String
 });
 
 export default mongoose.model('Records', RecordSchema);
