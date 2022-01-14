@@ -4,6 +4,9 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState, useRef } from 'react'
 import 'antd/dist/antd.css'
+import { LOGIN } from '../../graphql/mutations.js'
+import { useMutation } from '@apollo/client';
+import { useCookies } from "react-cookie";
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,20 +28,34 @@ const Title = styled.div`
 
 
 export default function LoginPage(){
+    const [_, setCookie] = useCookies(['session']);
+    const [login] = useMutation(LOGIN);
     const [username, setUsername] = useState('')
     const [passwd, setPasswd] = useState('')  // textBody
     const passwdRef = useRef(null)
-    const signIn = () => {
+    const signIn = async () => {
         if ( !username || !passwd)
             displayStatus({
                 type: "error",
                 msg: "Missing username or password",
             });
-        else
-            displayStatus({
-                type: "success",
-                msg: `Hello ${username}`,
-            });
+        else{
+            const res = await login({variables: {user: username, hashPasswd: passwd}});
+            const cookie = res.data.Login;
+            if(cookie){
+                setCookie('session', cookie, { path: '/' })
+                displayStatus({
+                    type: "success",
+                    msg: `Hello ${username}`,
+                });
+            }
+            else{
+                displayStatus({
+                    type: "error",
+                    msg: `Login fail`,
+                });
+            }
+        }
     }
     return (
     <Wrapper>

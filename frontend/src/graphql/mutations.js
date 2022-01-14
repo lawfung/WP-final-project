@@ -50,3 +50,15 @@ mutation Register($user: String!, $hashPasswd: String!) {
   Register(user: $user, hashPasswd: $hashPasswd)
 }
 `;
+
+export const LOGIN = gql`
+  mutation ($user: String!, $hashPasswd: String!) {
+    Login(user: $user, hashPasswd: $hashPasswd)
+  }
+`
+
+export const LOGOUT = gql`
+  mutation ($user: String!, $cookie: String!) {
+    Logout(user: $user, cookie: $cookie)
+  }
+`

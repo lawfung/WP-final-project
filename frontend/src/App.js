@@ -6,6 +6,9 @@ import { useUsername } from "./tools/useUsername";
 import { useCookies } from 'react-cookie';
 import { useApolloClient  } from "@apollo/client";
 import { Username_QUERY } from "./graphql";
+import { LOGOUT } from './graphql/mutations.js'
+import { useMutation } from '@apollo/client';
+import display from "./tools/display";
 // import { Input } from "@mui/material";
 
 function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
@@ -17,8 +20,8 @@ function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
 }
 
 function App() {
-  const [cookies, _] = useCookies(['session']); 
-  const {changeUsername} = useUsername();
+  const [cookies, _, removeCookie] = useCookies(['session']); 
+  const {username, changeUsername} = useUsername();
   const client = useApolloClient();
   useEffect( () =>{
       async function dummy() {
@@ -33,6 +36,7 @@ function App() {
               const name = res.data.GetUsername;
               if(name){
                   changeUsername(name);
+                  console.log(name);
                   return;
               }
           }
@@ -40,6 +44,14 @@ function App() {
       }
       dummy();
   }, [client, changeUsername, cookies]);
+  const [logoutQL] = useMutation(LOGOUT);
+  const logout = async () => {
+    const req = await logoutQL({variables: {user: username, cookie: cookies.session}});
+    if(req.data.Logout) {
+      display({type: 'success', msg: 'Logout successfully'});
+    }
+    removeCookie('session', { path: '/' });
+  }
   // TODO :
   // (only when enter this website or refresh)
   // check cookie for auto-login (need to ask backend) (then setUserName and setLogin)
@@ -61,7 +73,7 @@ function App() {
             <Stack spacing={3} direction="row">
               <LinkedButton to="/register" variant="contained" text="Register"/>
               <LinkedButton to="/login" variant="contained" text="Login"/>
-              <Button color="error" style={{height: "100%"}} variant="contained"> Logout </Button>
+              {username ? <Button color="error" style={{height: "100%"}} variant="contained" onClick={logout}> Logout </Button>: <></> }
             </Stack>
           </Toolbar>
         </AppBar>
