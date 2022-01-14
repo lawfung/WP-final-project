@@ -1,7 +1,7 @@
 type Query {
     Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
-    GetRecord(strategyID: ID!, cookie: String!, username: String!): [Record!]!
-    GetStrategy(id: ID!, cookie: String!, username: String!): [Strategy!]!
+    GetRecord(strategyID: ID!, cookie: String!): [Record!]!
+    GetStrategy(id: ID!, cookie: String!): [Strategy!]!
     GetUsername(cookie: String!): String
 }
 type Mutation {
