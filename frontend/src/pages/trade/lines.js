@@ -1,7 +1,4 @@
-// import logo from './logo.svg';
-// import './App.css';
-import * as echarts from 'echarts';
-import React, { useRef, useEffect } from "react"
+import ReactECharts from 'echarts-for-react';
 
 const upColor = '#ec0000';
 const upBorderColor = '#8A0000';
@@ -202,26 +199,10 @@ const option = (data0)=> ({
 });
 
 function App({data=defaultData}) {
-  const myChart = useRef(null);
-  const dd = data;
-  useEffect(() => {
-    const chart = echarts.init(myChart.current)
-    // console.log(dd)
-    // console.log(defaultData)
-    chart.setOption(option(splitData(dd.map(i =>([...i])))))
-
-    window.onresize = () => { chart.resize(); }
-  }, [option, dd])
-
-  return (
-    <div
-      ref={myChart}
-      style={{
-        height: "50vh",
-        width: "40vw"
-      }}
-    ></div>
-  )
+  return <ReactECharts 
+    option={option(splitData(data.map(i =>([...i]))))}
+    style={{height: "60%", width: "90%"}}
+  />
 }
 
 export default App;
