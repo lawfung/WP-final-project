@@ -13,7 +13,7 @@ type Mutation {
     DeleteStrategy(id: ID!, cookie: String!): Boolean
     RenameStrategy(id: ID!, name: String!, cookie: String!): Boolean
 
-    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, cookie: String!, username: String!): Boolean
+    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, cookie: String!): Boolean
     DeleteRecord(id: ID!, cookie: String!): Boolean
     DeleteRecordByStrategyID(strategyID: ID!, cookie: String!): Boolean
 }
