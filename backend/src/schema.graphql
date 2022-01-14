@@ -3,6 +3,7 @@ type Query {
     GetRecord(strategyID: ID!, cookie: String!): [Record!]!
     GetStrategy(id: ID!, cookie: String!): [Strategy!]!
     GetUsername(cookie: String!): String
+    ChangePassword(hashPasswd: String!, cookie: String!): Boolean
 }
 type Mutation {
     Login(user: String!, hashPasswd: String!): String!
