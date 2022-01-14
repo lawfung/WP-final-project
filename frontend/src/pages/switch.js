@@ -1,8 +1,9 @@
+import React from 'react';
 import HomePage from "./home";
 import TradePage from "./trade";
 import LoginPage from "./login";
 import RegisterPage from "./register";
-import React, { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useUsername } from "../tools/useUsername";
 
 export default function SwitchPage() {
