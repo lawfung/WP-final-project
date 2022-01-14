@@ -36,3 +36,8 @@ export const Candlestick_QUERY = gql`
   }
 `
 
+export const Username_QUERY = gql`
+  query ($cookie: String!) {
+    GetUsername(cookie: $cookie)
+  }
+`

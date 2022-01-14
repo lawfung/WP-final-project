@@ -12,6 +12,7 @@ import {
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { UsernameProvider } from './tools/useUsername';
+import { CookiesProvider } from 'react-cookie';
 
 const httpLink = new HttpLink({ uri: 'http://localhost:5000/' });
 const wsLink = new WebSocketLink({ uri: `ws://localhost:5000/`, options: { reconnect: true } });
@@ -35,9 +36,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <UsernameProvider>
-        <App />
-      </UsernameProvider>
+      <CookiesProvider>
+        <UsernameProvider>
+          <App />
+        </UsernameProvider>
+      </CookiesProvider>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
