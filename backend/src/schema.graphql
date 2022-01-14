@@ -1,21 +1,21 @@
 type Query {
     Candlestick(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): [Candles!]
-    GetRecord(strategyID: ID!): [Record!]!
-    GetStrategy(id: ID!): [Strategy!]!
+    GetRecord(strategyID: ID!, username: String!): [Record!]!
+    GetStrategy(id: ID!, username: String!): [Strategy!]!
     GetUsername(cookie: String!): String
 }
 type Mutation {
-    Login(user: String!, hashPasswd: String!): String
-    Logout(user: String!, cookie: String!): Boolean!
+    Login(user: String!, hashPasswd: String!): String!
+    Logout(user: String!, cookie: String!): Boolean
     Register(user: String!, hashPasswd: String!): Boolean
     Cache(asset: String!, startTime: Int!, endTime: Int!, scale: String!, cookie: String!): Boolean
 
-    DeleteStrategy(id: ID!): Boolean
-    RenameStrategy(id: ID!, name: String!): Boolean
+    DeleteStrategy(id: ID!, username: String!): Boolean
+    RenameStrategy(id: ID!, name: String!, username: String!): Boolean
 
-    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, cookie: String!): Boolean
-    DeleteRecord(id: ID!): Boolean
-    DeleteRecordByStrategyID(strategyID: ID!): Boolean
+    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, username: String!): Boolean
+    DeleteRecord(id: ID!, username: String!): Boolean
+    DeleteRecordByStrategyID(strategyID: ID!, username: String!): Boolean
 }
 type Subscription {
   updateStrategy: StrategySubscriptionPayload!
@@ -25,6 +25,7 @@ type Subscription {
 type Strategy {
     id: ID!
     name: String!
+    username: String!
 }
 
 type Candles {
@@ -45,6 +46,7 @@ type Record {
     end: Float!
     high: Float!
     low: Float!
+    username: String!
 }
 
 enum MutationType {

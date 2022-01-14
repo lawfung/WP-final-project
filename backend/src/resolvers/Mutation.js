@@ -50,8 +50,8 @@ const Mutation = {
   //   });
   //   return newStrategy;
   // },
-  async DeleteStrategy(parent, {id}, {strategyDatabase, pubSub}, info) {
-    const isExist = await strategyDatabase.findOne({id});
+  async DeleteStrategy(parent, {id, username}, {strategyDatabase, pubSub}, info) {
+    const isExist = await strategyDatabase.findOne({id, username});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
 
@@ -63,11 +63,11 @@ const Mutation = {
     });
     return true;
   },
-  async RenameStrategy(parent, {id, name}, {strategyDatabase, pubSub}, info) {
-    const isExist = await strategyDatabase.findOne({id});
+  async RenameStrategy(parent, {id, name, username}, {strategyDatabase, pubSub}, info) {
+    const isExist = await strategyDatabase.findOne({id, username});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
-    const newStrategy = new strategyDatabase({id, name});
+    const newStrategy = new strategyDatabase({id, name, username});
     newStrategy.save();
 
     await pubSub.publish("Strategy", {
@@ -78,13 +78,17 @@ const Mutation = {
     });
     return true;
   },
+<<<<<<< HEAD
   async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, pubSub}, info) {
+=======
+  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, username}, {recordDatabase, strategyDatabase, pubSub}, info) {
+>>>>>>> 7f25678 ([backend] add username in schema/resolver)
     const id = uuidv4();
     const strategyExist = await strategyDatabase.findOne({name: strategyName});
     if (strategyExist) {
       try {
         const strategyID = strategyExist.id;
-        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
+        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low, username});
 
         newRecord.save();
 
@@ -127,8 +131,8 @@ const Mutation = {
       }
     }
   },
-  async DeleteRecord(parent, {id}, {recordDatabase, pubSub}, info) {
-    const deletedRecord = await recordDatabase.findOne({id});
+  async DeleteRecord(parent, {id, username}, {recordDatabase, pubSub}, info) {
+    const deletedRecord = await recordDatabase.findOne({id, username});
     if (!deletedRecord) return false;
     await recordDatabase.deleteOne(deletedRecord);
 
@@ -140,10 +144,10 @@ const Mutation = {
     });
     return true;
   },
-  async DeleteRecordByStrategyID(parent, {strategyID}, {recordDatabase, pubSub}, info) {
-    const deletedRecord = await recordDatabase.findOne({strategyID});
+  async DeleteRecordByStrategyID(parent, {strategyID, username}, {recordDatabase, pubSub}, info) {
+    const deletedRecord = await recordDatabase.findOne({strategyID, username});
     if (!deletedRecord) return false;
-    await recordDatabase.deleteMany({strategyID});
+    await recordDatabase.deleteMany({strategyID, username});
 
     await pubSub.publish("Record", {
       updateRecord: {
