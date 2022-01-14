@@ -1,7 +1,7 @@
 import SwitchPage from "./pages/switch";
 import { BrowserRouter, NavLink} from 'react-router-dom'
 import { Toolbar, AppBar, Stack, Button, Typography } from '@mui/material';
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useUsername } from "./tools/useUsername";
 import { useCookies } from 'react-cookie';
 import { useApolloClient  } from "@apollo/client";
