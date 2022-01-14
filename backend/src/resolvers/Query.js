@@ -10,14 +10,20 @@ let resolution_dict = {
   '2 hr' : 60 * 60 * 2, 
   '4 hr' : 60 * 60 * 4, 
   '1 day' : 86400
-}
+};
 
 const GetKline = async (url) => {
   const data = await axios.get(url)
     .then(res => { return res.data })
     .catch(err => { console.log('Error: ', err.message); })
   return data;
-}
+};
+
+const getUsernameFromCookie = async (cookieDatabase, cookie) => {
+  const isExist = await cookieDatabase.findOne({cookie});
+  if (!isExist) return null;
+  else return isExist["user"];
+};
 
 const Query = {
   async Candlestick(parent, {asset, startTime, endTime, scale, cookie}, {}, info) {
@@ -44,8 +50,14 @@ const Query = {
     }
 
   },
-  async GetRecord(parent, {strategyID, username}, { recordDatabase }, info) {
-    console.log("strategyID = " + strategyID + ", username = " + username);
+  async GetRecord(parent, {strategyID, cookie}, { recordDatabase, cookieDatabase }, info) {
+    console.log("strategyID = " + strategyID);
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return [];
+    }
+
     if (strategyID === "") {
       const list = await recordDatabase.find({username});
       console.log(list);
@@ -54,11 +66,17 @@ const Query = {
     const list = await recordDatabase.find({strategyID, username});
     return list;
   },
-  async GetStrategy(parent, {id, username}, { strategyDatabase }, info) {
+  async GetStrategy(parent, {id, cookie}, { strategyDatabase, cookieDatabase }, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return null;
+    }
+
     console.log("id = " + id);
     if (id === "") {
       const result = await strategyDatabase.find({name: {$ne: ""}, username: username});
-      return result
+      return result;
     }
     const result = await strategyDatabase.find({id, username});
     return result;

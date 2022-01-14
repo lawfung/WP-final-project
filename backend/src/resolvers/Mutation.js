@@ -1,7 +1,14 @@
 import bcrypt from "bcrypt"; 
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
 
 const saltRounds = 10;
+
+const getUsernameFromCookie = async (cookieDatabase, cookie) => {
+  const isExist = await cookieDatabase.findOne({cookie});
+  console.log(isExist.user);
+  if (!isExist) return null;
+  else return isExist.user;
+};
 
 const Mutation = {
   async Login(parent, {user, hashPasswd}, {userDatabase, cookieDatabase}, info) {
@@ -35,22 +42,13 @@ const Mutation = {
       return true;
     }
   },
-  // CreateStrategy(name: String!): Strategy!
-  // async CreateStrategy(parent, {name}, {strategyDatabase, pubSub}, info) {
-  //   const id = uuidv4();
-  //   const newStrategy = new strategyDatabase({id, name});
-  //   newStrategy.save();
+  async DeleteStrategy(parent, {id, cookie}, {strategyDatabase, cookieDatabase, pubSub}, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
 
-  //   console.log(pubSub);
-  //   await pubSub.publish("Strategy", {
-  //     updateStrategy: {
-  //       type: "CREATED",
-  //       info: newStrategy
-  //     }
-  //   });
-  //   return newStrategy;
-  // },
-  async DeleteStrategy(parent, {id, username}, {strategyDatabase, pubSub}, info) {
     const isExist = await strategyDatabase.findOne({id, username});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
@@ -63,7 +61,13 @@ const Mutation = {
     });
     return true;
   },
-  async RenameStrategy(parent, {id, name, username}, {strategyDatabase, pubSub}, info) {
+  async RenameStrategy(parent, {id, name, cookie}, {strategyDatabase, cookieDatabase, pubSub}, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
+
     const isExist = await strategyDatabase.findOne({id, username});
     if (!isExist) return false;
     await strategyDatabase.deleteOne(isExist);
@@ -78,7 +82,14 @@ const Mutation = {
     });
     return true;
   },
-  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie, username}, {recordDatabase, strategyDatabase, pubSub}, info) {
+  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, cookieDatabase, pubSub}, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
+    console.log("username = " + username);
+
     const id = uuidv4();
     const strategyExist = await strategyDatabase.findOne({name: strategyName});
     if (strategyExist) {
@@ -102,8 +113,8 @@ const Mutation = {
     } else {
       try {
         const strategyID = uuidv4();
-        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low});
-        const newStrategy = new strategyDatabase({id: strategyID, name: strategyName});
+        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low, username});
+        const newStrategy = new strategyDatabase({id: strategyID, name: strategyName, username: username});
 
         newRecord.save();
         newStrategy.save();
@@ -127,7 +138,13 @@ const Mutation = {
       }
     }
   },
-  async DeleteRecord(parent, {id, username}, {recordDatabase, pubSub}, info) {
+  async DeleteRecord(parent, {id, cookie}, {recordDatabase, cookieDatabase, pubSub}, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
+
     const deletedRecord = await recordDatabase.findOne({id, username});
     if (!deletedRecord) return false;
     await recordDatabase.deleteOne(deletedRecord);
@@ -140,7 +157,13 @@ const Mutation = {
     });
     return true;
   },
-  async DeleteRecordByStrategyID(parent, {strategyID, username}, {recordDatabase, pubSub}, info) {
+  async DeleteRecordByStrategyID(parent, {strategyID, cookie}, {recordDatabase, cookieDatabase, pubSub}, info) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
+
     const deletedRecord = await recordDatabase.findOne({strategyID, username});
     if (!deletedRecord) return false;
     await recordDatabase.deleteMany({strategyID, username});
@@ -151,6 +174,31 @@ const Mutation = {
         info: deletedRecord
       }
     });
+    return true;
+  },
+  async ChangePassword(parent, { oldPasswd, newPasswd, cookie }, {userDatabase, cookieDatabase }, info ) {
+    const username = await getUsernameFromCookie(cookieDatabase, cookie);
+    if (username === null) {
+      console.log("username is null");
+      return false;
+    }
+
+    const userData = await userDatabase.findOne({user: username});
+    if (!userData) {
+      console.log("do not get userData");
+      return false;
+    }
+    
+    const res = await bcrypt.compare(oldPasswd, userData.hashPasswd);
+    if (!res) {
+      console.log("compare bad");
+      return false;
+    }
+
+    const newHashPasswd = await bcrypt.hash(newPasswd, saltRounds);
+    const oldUserData = await userDatabase.findOneAndUpdate({user: username}, {$set: {hashPasswd: newHashPasswd}});
+
+    if (!oldUserData) return false;
     return true;
   },
   Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {

@@ -17,7 +17,7 @@ type Mutation {
     DeleteRecord(id: ID!, cookie: String!): Boolean
     DeleteRecordByStrategyID(strategyID: ID!, cookie: String!): Boolean
 
-    ChangePassword(hashPasswd: String!, cookie: String!): Boolean
+    ChangePassword(oldPasswd: String!, newPasswd: String!, cookie: String!): Boolean
 }
 type Subscription {
   updateStrategy: StrategySubscriptionPayload!
