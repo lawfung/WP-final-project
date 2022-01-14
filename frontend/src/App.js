@@ -61,7 +61,7 @@ function App() {
       <BrowserRouter>
         <AppBar position="relative" sx={{zIndex: (theme) => 1299, background: 'orange'}}>
           <Toolbar>
-            <LinkedButton to="/home" sty2={{ fontSize: '4vh', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
+            <LinkedButton to="/" sty2={{ fontSize: '4vh', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Stack spacing={-0} direction="row" sx={{display: "flex", justifyContent: "space-around"}}>
                 <LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>

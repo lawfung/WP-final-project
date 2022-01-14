@@ -222,6 +222,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 }
             }}
         />
+    const priceNow = <MyStack spacing={-20} direction="row">Current Price: {price}</MyStack>
     return (
         <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
@@ -230,7 +231,8 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 {graph}
             </HalfWrapper>
             <HalfWrapper style={{background: 'antiquewhite',}}>
-                {easyMode}
+                {/* {easyMode} */}
+                {priceNow}
                 {checked ? BuyAndSell : CodeEditor}
                 {AUM}
                 {/* {chartAndIndex} */}
