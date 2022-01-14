@@ -1,3 +1,4 @@
+import React from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {IconContainer, NavItemContainer } from "./styles"
 
