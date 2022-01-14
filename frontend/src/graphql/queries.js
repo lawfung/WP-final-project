@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const RECORD_QUERY = gql`
-  query GetRecord($strategyID: ID!, $username: String!) {
-    GetRecord(strategyID: $strategyID, username: $username) {
+  query GetRecord($strategyID: ID!, $cookie: String!) {
+    GetRecord(strategyID: $strategyID, cookie: $cookie) {
       startTime
       endTime
       start
@@ -16,10 +16,10 @@ export const RECORD_QUERY = gql`
 `;
 
 export const STRATEGY_QUERY = gql`
-  query GetStrategy($id: ID!, $username: String!) {
-    GetStrategy(id: $id, username: $username) {
-      name
+  query GetStrategy($id: ID!, $cookie: String!) {
+    GetStrategy(id: $id, cookie: $cookie) {
       id
+      name
       username
     }
   }

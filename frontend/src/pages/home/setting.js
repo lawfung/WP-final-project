@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 
+import { CHANGE_PASSWORD } from "../../graphql";
+import { useMutation, useApolloClient } from "@apollo/client";
+import { useCookies } from "react-cookie";
+import { useUsername } from "../../tools/useUsername";
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -22,14 +27,16 @@ const Title = styled.div`
     }
 `;
 
-export default function Setting({ username="" }) {
+export default function Setting() {
+  const { username, changeUsername } = useUsername();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
+  const [cookie] = useCookies(["session"]);
 
-  const saveChange = () => {
-    // TODO: find {username, password} from database and check whether it is the same as input old password
-
+  const [changePasswordMutation] = useMutation(CHANGE_PASSWORD);
+  const client = useApolloClient();
+  const saveChange = async () => {
     if (newPassword === "") {
       displayStatus({
         type: "error",
@@ -45,11 +52,18 @@ export default function Setting({ username="" }) {
       return;
     }
 
-    displayStatus({
-      type: "success",
-      msg: "new password is set!",
-    });
-    // TODO: save new password into database
+    const res = await changePasswordMutation({variables: {oldPasswd: oldPassword, newPasswd: newPassword, cookie: cookie.session}});
+    if (res.data.ChangePassword) {
+      displayStatus({
+        type: "success",
+        msg: "new password is set!",
+      });
+    } else {
+      displayStatus({
+        type: "error",
+        msg: "old password wrong!",
+      });
+    }
   };
   return (
     <Wrapper>

@@ -5,6 +5,8 @@ import React, { useEffect } from "react";
 import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useCookies } from "react-cookie";
+import { useUsername } from "../../tools/useUsername";
 
 import {
   RECORD_QUERY,
@@ -32,8 +34,10 @@ const Title = styled.div`
   }
 `;
 
-export default function Profile({ username="" }) {
-  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: "", username: username}});
+export default function Profile() {
+  const { username, changeUsername } = useUsername();
+  const [cookie] = useCookies(["session"]);
+  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: "", cookie: cookie.session}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   const { deletedTag, changeDeletedTag } = useDeletedTag();
   console.log("hi profile");
@@ -69,7 +73,7 @@ export default function Profile({ username="" }) {
 
   const handleDeleteRecord = (id) => { // TODO: should write back to database?
     console.log(`delete ${id}`);
-    deleteRecord({variables: {id: id}});
+    deleteRecord({variables: {id: id, cookie: cookie.session}});
   };
   const columns = [
     {

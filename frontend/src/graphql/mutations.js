@@ -1,32 +1,32 @@
 import { gql } from "@apollo/client";
 
 export const DELETE_STRATEGY_MUTATION = gql`
-  mutation DeleteStrategy($id: ID!, $username: String!) {
-    DeleteStrategy(id: $id, username: $username)
+  mutation DeleteStrategy($id: ID!, $cookie: String!) {
+    DeleteStrategy(id: $id, cookie: $cookie)
   }
 `;
 
 export const RENAME_STRATEGY_MUTATION = gql`
-  mutation RenameStrategy($id: ID!, $name: String!, $username: String!) {
-    RenameStrategy(id: $id, name: $name, username: $username)
+  mutation RenameStrategy($id: ID!, $name: String!, $cookie: String!) {
+    RenameStrategy(id: $id, name: $name, cookie: $cookie)
   }
 `;
 
 export const CREATE_RECORD_MUTATION = gql`
-  mutation ($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!, $username: String!) {
-    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie, username: $username)
+  mutation ($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!, $cookie: String!) {
+    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie, cookie: $cookie)
   }
 `;
 
 export const DELETE_RECORD_MUTATION = gql`
-  mutation DeleteRecord($id: ID!, $username: String!) {
-    DeleteRecord(id: $id, username: $username)
+  mutation DeleteRecord($id: ID!, $cookie: String!) {
+    DeleteRecord(id: $id, cookie: $cookie)
   }
 `;
 
 export const DELETE_RECORD_BY_STRATEGY_ID_MUTATION = gql`
-  mutation DeleteRecordByStrategyID($strategyID: ID!, $username: String!) {
-    DeleteRecordByStrategyID(strategyID: $strategyID, username: $username)
+  mutation DeleteRecordByStrategyID($strategyID: ID!, $cookie: String!) {
+    DeleteRecordByStrategyID(strategyID: $strategyID, cookie: $cookie)
   }
 `;
 
@@ -46,10 +46,16 @@ export const LOGIN = gql`
   mutation ($user: String!, $hashPasswd: String!) {
     Login(user: $user, hashPasswd: $hashPasswd)
   }
-`
+`;
 
 export const LOGOUT = gql`
   mutation ($user: String!, $cookie: String!) {
     Logout(user: $user, cookie: $cookie)
   }
-`
+`;
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($oldPasswd: String!, $newPasswd: String, $cookie: String!) {
+    ChangePassword(oldPasswd: $oldpasswd, newPasswd: $newPasswd, cookie: $cookie)
+  }
+`;

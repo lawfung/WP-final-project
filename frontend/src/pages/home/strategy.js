@@ -8,6 +8,8 @@ import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useApolloClient } from "@apollo/client";
+import { useCookies } from "react-cookie";
+import { useUsername } from "../../tools/useUsername";
 
 import {
   STRATEGY_QUERY,
@@ -35,8 +37,10 @@ const Title = styled.div`
   }
 `;
 
-export default function Strategy({ username="" }) {
-  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", username: username}});
+export default function Strategy() {
+  const { username, changeUsername } = useUsername();
+  const [cookie] = useCookies(["session"]);
+  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", cookie: cookie.session}});
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
   const [newStrategyName, setNewStrategyName] = useState("");
@@ -78,8 +82,8 @@ export default function Strategy({ username="" }) {
 
   const handleDeleteStrategy = (id) => { // TODO: should write back to database?
     console.log(`delete ${id}`);
-    deleteStrategy({variables: {id: id}});
-    deleteRecordByStrategyID({variables: {strategyID: id}});
+    deleteStrategy({variables: {id: id, cookie: cookie.session}});
+    deleteRecordByStrategyID({variables: {strategyID: id, cookie: cookie.session}});
   };
 
   const client = useApolloClient();
@@ -106,7 +110,7 @@ export default function Strategy({ username="" }) {
       return;
     }
 
-    renameStrategy({variables: {id: editedID, name: newStrategyName}});
+    renameStrategy({variables: {id: editedID, name: newStrategyName, cookie: cookie.session}});
 
     setShowEditModal(false);
     setNewStrategyName("");
