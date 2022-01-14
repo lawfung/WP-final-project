@@ -6,7 +6,7 @@ const UsernameContext = createContext({
 });
 
 const UsernameProvider = (props) => {
-    const [username, setUserName] = useState("");
+    const [username, setUserName] = useState("Not empty");
     const changeUsername = (name) => {
         setUserName(name);
     };

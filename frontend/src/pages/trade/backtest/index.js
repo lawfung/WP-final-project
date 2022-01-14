@@ -1,6 +1,6 @@
 import { Button, Grid, ButtonGroup, InputLabel, MenuItem, FormControl, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
 import { Input, Button as AntdButton } from "antd";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {PlayArrow, Pause, RunCircle} from '@mui/icons-material';
 import Lines from '../lines';
 import { Candlestick_QUERY, CREATE_RECORD_MUTATION } from '../../../graphql';
@@ -9,10 +9,12 @@ import { useMutation } from '@apollo/client';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
 import { resolution_dict, nameConvert, TimestampToDate } from "../../../tools/constant";
 import display from "../../../tools/display";
+import { useCookies } from 'react-cookie';
 
 const indexList = ["MA", "EMA"];
 const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, next, epochS, epochE}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);});
+    const [cookie] = useCookies(['session']);
     const [createRecordMutation] = useMutation(CREATE_RECORD_MUTATION);
     const [finished, setFinished] = useState(false);
     const [price, setPrice] = useState(data[data.length - 1][2])
@@ -59,7 +61,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         }
         const req = await client.query({
             query: Candlestick_QUERY,
-            variables: {asset : nameConvert(XAsset), startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie: "123", scale: XTime_scale}
+            variables: {asset : nameConvert(XAsset), startTime: nextTime, endTime: Math.min(nextTime + step * resolution_dict[XTime_scale], epochE), cookie, scale: XTime_scale}
         });
         const data2 = req.data.Candlestick.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high])
         updateRecord(data2);
@@ -213,7 +215,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             enterButton={<AntdButton style={{background: "blue", color: "white"}}>Save Record</AntdButton>}
             style={{ width: "80%", marginTop: "2vh"}}
             onSearch={ async (name) => {
-                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: "123", ...Record, end: getTotal(price)} });
+                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie, ...Record, end: getTotal(price)} });
                 if(ret.data.CreateRecord) {
                     display({ type: 'success', msg: "Save successfully" });
                 }
