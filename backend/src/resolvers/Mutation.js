@@ -205,9 +205,6 @@ const Mutation = {
 
     if (!oldUserData) return false;
     return true;
-  },
-  Cache(parent, { asset, startTime, endTime, scale, cookie }, { userDatabase }) {
-    return;
   }
 };
 
