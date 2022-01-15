@@ -12,7 +12,7 @@ export const marksTimes = ['1 min', '5 min', '15 min', '1 hr', '4 hr', '1 day'];
 export const TimestampToDate = (timestamp) => {
     var date = new Date(timestamp * 1000);
     var yy = date.getFullYear();
-    var mn = ("0" + date.getMonth() + 1).substr(-2);
+    var mn = ("0" + (date.getMonth() + 1)).substr(-2);
     var dd = ("0" + date.getDate()).substr(-2);
     var hr = ("0" + date.getHours()).substr(-2);
     var mm = ("0" + date.getMinutes()).substr(-2);

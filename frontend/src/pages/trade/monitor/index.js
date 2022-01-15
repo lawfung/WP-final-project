@@ -5,20 +5,27 @@ import { ShowChart } from '@mui/icons-material';
 // import { ArrowLeft, ArrowRight } from '@mui/icons-material';
 import Lines from '../lines';
 import {HalfWrapper, MyGrid, MyStack, MyTitle} from '../styles';
-import { marksTimes } from "../../../tools/constant";
+import { Candlestick_QUERY } from '../../../graphql';
+import { useApolloClient } from "@apollo/client";
+import { TimestampToDate, nameConvert, marksTimes } from "../../../tools/constant";
+import { useCookies } from 'react-cookie';
+import display from "../../../tools/display";
 
 // const indexList = ["MA", "EMA"];
-const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_time="2021 Jun 08 20:00:00", XTime_scale="15s", XAsset="BTC", data}) => {
+const Monitor = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data}) => {
     const handleChange = (f) => ((e) => {f(e.target.value);})
     // const onCreateBacktest = () => {
     //     const epochS = Date.parse(startTime) / 1000
     //     const epochE = Date.parse(endTime) / 1000
     //     createBacktest({tabName: title+"-Backtest", startTime: XStart_time, endTime: XEnd_time, assetType: XAsset, timeScaleString: XTime_scale, epochS, epochE})
     // }
+    const [cookie] = useCookies(['session']);
+    const [para, setPara] = useState({title, XStart_time, XEnd_time, XTime_scale, XAsset});
+    const [chartData, setChartData] = useState(data);
     const TitleSwitch = 
         <MyStack spacing={-0} direction="row" sx={{marginTop: "2vh"}}>
             <MyTitle variant="h5" component="div">
-                <ShowChart /> {title}
+                <ShowChart /> {para.title}
             </MyTitle>
             {/* <ButtonGroup variant="contained">
                 <Button sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}}>Go LEFT</Button>
@@ -28,10 +35,10 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
         </MyStack>
     const attrPanel = 
         <Grid container spacing={1} sx={{marginTop: "2vh"}}>
-            <MyGrid item xs={6}>Start time: {XStart_time}</MyGrid>
-            <MyGrid item xs={6}>End time: {XEnd_time}</MyGrid>
-            <MyGrid item xs={6}>Time scale: {XTime_scale}</MyGrid>
-            <MyGrid item xs={6}>Asset: {XAsset}</MyGrid>
+            <MyGrid item xs={6}>Start time: {para.XStart_time}</MyGrid>
+            <MyGrid item xs={6}>End time: {para.XEnd_time}</MyGrid>
+            <MyGrid item xs={6}>Time scale: {para.XTime_scale}</MyGrid>
+            <MyGrid item xs={6}>Asset: {para.XAsset}</MyGrid>
         </Grid>
     // const backAndNext =
     //     <MyStack spacing={-30} direction="row">
@@ -74,6 +81,17 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
     //             </Select>
     //         </FormControl>
     //     </MyStack>
+    // const twoButtons = 
+    //     <MyStack spacing={-20} direction="row">
+    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
+    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}} onClick={onCreateBacktest}>Backtest This</Button>
+    //     </MyStack>
+
+    const [checked, setChecked] = useState(false);
+    const viewRawData = 
+        <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
+            setChecked(e.target.checked);}}/>} label="View raw data" />
+
     const marks = marksTimes.map((x, i) => ({value: i, label: x}));
     const [timeScale, setTimeScale] = useState(0);
     const timeScaleSlider =
@@ -90,20 +108,28 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
                 track={false}
             />
         </>
-    // const twoButtons = 
-    //     <MyStack spacing={-20} direction="row">
-    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}}>View raw data</Button>
-    //         <Button variant="contained" sx={{ fontSize: '3vh', "fontFamily": "", textTransform: "none"}} onClick={onCreateBacktest}>Backtest This</Button>
-    //     </MyStack>
-
-    const [checked, setChecked] = useState(false);
-    const viewRawData = 
-        <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
-            setChecked(e.target.checked);}}/>} label="View raw data" />
-
     const [startTime, setStartTime] = useState('2021-01-01T00:00');
     const [endTime, setEndTime] = useState('2022-01-01T00:00');
     const [assetType, setAssetType] = useState('BTC');
+    const client = useApolloClient();
+    const resetMonitor = async () => {
+        // console.log(timeScale, startTime, endTime, assetType);
+        const epochS = Date.parse(startTime) / 1000
+        const epochE = Date.parse(endTime) / 1000
+        const req = await client.query({
+            query: Candlestick_QUERY,
+            variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: cookie.session, scale: marksTimes[timeScale]}
+        });
+        const tmp = req.data.Candlestick;
+        if(!tmp || tmp.length === 0){
+            display({type: "error", msg: "reset fail"});
+            return;
+        }
+        const dataD = tmp.map((x) => [TimestampToDate(x.startTime), x.open, x.close, x.low, x.high]);
+        // console.log(data);
+        setPara({...para, XStart_time: TimestampToDate(epochS), XEnd_time: TimestampToDate(epochE), XTime_scale: marksTimes[timeScale], XAsset: assetType});
+        setChartData(dataD);
+    }
     const setSet = 
         <>
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1}}>
@@ -125,7 +151,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
                         <TextField label="End time" value={endTime} type="datetime-local" onChange={handleChange(setEndTime)} InputLabelProps={{ shrink: true }}/>
                     </MyGrid>
                     <MyGrid item xs={4}>
-                        <Button> Reset Minotor </Button>
+                        <Button onClick={resetMonitor}> Reset Minotor </Button>
                     </MyGrid>
                 </Grid>
             </div>
@@ -137,7 +163,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
             <HalfWrapper style={{background: 'aliceblue', }}>
                 {TitleSwitch}
                 {attrPanel}
-                <Lines data={data}/>
+                <Lines data={chartData}/>
                 {/* <div style={{color : "red"}}>Here will be the graph</div> */}
                 {/* {backAndNext} */}
             </HalfWrapper>
@@ -147,7 +173,7 @@ const Monitor = ({title="Monitor1", XStart_time="2021 Jun 08 21:00:00", XEnd_tim
                 {setSet}
                 {/* {twoButtons} */}
                 {viewRawData}
-                {checked ? <div>[Time, open, close, low, high] {data.map((i)=><div>["{i.join('", "')}"],</div> )}</div> : <></>}
+                {checked ? <div>[StartTime, open, close, low, high] {chartData.map((i)=><div key={i.join()}>["{i.join('", "')}"],</div> )}</div> : <></>}
             </HalfWrapper>
         </div>
     )

@@ -1,5 +1,5 @@
 // import { InputLabel, MenuItem, Select, Box, Chip, Switch, FormControlLabel } from "@mui/material";
-import { Button, Grid, ButtonGroup, FormControl } from "@mui/material";
+import { Button, Grid, ButtonGroup, FormControl, Slider } from "@mui/material";
 import { Input, Button as AntdButton } from "antd";
 import React, { useState } from "react";
 // import {PlayArrow, Pause} from '@mui/icons-material';
@@ -99,7 +99,8 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 <Button variant="contained" sx={{ fontSize: '', "fontFamily": "", textTransform: "none"}} key={x} onClick={()=>{handlejump(x);}}>Jump {x}</Button>
             )}
         </ButtonGroup>
-    const [checked, setChecked] = useState(true);
+    // const [checked, setChecked] = useState(true);
+    const checked = true;
     // const easyMode = 
     //     <FormControlLabel control={<Switch checked={checked} onChange={(e) => {
     //         setChecked(e.target.checked);}}/>} label="Easy Mode" />
@@ -141,7 +142,6 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             />
         </MyStack>
     const CodeEditor = <></>
-    const graph = <Lines data={dd}/>
     const [strategy, setStrategy] = useState("");
     const AUM = 
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1, width: "80%"}}>
@@ -185,6 +185,35 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             }}
         />
     const priceNow = <MyStack spacing={-20} direction="row">Current Price: {price}</MyStack>
+    const maxmax = 33;
+    const [countMax, setCountMax] = useState(maxmax);
+    const maxMapping = (i) => (i === maxmax ? "No Constraint" : i * i);
+    const getRealLength = (s) => (s === "No Constraint" ? dd.length : Math.min(dd.length, s));
+    const realLength = -getRealLength(maxMapping(countMax));
+    const countSlider =
+        <>
+            <div style={{marginTop: "2vh"}}>
+                Set max candles in view
+            </div>
+            <Slider
+                // aria-label="Custom marks"
+                // aria-label="Temperature"
+                // getAriaValueText={valuetext}
+                // defaultValue={30}
+                // marks
+                // track={false}
+
+                value={countMax}
+                onChange={handleChange(setCountMax)}
+                sx={{width: "80%", marginTop: "2vh"}}
+                valueLabelFormat={maxMapping}
+                valueLabelDisplay="auto"
+                step={1}
+                min={1}
+                max={maxmax}
+            />
+        </>
+    const graph = <Lines data={dd.slice(realLength)}/>
     return (
         <div style={{display: "flex", height: "100%", width: "100%", flexDirection: "row"}}>
             <HalfWrapper style={{background: 'aliceblue', }}>
@@ -196,6 +225,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                 {/* {easyMode} */}
                 {priceNow}
                 {checked ? BuyAndSell : CodeEditor}
+                {countSlider}
                 {AUM}
                 {/* {runAndPause} */}
                 {REC}
