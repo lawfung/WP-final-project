@@ -5,12 +5,13 @@ import LoginPage from "./login";
 import RegisterPage from "./register";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useUsername } from "../tools/useUsername";
+import rootImage from './root/root_page.jpeg';
 
 export default function SwitchPage() {
     const {username} = useUsername();
     return (
         <Routes>
-            <Route path="/" element={username ? <>This is home</> : <Navigate replace to="/login" /> }/>
+            <Route path="/" element={username ? <img src={rootImage}/> : <Navigate replace to="/login" /> }/>
             <Route path="/home" element={username ? <HomePage/> : <Navigate replace to="/login" /> }/>
             <Route path="/trade" element={username ? <TradePage/> : <Navigate replace to="/login" />}/>
             <Route path="/register" element={!username ? <RegisterPage/> : <Navigate replace to="/" />}/>
