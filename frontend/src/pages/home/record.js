@@ -56,7 +56,7 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       setFirstFetch(false);
     };
     dummy2();
-  }, [client, cookie.session]);
+  }, [client, strategyID, cookie.session]);
 
   useEffect( () => { 
     console.log("dummy gogo");
