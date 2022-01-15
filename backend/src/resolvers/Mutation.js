@@ -83,7 +83,7 @@ const Mutation = {
     });
     return true;
   },
-  async CreateRecord(parent, {strategyName, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, cookieDatabase, pubSub}, info) {
+  async CreateRecord(parent, {strategyName, assetType, startTime, endTime, start, end, high, low, cookie}, {recordDatabase, strategyDatabase, cookieDatabase, pubSub}, info) {
     const username = await getUsernameFromCookie(cookieDatabase, cookie);
     if (username === null) {
       console.log("username is null");
@@ -96,7 +96,7 @@ const Mutation = {
     if (strategyExist) {
       try {
         const strategyID = strategyExist.id;
-        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low, username});
+        const newRecord = new recordDatabase({id, strategyID, assetType, startTime, endTime, start, end, high, low, username});
 
         newRecord.save();
 
@@ -114,7 +114,7 @@ const Mutation = {
     } else {
       try {
         const strategyID = uuidv4();
-        const newRecord = new recordDatabase({id, strategyID, startTime, endTime, start, end, high, low, username});
+        const newRecord = new recordDatabase({id, strategyID, assetType, startTime, endTime, start, end, high, low, username});
         const newStrategy = new strategyDatabase({id: strategyID, name: strategyName, username: username});
 
         newRecord.save();
@@ -158,50 +158,27 @@ const Mutation = {
     });
     return true;
   },
-  async DeleteRecordByStrategyID(parent, {strategyID, cookie}, {recordDatabase, cookieDatabase, pubSub}, info) {
-    const username = await getUsernameFromCookie(cookieDatabase, cookie);
-    if (username === null) {
-      console.log("username is null");
-      return false;
-    }
-
-    const deletedRecord = await recordDatabase.findOne({strategyID, username});
-    if (!deletedRecord) return false;
-    await recordDatabase.deleteMany({strategyID, username});
-
-    await pubSub.publish("Record", {
-      updateRecord: {
-        type: "DELETED",
-        info: deletedRecord
-      }
-    });
-    return true;
-  },
   async ChangePassword(parent, { oldPasswd, newPasswd, cookie }, {userDatabase, cookieDatabase }, info ) {
     const username = await getUsernameFromCookie(cookieDatabase, cookie);
     if (username === null) {
       console.log("username is null");
       return false;
     }
-    console.log("a");
 
     const userData = await userDatabase.findOne({user: username});
     if (!userData) {
       console.log("do not get userData");
       return false;
     }
-    console.log("b");
     
     const res = await bcrypt.compare(oldPasswd, userData.hashPasswd);
     if (!res) {
       console.log("compare bad");
       return false;
     }
-    console.log("c");
 
     const newHashPasswd = await bcrypt.hash(newPasswd, saltRounds);
     const oldUserData = await userDatabase.findOneAndUpdate({user: username}, {$set: {hashPasswd: newHashPasswd}});
-    console.log("d");
 
     if (!oldUserData) return false;
     return true;

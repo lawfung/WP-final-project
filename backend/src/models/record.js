@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const RecordSchema = new Schema({
     id: String,
     strategyID: String,
+    assetType: String,
     startTime: Number,
     endTime: Number,
     start: Number,
