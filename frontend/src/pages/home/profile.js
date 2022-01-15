@@ -2,7 +2,6 @@ import { Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import React, { useEffect } from "react";
-import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
@@ -39,7 +38,6 @@ export default function Profile() {
   const [cookie] = useCookies(["session"]);
   const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: "", cookie: cookie.session}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
-  const { deletedTag, changeDeletedTag } = useDeletedTag();
 
   useEffect(() => {
     subscribeToMore({
@@ -62,7 +60,7 @@ export default function Profile() {
         }
       }
     });
-  }, [subscribeToMore, deletedTag]);
+  }, [subscribeToMore]);
 
   const handleDeleteRecord = (id) => {
     deleteRecord({variables: {id: id, cookie: cookie.session}});
@@ -109,7 +107,7 @@ export default function Profile() {
       dataIndex: "id",
       render: (id) => (
         <>
-          <DeleteOutlined onClick={() => {handleDeleteRecord(id); changeDeletedTag(deletedTag);}} />
+          <DeleteOutlined onClick={() => {handleDeleteRecord(id);}} />
         </>
       ),
     }

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
-import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useApolloClient } from "@apollo/client";
@@ -47,7 +46,6 @@ export default function Strategy() {
   const [strategyID, setStrategyID] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedID, setEditedID] = useState("");
-  const { deletedTag, changeDeletedTag } = useDeletedTag();
 
   useEffect(() => {
     subscribeToMore({
@@ -68,7 +66,7 @@ export default function Strategy() {
         }
       }
     });
-  }, [subscribeToMore, deletedTag]);
+  }, [subscribeToMore]);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
   const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);
@@ -145,7 +143,7 @@ export default function Strategy() {
       render: (id) => (
         <>
           <EditOutlined onClick={() => {setShowEditModal(true); setEditedID(id);}} />
-          <DeleteOutlined onClick={() => {handleDeleteStrategy(id); changeDeletedTag(deletedTag);}} />
+          <DeleteOutlined onClick={() => {handleDeleteStrategy(id);}} />
         </>
       ),
     }
