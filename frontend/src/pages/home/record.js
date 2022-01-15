@@ -1,8 +1,9 @@
 import { Button, Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
+import { useApolloClient, useSubscription } from "@apollo/client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
 
@@ -34,34 +35,47 @@ const Title = styled.div`
 
 export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
   const [cookie] = useCookies(["session"]);
-  const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID, cookie: cookie.session}});
+  const [localData, setLocalData] = useState([]);
+  const [firstFetch, setFirstFetch] = useState(true);
+  // const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID, cookie: cookie.session}});
+  const client = useApolloClient();
+  const { loading, data } = useSubscription(RECORD_SUBSCRIPTION);
+
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
 
-  useEffect(() => {
-    console.log("here start");
-    subscribeToMore({
-      document: RECORD_SUBSCRIPTION,
-      updateQuery: (prev, { subscriptionData }) => {
-        console.log("here keep subscribing");
-        console.log({prev: prev, subscriptionData: subscriptionData});
-        if (!subscriptionData) return prev;
+  const dummy = useCallback(() => {
+    const dummy2 = async () => {
+      // console.log("start useEffect");
+      let req = await client.query({
+        query: RECORD_QUERY,
+        variables: {strategyID: strategyID, cookie: cookie.session},
+        fetchPolicy: "no-cache"
+      });
+      // console.log(req.data.GetRecord);
+      setLocalData(localData => req.data.GetRecord);
+      // console.log("local data = ", ...localData);
+      setFirstFetch(false);
+    };
+    dummy2();
+  }, []);
 
-        const type = subscriptionData.data.updateRecord.type;
-        const id = subscriptionData.data.updateRecord.info.id;
-        if (type === "DELETED") {
-          return {
-            ...prev,
-            GetRecord: prev.GetRecord.filter(item => item.id !== id)
-          };
-        } else if (type === "CREATED") {
-          return {
-            ...prev,
-            GetRecord: [...prev.GetRecord, subscriptionData.data.updateRecord.info]
-          }
-        }
+  useEffect( () => { 
+    console.log("dummy gogo");
+    dummy();
+  }, [dummy]);
+
+  useEffect(() => {
+    console.log("new subscription data: ", data);
+    if (data) {
+      const type = data.updateRecord.type;
+      const id = data.updateRecord.info.id;
+      if (type === "DELETED") {
+        setLocalData(localData => localData.filter(item => item.id !== id));
+      } else if (type === "CREATED") {
+        setLocalData(localData => [...localData, data.updateRecord.info]);
       }
-    });
-  }, [subscribeToMore]);
+    }
+  }, [loading, data]);
 
   const handleDeleteRecord = (id) => {
     console.log(`delete ${id}`);
@@ -114,12 +128,7 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       <Title>
         <h1>{strategyName}</h1>
       </Title>
-      {loading ? <p>Loading...</p> :
-      <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1, key: index};})} onRow={record => ({
-        // onClick: () => {setAllRecord(false); setIndex(record.key);},
-        onClick: () => {},
-      })}/>
-      }
+      <Table columns={columns} dataSource={firstFetch ? [] : localData.map((item, index) => {return {...item, num: index + 1, key: index};})} />
       <Button onClick={() => {setAllRecord(true); setStrategyName(""); setStrategyID("");}}>
         Last Page
       </Button>

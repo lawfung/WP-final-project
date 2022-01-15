@@ -1,12 +1,16 @@
 import { Button, Table, Modal, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from "react";
+=======
+import React, { useState, useEffect, useCallback } from "react";
+>>>>>>> Stashed changes
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
 
+import { useApolloClient, useSubscription } from "@apollo/client";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { useApolloClient } from "@apollo/client";
 import { useCookies } from "react-cookie";
 import { useUsername } from "../../tools/useUsername";
 
@@ -39,7 +43,11 @@ const Title = styled.div`
 export default function Strategy() {
   const { username } = useUsername();
   const [cookie] = useCookies(["session"]);
-  const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", cookie: cookie.session}});
+
+  const [localData, setLocalData] = useState([]);
+  const [firstFetch, setFirstFetch] = useState(true);
+  // const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", cookie: cookie.session}});
+
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
   const [newStrategyName, setNewStrategyName] = useState("");
@@ -47,26 +55,74 @@ export default function Strategy() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedID, setEditedID] = useState("");
 
-  useEffect(() => {
-    subscribeToMore({
-      document: STRATEGY_SUBSCRIPTION,
-      updateQuery: (prev, { subscriptionData }) => {
-        console.log({prev: prev, subscriptionData: subscriptionData });
-        if (!subscriptionData) return prev;
-
-        const type = subscriptionData.data.updateStrategy.type;
-        const id = subscriptionData.data.updateStrategy.info.id;
-        console.log("type = " + type + ", id = " + id);
-        if (type === "UPDATED") return prev;
-        else if (type === "DELETED") {
-          return {
-            ...prev,
-            GetStrategy: prev.GetStrategy.filter(item => item.id !== id)
-          };
-        }
+  const client = useApolloClient();
+  const { loading, data } = useSubscription(
+    STRATEGY_SUBSCRIPTION,
+    {
+      onSubscriptionData: ({ subscriptionData }) => {
+        console.log("updated: ", subscriptionData);
       }
-    });
-  }, [subscribeToMore]);
+    }
+  );
+
+  const dummy = useCallback(() => {
+    const dummy2 = async () => {
+      let req = await client.query({
+        query: STRATEGY_QUERY,
+        variables: {id: "", cookie: cookie.session},
+        fetchPolicy: "no-cache"
+      });
+      // console.log(req.data.GetRecord);
+      setLocalData(localData => req.data.GetStrategy);
+      // console.log("local data = ", ...localData);
+      setFirstFetch(false);
+    };
+
+    dummy2();
+  }, []);
+
+  useEffect(() => {
+    dummy();
+  }, [dummy]);
+
+  useEffect(() => {
+    console.log("new subscription strategy: ", data);
+    if (data) {
+      const type = data.updateStrategy.type;
+      const id = data.updateStrategy.info.id;
+      if (type === "DELETED") {
+        setLocalData(localData => localData.filter(item => item.id !== id));
+      } else if (type === "CREATED") {
+        setLocalData(localData => [...localData, data.updateStrategy.info]);
+      } else { // UPDATED
+        console.log("update");
+        setLocalData(localData => localData.map((item, index) => item.id !== id ? item : {...item, name: data.updateStrategy.info.name, key: index}));
+      }
+    }
+    // subscribeToMore({
+    //   document: STRATEGY_SUBSCRIPTION,
+    //   updateQuery: (prev, { subscriptionData }) => {
+    //     console.log({prev: prev, subscriptionData: subscriptionData });
+    //     if (!subscriptionData) return prev;
+
+    //     const type = subscriptionData.data.updateStrategy.type;
+    //     const id = subscriptionData.data.updateStrategy.info.id;
+    //     console.log("type = " + type + ", id = " + id);
+    //     if (type === "UPDATED") return prev;
+    //     else if (type === "DELETED") {
+    //       return {
+    //         ...prev,
+    //         GetStrategy: prev.GetStrategy.filter(item => item.id !== id)
+    //       };
+    //     } else { // CREATED
+    //       return {
+    //         ...prev,
+    //         GetStrategy: [...prev.GetStrategy, subscriptionData.data.updateStrategy.info]
+    //       }
+    //     }
+    //   }
+    // });
+  }, [loading, data]);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
   const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);
@@ -78,10 +134,9 @@ export default function Strategy() {
   const handleDeleteStrategy = (id) => { // TODO: should write back to database?
     console.log(`delete ${id}`);
     deleteStrategy({variables: {id: id, cookie: cookie.session}});
-    deleteRecordByStrategyID({variables: {strategyID: id, cookie: cookie.session}});
+    // deleteRecordByStrategyID({variables: {strategyID: id, cookie: cookie.session}});
   };
 
-  const client = useApolloClient();
   const handleRenameStrategy = async () => { // TODO: should write back to database?
     if (newStrategyName === "") {
       displayStatus({
@@ -93,7 +148,7 @@ export default function Strategy() {
 
     const req = await client.query({
       query: STRATEGY_QUERY,
-      variables: {id: ""}
+      variables: {id: "", cookie: cookie.session}
     });
     console.log(req.data.GetStrategy);
     const nameExisted = req.data.GetStrategy.find(item => item.name === newStrategyName);
@@ -156,12 +211,7 @@ export default function Strategy() {
             <Title>
               <h1>{username}'s Strategies</h1>
             </Title>
-            {
-              loading ? <p>Loading...</p> : 
-              <Table columns={columns} dataSource={data.GetStrategy.map((item, index) => {return {...item, num: index + 1, key: index};})} onRow={record => ({
-                onClick: () => {},
-              })}/>
-            }
+            <Table columns={columns} dataSource={firstFetch ? [] : localData.map((item, index) => {return {...item, num: index + 1, key: index};})} />
             <Modal title="Edit strategy name here" visible={showEditModal} onOk={handleOk} onCancel={handleCancel} >
               <Input 
                 placeholder="new strategy name"
