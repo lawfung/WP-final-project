@@ -4,16 +4,16 @@ import { Toolbar, AppBar, Stack, Button, Typography } from '@mui/material';
 import React, { useEffect } from "react";
 import { useUsername } from "./tools/useUsername";
 import { useCookies } from 'react-cookie';
-import { useApolloClient  } from "@apollo/client";
+import { useApolloClient, useMutation  } from "@apollo/client";
 import { Username_QUERY } from "./graphql";
-import { LOGOUT } from './graphql/mutations.js'
-import { useMutation } from '@apollo/client';
+import { LOGOUT } from './graphql/mutations.js';
 import display from "./tools/display";
+import { AccountCircle } from '@mui/icons-material';
 // import { Input } from "@mui/material";
 
-function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
+function LinkedButton({to, color, sty2, text, variant, startIcon, height="100%"}) {
   return <NavLink to={to} style={{ textDecoration: 'none'}}>
-            <Button color={color} style={{...sty2, height}} variant={variant} >
+            <Button color={color} style={{...sty2, height}} variant={variant} startIcon={startIcon}>
               {text}
             </Button>
           </NavLink>
@@ -65,7 +65,7 @@ function App() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Stack spacing={-0} direction="row" sx={{display: "flex", justifyContent: "space-around"}}>
                 { username ? 
-                <><LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>
+                <><LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text={"user: " + username} startIcon={<AccountCircle/>}/>
                 <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/></>
                 : <></> }
               </Stack>
