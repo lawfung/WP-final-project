@@ -147,7 +147,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1, width: "80%"}}>
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={2}>
-                    <MyGrid item xs={12}> Assets Under Management </MyGrid>
+                    <MyGrid item xs={12}> <h4>Assets Under Management</h4> </MyGrid>
                     <MyGrid item xs={6}>USD: {pocket['USD']}</MyGrid>
                     <MyGrid item xs={6}>{XAsset}: {pocket[XAsset]} (≈ {pocket[XAsset] * price} USD)</MyGrid>
                 </Grid>
@@ -157,7 +157,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
         <FormControl variant="standard" sx={{marginTop: "2vh",marginLeft: "2vh",marginRight: "2vh", border: 1, width: "80%"}}>
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={2}>
-                    <MyGrid item xs={12}> Record: </MyGrid>
+                    <MyGrid item xs={12}> <h4>Record:</h4> </MyGrid>
                     <MyGrid item xs={6}>Start: {0} (USD)</MyGrid>
                     <MyGrid item xs={6}>Current: {getTotal(price)} (USD)</MyGrid>
                     <MyGrid item xs={6}>Low: {Record['low']} (USD)</MyGrid>
@@ -198,7 +198,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     const countSlider =
         <>
             <div style={{marginTop: "2vh"}}>
-                Set max candles in view
+                <h4>Set max candles in view</h4>
             </div>
             <Slider
                 // aria-label="Custom marks"

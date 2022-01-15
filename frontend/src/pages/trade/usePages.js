@@ -1,7 +1,7 @@
 import Monitor from './monitor'
 import Backtest from './backtest';
 import React, { useState } from 'react';
-import { Candlestick_QUERY, CACHE } from '../../graphql';
+import { Candlestick_QUERY } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
 import { useMutation } from '@apollo/client';
 import { resolution_dict, TimestampToDate, nameConvert } from '../../tools/constant';
@@ -40,9 +40,7 @@ const usePages = () => {
     const deleteMonitor = deleteOne(0, dummyM, setMonitorList, monitorList, setDummyM);
     const deleteBacktest = deleteOne(1, dummyB, setBacktestList, backtestList, setDummyB);
     const client = useApolloClient();
-    const [doCache] = useMutation(CACHE);
     const createBacktest = async ({tabName, assetType, timeScaleString, epochS, epochE}) => {
-        await doCache({variables: {asset : nameConvert(assetType), startTime: epochS, endTime: epochE, cookie: cookie.session, scale: timeScaleString}})
         const delta = resolution_dict[timeScaleString];
         const req = await client.query({
             query: Candlestick_QUERY,

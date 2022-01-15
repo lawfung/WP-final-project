@@ -136,7 +136,7 @@ const Monitor = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data}) => 
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={2}>
                     <MyGrid item xs={12}>
-                        Time Scale
+                        <h3>Time Scale</h3>
                     </MyGrid>
                     <MyGrid item xs={12}>
                         {timeScaleSlider}
