@@ -4,7 +4,7 @@ import styled from "styled-components";
 import React, { useState, useEffect, useCallback } from "react";
 
 import { useApolloClient, useSubscription } from "@apollo/client";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
 
 import {
@@ -37,7 +37,6 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
   const [cookie] = useCookies(["session"]);
   const [localData, setLocalData] = useState([]);
   const [firstFetch, setFirstFetch] = useState(true);
-  // const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID, cookie: cookie.session}});
   const client = useApolloClient();
   const { loading, data } = useSubscription(RECORD_SUBSCRIPTION);
 
@@ -57,7 +56,7 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       setFirstFetch(false);
     };
     dummy2();
-  }, []);
+  }, [client, cookie.session]);
 
   useEffect( () => { 
     console.log("dummy gogo");
