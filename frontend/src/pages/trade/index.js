@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components'
 import { Divider } from '@mui/material';
 import { ShowChart, RunCircle} from '@mui/icons-material/';
-import {Sidebar, NavItemsContainer, NavItem, ExpandIcon} from './sidebar';
+import {Sidebar, NavItemsContainer, NavItem, ExpandIcon} from '../../tools/sidebar';
 import usePages from './usePages';
 import CreateNew from './Create';
 
