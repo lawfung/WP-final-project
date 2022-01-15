@@ -5,7 +5,6 @@ const saltRounds = 10;
 
 const getUsernameFromCookie = async (cookieDatabase, cookie) => {
   const isExist = await cookieDatabase.findOne({cookie});
-  console.log(isExist.user);
   if (!isExist) return null;
   else return isExist.user;
 };
