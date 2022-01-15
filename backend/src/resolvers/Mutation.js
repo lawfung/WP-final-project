@@ -13,10 +13,11 @@ const getUsernameFromCookie = async (cookieDatabase, cookie) => {
 const Mutation = {
   async Login(parent, {user, hashPasswd}, {userDatabase, cookieDatabase}, info) {
     const isExist = await userDatabase.findOne({user});
-    if (!isExist) return null;
+    if (!isExist) throw new Error("Login failed: no account existed");
 
     const res = await bcrypt.compare(hashPasswd, isExist['hashPasswd'])
-    if (!res) return null; // password is not correct
+    console.log({res: res});
+    if (!res) throw new Error("Login failed: password wrong"); // password is not correct
     
     const cookie = uuidv4();
     const newCookie = new cookieDatabase({user, cookie});
@@ -182,21 +183,25 @@ const Mutation = {
       console.log("username is null");
       return false;
     }
+    console.log("a");
 
     const userData = await userDatabase.findOne({user: username});
     if (!userData) {
       console.log("do not get userData");
       return false;
     }
+    console.log("b");
     
     const res = await bcrypt.compare(oldPasswd, userData.hashPasswd);
     if (!res) {
       console.log("compare bad");
       return false;
     }
+    console.log("c");
 
     const newHashPasswd = await bcrypt.hash(newPasswd, saltRounds);
     const oldUserData = await userDatabase.findOneAndUpdate({user: username}, {$set: {hashPasswd: newHashPasswd}});
+    console.log("d");
 
     if (!oldUserData) return false;
     return true;
