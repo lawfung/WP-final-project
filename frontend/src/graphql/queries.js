@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const RECORD_QUERY = gql`
   query GetRecord($strategyID: ID!, $cookie: String!) {
     GetRecord(strategyID: $strategyID, cookie: $cookie) {
+      assetType
       startTime
       endTime
       start

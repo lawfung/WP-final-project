@@ -19,6 +19,7 @@ export const RECORD_SUBSCRIPTION = gql`
       info {
         id
         strategyID
+        assetType
         startTime
         endTime
         start
