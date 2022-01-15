@@ -98,7 +98,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
           variant="standard"
           value={tabName}
           onChange={handleChange(settabName)}
-          helperText={displayError && (((!tabName) && "The field can't be empty!") || (tabName.length > nameL) && `Length of tab name can't exceed ${nameL}` )}
+          helperText={displayError && (((!tabName) && "The field can't be empty!") || ((tabName.length > nameL) && `Length of tab name can't exceed ${nameL}`) )}
         />
         <TextField
           error={displayError && (!startTime)}
