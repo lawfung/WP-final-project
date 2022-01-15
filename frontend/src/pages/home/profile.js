@@ -4,7 +4,7 @@ import styled from "styled-components";
 import React, { useState, useEffect, useCallback } from "react";
 
 import { useApolloClient, useSubscription } from "@apollo/client";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
 import { useUsername } from "../../tools/useUsername";
 
@@ -39,14 +39,9 @@ export default function Profile() {
   const [cookie] = useCookies(["session"]);
   const [localData, setLocalData] = useState([]);
   const [firstFetch, setFirstFetch] = useState(true);
-  // const { loading, data } = useQuery(RECORD_QUERY, {variables: {strategyID: "", cookie: cookie.session}});
   const client = useApolloClient();
 
   const { loading, data } = useSubscription(RECORD_SUBSCRIPTION);
-
-  console.log(firstFetch);
-
-  // const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: "", cookie: cookie.session}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
 
   const dummy = useCallback(() => {
@@ -63,7 +58,7 @@ export default function Profile() {
       setFirstFetch(false);
     };
     dummy2();
-  }, []);
+  }, [client, cookie.session]);
 
   useEffect( () => { 
     console.log("dummy gogo");

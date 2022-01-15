@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Record from "./record";
 
 import { useApolloClient, useSubscription } from "@apollo/client";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
 import { useUsername } from "../../tools/useUsername";
 
@@ -14,7 +14,6 @@ import {
   STRATEGY_QUERY,
   RENAME_STRATEGY_MUTATION,
   DELETE_STRATEGY_MUTATION,
-  DELETE_RECORD_BY_STRATEGY_ID_MUTATION,
   STRATEGY_SUBSCRIPTION
 } from "../../graphql";
 
@@ -42,7 +41,6 @@ export default function Strategy() {
 
   const [localData, setLocalData] = useState([]);
   const [firstFetch, setFirstFetch] = useState(true);
-  // const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", cookie: cookie.session}});
 
   const [allRecord, setAllRecord] = useState(true);
   const [strategyName, setStrategyName] = useState("");
@@ -75,7 +73,7 @@ export default function Strategy() {
     };
 
     dummy2();
-  }, []);
+  }, [client, cookie.session]);
 
   useEffect(() => {
     dummy();
@@ -121,7 +119,6 @@ export default function Strategy() {
   }, [loading, data]);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
-  const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);
   // const [dataSource, setDataSource] = useState([{
   //   id: "8415d7ac-32ef-4ec8-805f-ee0491e73f0d",
   //   name: `Strategy 0`
