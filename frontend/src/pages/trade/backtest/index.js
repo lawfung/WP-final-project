@@ -180,7 +180,7 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
                     display({ type: 'error', msg: `Length of strategy name can't exceed ${nameL}` });
                     return;
                 }
-                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: cookie.session, ...Record, end: getTotal(price)} });
+                const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: cookie.session, ...Record, end: getTotal(price), assetType: nameConvert(XAsset)} });
                 if(ret.data.CreateRecord) {
                     display({ type: 'success', msg: "Save successfully" });
                 }

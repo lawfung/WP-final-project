@@ -3,7 +3,7 @@ import Backtest from './backtest';
 import React, { useState } from 'react';
 import { Candlestick_QUERY } from '../../graphql';
 import { useApolloClient  } from "@apollo/client";
-import { useMutation } from '@apollo/client';
+// import { useMutation } from '@apollo/client';
 import { resolution_dict, TimestampToDate, nameConvert } from '../../tools/constant';
 import { v4 as uuidv4 } from "uuid";
 import display from '../../tools/display';
