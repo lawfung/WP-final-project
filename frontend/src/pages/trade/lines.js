@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
 
-const upColor = '#ec0000';
-const upBorderColor = '#8A0000';
-const downColor = '#00da3c';
-const downBorderColor = '#008F28';
+const upColor = '#00da3c';
+const upBorderColor = '#008F28';
+const downColor = '#ec0000';
+const downBorderColor = '#8A0000';
 
 const defaultData = [
     ['2013/1/24', 2320.26, 2320.26, 2287.3, 2362.94],
