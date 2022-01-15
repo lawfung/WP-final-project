@@ -61,7 +61,9 @@ export default function RegisterPage(){
                     msg: "Deprecated Username"
                 });
         }
-            
+        setUsername("");
+        setPasswd("");
+        setPasswd2("");
     }
     return (
     <Wrapper>

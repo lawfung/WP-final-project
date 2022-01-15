@@ -42,6 +42,9 @@ export default function Setting() {
         type: "error",
         msg: "new password cannot be empty!",
       });
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmedPassword("");
       return;
     }
     if (newPassword !== confirmedPassword) {
@@ -49,22 +52,39 @@ export default function Setting() {
         type: "error",
         msg: "confirmed password wrong!",
       });
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmedPassword("");
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      displayStatus({
+        type: "error",
+        msg: "old password and new password can not be the same!",
+      });
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmedPassword("");
       return;
     }
 
     try {
-    const res = await changePasswordMutation({variables: {oldPasswd: oldPassword, newPasswd: newPassword, cookie: cookie.session}});
-    if (res.data.ChangePassword) {
-      displayStatus({
-        type: "success",
-        msg: "new password is set!",
-      });
-    } else {
-      displayStatus({
-        type: "error",
-        msg: "old password wrong!",
-      });
-    }
+      const res = await changePasswordMutation({variables: {oldPasswd: oldPassword, newPasswd: newPassword, cookie: cookie.session}});
+      if (res.data.ChangePassword) {
+        displayStatus({
+          type: "success",
+          msg: "new password is set!",
+        });
+      } else {
+        displayStatus({
+          type: "error",
+          msg: "old password wrong!",
+        });
+      }
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmedPassword("");
     } catch (e) {
       console.log(e);
     }
@@ -80,6 +100,7 @@ export default function Setting() {
           prefix={<LockOutlined />}
           value={oldPassword}
           onChange={(e) => setOldPassword(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
           size="large" style={{ width: 300, margin : 5 }}
         />
         <Input.Password
@@ -87,6 +108,7 @@ export default function Setting() {
           prefix={<LockOutlined />}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
           size="large" style={{ width: 300, margin : 5 }}
         />
         <Input.Password
@@ -94,11 +116,12 @@ export default function Setting() {
           prefix={<LockOutlined />}
           value={confirmedPassword}
           onChange={(e) => setConfirmedPassword(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
           size="large" style={{ width: 300, margin : 5 }}
         />
         <Button
           type="primary"
-          size="small" style={{ width: 100, margin : 5 }}
+          size="large" style={{ width: 125, margin : 5 }}
           onClick={saveChange}
         >
           Save Change
