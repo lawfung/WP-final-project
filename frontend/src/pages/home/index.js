@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import React, { useState } from 'react';
-import { Sidebar, NavItemsContainer, NavItem, AlignLeftOutIcon } from './sidebar';
+import { Sidebar, NavItemsContainer, NavItem } from './sidebar';
+import { Settings, ViewList, Sort} from '@mui/icons-material';
 import Setting from "./setting";
 import Strategy from "./strategy";
 import Profile from "./profile";
 import 'antd/dist/antd.css';
-
-import SettingsIcon from '@mui/icons-material/Settings';
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,9 +21,9 @@ export default function Homepage() {
     <Wrapper>
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
-          <NavItem label="Profile" onClick={() => {setContent("profile");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
-          <NavItem label="Strategy" onClick={() => {setContent("strategy");}} icon={<AlignLeftOutIcon width="0.75rem" />} />
-          <NavItem label="Setting" onClick={() => {setContent("setting");}} icon={<SettingsIcon width="0.75rem" />} />
+          <NavItem label="Profile" onClick={() => {setContent("profile");}} icon={<ViewList width="0.75rem" />} />
+          <NavItem label="Strategy" onClick={() => {setContent("strategy");}} icon={<Sort width="0.75rem" />} />
+          <NavItem label="Setting" onClick={() => {setContent("setting");}} icon={<Settings width="0.75rem" />} />
         </NavItemsContainer>
       </Sidebar>
       {content === "profile" ? 
