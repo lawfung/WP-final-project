@@ -1,10 +1,6 @@
 import { Button, Table, Modal, Input } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-<<<<<<< Updated upstream
-import React, { useState, useEffect } from "react";
-=======
 import React, { useState, useEffect, useCallback } from "react";
->>>>>>> Stashed changes
 import displayStatus from "../../tools/display";
 import styled from "styled-components";
 import Record from "./record";
