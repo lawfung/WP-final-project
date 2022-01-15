@@ -55,7 +55,7 @@ export const LOGOUT = gql`
 `;
 
 export const CHANGE_PASSWORD = gql`
-  mutation ChangePassword($oldPasswd: String!, $newPasswd: String, $cookie: String!) {
-    ChangePassword(oldPasswd: $oldpasswd, newPasswd: $newPasswd, cookie: $cookie)
+  mutation ChangePassword($oldPasswd: String!, $newPasswd: String!, $cookie: String!) {
+    ChangePassword(oldPasswd: $oldPasswd, newPasswd: $newPasswd, cookie: $cookie)
   }
 `;

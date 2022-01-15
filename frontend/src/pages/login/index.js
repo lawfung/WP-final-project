@@ -40,6 +40,7 @@ export default function LoginPage(){
                 msg: "Missing username or password",
             });
         else{
+          try {
             const res = await login({variables: {user: username, hashPasswd: passwd}});
             const cookie = res.data.Login;
             if(cookie){
@@ -55,6 +56,14 @@ export default function LoginPage(){
                     msg: `Login fail`,
                 });
             }
+          } catch (e) {
+            console.log(e);
+            displayStatus({
+              type: "error",
+              msg: `Login fail`,
+            });
+          
+          }
         }
     }
     return (

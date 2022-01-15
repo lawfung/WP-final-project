@@ -52,6 +52,7 @@ export default function Setting() {
       return;
     }
 
+    try {
     const res = await changePasswordMutation({variables: {oldPasswd: oldPassword, newPasswd: newPassword, cookie: cookie.session}});
     if (res.data.ChangePassword) {
       displayStatus({
@@ -63,6 +64,9 @@ export default function Setting() {
         type: "error",
         msg: "old password wrong!",
       });
+    }
+    } catch (e) {
+      console.log(e);
     }
   };
   return (
