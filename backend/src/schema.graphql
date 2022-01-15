@@ -12,9 +12,8 @@ type Mutation {
     DeleteStrategy(id: ID!, cookie: String!): Boolean
     RenameStrategy(id: ID!, name: String!, cookie: String!): Boolean
 
-    CreateRecord(strategyName: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, cookie: String!): Boolean
+    CreateRecord(strategyName: String!, assetType: String!, startTime: Int!, endTime: Int!, start: Float!, end: Float!, high: Float!, low: Float!, cookie: String!): Boolean
     DeleteRecord(id: ID!, cookie: String!): Boolean
-    DeleteRecordByStrategyID(strategyID: ID!, cookie: String!): Boolean
 
     ChangePassword(oldPasswd: String!, newPasswd: String!, cookie: String!): Boolean
 }
@@ -41,6 +40,7 @@ type Candles {
 type Record {
     id: ID!
     strategyID: ID!
+    assetType: String!
     startTime: Int!
     endTime: Int!
     start: Float!
