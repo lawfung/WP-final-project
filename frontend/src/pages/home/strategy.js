@@ -38,7 +38,7 @@ const Title = styled.div`
 `;
 
 export default function Strategy() {
-  const { username, changeUsername } = useUsername();
+  const { username } = useUsername();
   const [cookie] = useCookies(["session"]);
   const { loading, data, subscribeToMore } = useQuery(STRATEGY_QUERY, {variables: {id: "", cookie: cookie.session}});
   const [allRecord, setAllRecord] = useState(true);
@@ -50,7 +50,6 @@ export default function Strategy() {
   const { deletedTag, changeDeletedTag } = useDeletedTag();
 
   useEffect(() => {
-    console.log("hi");
     subscribeToMore({
       document: STRATEGY_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
@@ -70,8 +69,6 @@ export default function Strategy() {
       }
     });
   }, [subscribeToMore, deletedTag]);
-  console.log(loading);
-  console.log(data);
   const [renameStrategy] = useMutation(RENAME_STRATEGY_MUTATION);
   const [deleteStrategy] = useMutation(DELETE_STRATEGY_MUTATION);
   const [deleteRecordByStrategyID] = useMutation(DELETE_RECORD_BY_STRATEGY_ID_MUTATION);

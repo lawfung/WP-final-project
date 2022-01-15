@@ -28,7 +28,7 @@ const Title = styled.div`
 
 
 export default function LoginPage(){
-    const [_, setCookie] = useCookies(['session']);
+    const [, setCookie] = useCookies(['session']);
     const [login] = useMutation(LOGIN);
     const [username, setUsername] = useState('')
     const [passwd, setPasswd] = useState('')  // textBody

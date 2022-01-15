@@ -20,7 +20,7 @@ function LinkedButton({to, color, sty2, text, variant, height="100%"}) {
 }
 
 function App() {
-  const [cookies, _, removeCookie] = useCookies(['session']); 
+  const [cookies, , removeCookie] = useCookies(['session']); 
   const {username, changeUsername} = useUsername();
   const client = useApolloClient();
   useEffect( () =>{

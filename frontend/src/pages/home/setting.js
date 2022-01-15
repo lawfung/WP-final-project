@@ -5,7 +5,7 @@ import displayStatus from "../../tools/display";
 import styled from "styled-components";
 
 import { CHANGE_PASSWORD } from "../../graphql";
-import { useMutation, useApolloClient } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useCookies } from "react-cookie";
 import { useUsername } from "../../tools/useUsername";
 
@@ -28,14 +28,13 @@ const Title = styled.div`
 `;
 
 export default function Setting() {
-  const { username, changeUsername } = useUsername();
+  const { username } = useUsername();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [cookie] = useCookies(["session"]);
 
   const [changePasswordMutation] = useMutation(CHANGE_PASSWORD);
-  const client = useApolloClient();
   const saveChange = async () => {
     if (newPassword === "") {
       displayStatus({

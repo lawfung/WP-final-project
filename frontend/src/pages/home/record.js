@@ -6,7 +6,6 @@ import { useDeletedTag } from "../../tools/useDeletedTag";
 
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useCookies } from "react-cookie";
-import { useUsername } from "../../tools/useUsername";
 
 import {
   RECORD_QUERY,
@@ -35,7 +34,6 @@ const Title = styled.div`
 `;
 
 export default function Record({ strategyName, setStrategyName, strategyID, setStrategyID, allRecord, setAllRecord }) {
-  const { username, changeUsername } = useUsername();
   const [cookie] = useCookies(["session"]);
   const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: strategyID, cookie: cookie.session}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);

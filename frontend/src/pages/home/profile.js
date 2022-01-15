@@ -35,23 +35,16 @@ const Title = styled.div`
 `;
 
 export default function Profile() {
-  const { username, changeUsername } = useUsername();
+  const { username } = useUsername();
   const [cookie] = useCookies(["session"]);
   const { loading, data, subscribeToMore } = useQuery(RECORD_QUERY, {variables: {strategyID: "", cookie: cookie.session}});
   const [deleteRecord] = useMutation(DELETE_RECORD_MUTATION);
   const { deletedTag, changeDeletedTag } = useDeletedTag();
-  console.log("hi profile");
-  console.log(loading);
-  console.log(data);
 
   useEffect(() => {
-    console.log("start to subscribe");
-    console.log(subscribeToMore);
     subscribeToMore({
       document: RECORD_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log("keep subscribing");
-        console.log({prev: prev, subscriptionData: subscriptionData});
         if (!subscriptionData) return prev;
 
         const type = subscriptionData.data.updateRecord.type;
@@ -71,8 +64,7 @@ export default function Profile() {
     });
   }, [subscribeToMore, deletedTag]);
 
-  const handleDeleteRecord = (id) => { // TODO: should write back to database?
-    console.log(`delete ${id}`);
+  const handleDeleteRecord = (id) => {
     deleteRecord({variables: {id: id, cookie: cookie.session}});
   };
   const columns = [
