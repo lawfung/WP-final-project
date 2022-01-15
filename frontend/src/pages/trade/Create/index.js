@@ -82,6 +82,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
     // setFormData(initialFormData);
     handleCloseCreate();
   };
+  const nameL = 10;
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
@@ -89,7 +90,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
       <DialogContent>
       {/* <TextField label="Start time" value={startTime} type="datetime-local" onChange={handleChange(setStartTime)} InputLabelProps={{ shrink: true }}/> */}
       <TextField
-          error={displayError && (!tabName)}
+          error={displayError && ((!tabName) || (tabName.length > nameL)) }
           autoFocus
           margin="dense"
           label="Name"
@@ -97,7 +98,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
           variant="standard"
           value={tabName}
           onChange={handleChange(settabName)}
-          helperText={displayError && (!tabName) && "The field can't be empty!"}
+          helperText={displayError && (((!tabName) && "The field can't be empty!") || (tabName.length > nameL) && `Length of tab name can't exceed ${nameL}` )}
         />
         <TextField
           error={displayError && (!startTime)}
@@ -145,7 +146,7 @@ export default function CreateTaskModal({ open, openMB, handleCloseCreate, handl
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={()=>{
-            if(!tabName || !startTime || !endTime || !assetType){
+            if(!tabName || !startTime || !endTime || !assetType || tabName.length > nameL){
               setDisplayError(true);
               return;
             }

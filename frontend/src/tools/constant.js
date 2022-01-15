@@ -19,4 +19,4 @@ export const TimestampToDate = (timestamp) => {
     // var ss = date.getSeconds();
     return `${yy}/${mn}/${dd} ${hr}:${mm}`
 }
-export const nameConvert = (name) =>  ((name.includes('/') || name.includes('-') || name.includes('PERP')) ? name : name + '/USDT')
+export const nameConvert = (name) =>  ((name.includes('/') || name.includes('-') || name.includes('PERP')) ? name : name + '/USD')

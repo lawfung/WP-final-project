@@ -19,13 +19,13 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
     const [createRecordMutation] = useMutation(CREATE_RECORD_MUTATION);
     const [finished, setFinished] = useState(false);
     const [price, setPrice] = useState(data[data.length - 1][2])
-    const [pocket, setPocket] = useState({USDT: 0, [XAsset]: 0});
+    const [pocket, setPocket] = useState({USD: 0, [XAsset]: 0});
     const [Record, setRecord] = useState({start: 0, end: 0, high: 0, low: 0});
-    const getTotal = (p) => (pocket['USDT'] + p * pocket[XAsset]);
+    const getTotal = (p) => (pocket['USD'] + p * pocket[XAsset]);
     const [nextTime, setNextTime] = useState(next);
     const [dd, setDD] = useState(data);
     const onTrade = (amount) => {
-        setPocket({USDT: pocket['USDT'] - amount * price, [XAsset]: pocket[XAsset] + amount });
+        setPocket({USD: pocket['USD'] - amount * price, [XAsset]: pocket[XAsset] + amount });
     }
     const client = useApolloClient();
     // const [intervalID, setID] = useState(0);
@@ -148,8 +148,8 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={2}>
                     <MyGrid item xs={12}> Assets Under Management </MyGrid>
-                    <MyGrid item xs={6}>USDT: {pocket['USDT']}</MyGrid>
-                    <MyGrid item xs={6}>{XAsset}: {pocket[XAsset]} (≈ {pocket[XAsset] * price} USDT)</MyGrid>
+                    <MyGrid item xs={6}>USD: {pocket['USD']}</MyGrid>
+                    <MyGrid item xs={6}>{XAsset}: {pocket[XAsset]} (≈ {pocket[XAsset] * price} USD)</MyGrid>
                 </Grid>
             </div>
         </FormControl>
@@ -158,13 +158,14 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             <div style={{margin: "2vh"}}>
                 <Grid container spacing={2}>
                     <MyGrid item xs={12}> Record: </MyGrid>
-                    <MyGrid item xs={6}>Start: {0} (USDT)</MyGrid>
-                    <MyGrid item xs={6}>Current: {getTotal(price)} (USDT)</MyGrid>
-                    <MyGrid item xs={6}>Low: {Record['low']} (USDT)</MyGrid>
-                    <MyGrid item xs={6}>High: {Record['high']} (USDT)</MyGrid>
+                    <MyGrid item xs={6}>Start: {0} (USD)</MyGrid>
+                    <MyGrid item xs={6}>Current: {getTotal(price)} (USD)</MyGrid>
+                    <MyGrid item xs={6}>Low: {Record['low']} (USD)</MyGrid>
+                    <MyGrid item xs={6}>High: {Record['high']} (USD)</MyGrid>
                 </Grid>
             </div>
         </FormControl>
+    const nameL = 10;
 
     const SendRecord = 
         <Input.Search
@@ -175,6 +176,10 @@ const Backtest = ({title, XStart_time, XEnd_time, XTime_scale, XAsset, data, nex
             enterButton={<AntdButton style={{background: "blue", color: "white"}}>Save Record</AntdButton>}
             style={{ width: "80%", marginTop: "2vh"}}
             onSearch={ async (name) => {
+                if(name.length > nameL) {
+                    display({ type: 'error', msg: `Length of strategy name can't exceed ${nameL}` });
+                    return;
+                }
                 const ret = await createRecordMutation({variables: {strategyName : name, startTime: epochS, endTime: epochE, cookie: cookie.session, ...Record, end: getTotal(price)} });
                 if(ret.data.CreateRecord) {
                     display({ type: 'success', msg: "Save successfully" });

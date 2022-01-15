@@ -49,6 +49,8 @@ export default function LoginPage(){
                     type: "success",
                     msg: `Hello ${username}`,
                 });
+                setUsername("");
+                setPasswd("");
             }
             else{
                 displayStatus({
@@ -65,8 +67,6 @@ export default function LoginPage(){
           
           }
         }
-        setUsername("");
-        setPasswd("");
     }
     return (
     <Wrapper>
