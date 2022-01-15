@@ -53,18 +53,20 @@ export default function LoginPage(){
             else{
                 displayStatus({
                     type: "error",
-                    msg: `Login failed`,
+                    msg: "Login failed",
                 });
             }
           } catch (e) {
             console.log(e);
             displayStatus({
               type: "error",
-              msg: `Login failed`,
+              msg: "Login failed",
             });
           
           }
         }
+        setUsername("");
+        setPasswd("");
     }
     return (
     <Wrapper>
