@@ -13,8 +13,8 @@ export const RENAME_STRATEGY_MUTATION = gql`
 `;
 
 export const CREATE_RECORD_MUTATION = gql`
-  mutation ($strategyName: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!) {
-    CreateRecord(strategyName: $strategyName, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie)
+  mutation ($strategyName: String!, $assetType: String!, $startTime: Int!, $endTime: Int!, $start: Float!, $end: Float!, $high: Float!, $low: Float!, $cookie: String!) {
+    CreateRecord(strategyName: $strategyName, assetType: $assetType, startTime: $startTime, endTime: $endTime, start: $start, end: $end, high: $high, low: $low, cookie: $cookie)
   }
 `;
 
