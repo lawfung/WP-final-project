@@ -8,11 +8,12 @@ import Profile from "./profile";
 import 'antd/dist/antd.css';
 
 const Wrapper = styled.div`
+  height: 100%;
+  flex-grow: 1;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin: auto;
 `;
 
 export default function Homepage() {
@@ -26,16 +27,14 @@ export default function Homepage() {
           <NavItem label="Setting" onClick={() => {setContent("setting");}} icon={<Settings width="0.75rem" />} />
         </NavItemsContainer>
       </Sidebar>
-      {content === "profile" ? 
-        <Profile /> : 
-          <>
-          {
-            content === "strategy" ? 
-              <Strategy /> :
-              <Setting username="" />
-          }
-          </>
-      }
+      <div style={{flexGrow: 1}}>
+        {content === "profile" ? 
+          <Profile /> : 
+          content === "strategy" ? 
+            <Strategy /> :
+            <Setting />
+        }
+      </div>
     </Wrapper>
   );
 }

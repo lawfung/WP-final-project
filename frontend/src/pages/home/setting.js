@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { CHANGE_PASSWORD } from "../../graphql";
 import { useMutation } from "@apollo/client";
 import { useCookies } from "react-cookie";
-import { useUsername } from "../../tools/useUsername";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,7 +27,6 @@ const Title = styled.div`
 `;
 
 export default function Setting() {
-  const { username } = useUsername();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -91,7 +89,7 @@ export default function Setting() {
   return (
     <Wrapper>
       <Title>
-        <h1>{username}'s profile</h1>
+        <h1>Change Password</h1>
       </Title>
       <>
         <Input.Password
@@ -100,7 +98,7 @@ export default function Setting() {
           value={oldPassword}
           onChange={(e) => setOldPassword(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
-          size="large" style={{ width: 300, margin : 5 }}
+          size="large" style={{ width: "30vw", margin : 5 }}
         />
         <Input.Password
           placeholder="New Password"
@@ -108,7 +106,7 @@ export default function Setting() {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
-          size="large" style={{ width: 300, margin : 5 }}
+          size="large" style={{ width: "30vw", margin : 5 }}
         />
         <Input.Password
           placeholder="Confirmed Password"
@@ -116,11 +114,11 @@ export default function Setting() {
           value={confirmedPassword}
           onChange={(e) => setConfirmedPassword(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { saveChange() }}}
-          size="large" style={{ width: 300, margin : 5 }}
+          size="large" style={{ width: "30vw", margin : 5 }}
         />
         <Button
           type="primary"
-          size="large" style={{ width: 125, margin : 5 }}
+          size="large" style={{ width: "15vw", margin : 5 }}
           onClick={saveChange}
         >
           Save Change

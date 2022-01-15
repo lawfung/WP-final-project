@@ -73,34 +73,28 @@ export default function Profile() {
     {
       title: "Start Time",
       dataIndex: "startTime",
-      width: 150,
       render: (time) => (TimestampToDate(time))
     },
     {
       title: "End Time",
       dataIndex: "endTime",
-      width: 150,
       render: (time) => (TimestampToDate(time))
     },
     {
       title: "Start",
       dataIndex: "start",
-      width: 150,
     },
     {
       title: "End",
       dataIndex: "end",
-      width: 150,
     },
     {
       title: "High",
       dataIndex: "high",
-      width: 150,
     },
     {
       title: "Low",
       dataIndex: "low",
-      width: 150,
     },
     {
       title: "",
@@ -115,10 +109,10 @@ export default function Profile() {
   return (
     <Wrapper>
       <Title>
-        <h1>{username}'s profile</h1>
+        <h1>{username}'s Records</h1>
       </Title>
       {loading === true ? "Loading..." : (
-      <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
+      <Table columns={columns} dataSource={data.GetRecord.map((item, index) => {return {...item, num: index + 1, key: index};})} onRow={record => ({
         // onClick: () => {setAllRecord(false); setIndex(record.key);},
         onClick: () => {},
       })}/>)}

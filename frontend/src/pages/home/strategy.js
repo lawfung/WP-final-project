@@ -131,7 +131,6 @@ export default function Strategy() {
     {
       title: "Strategy Name",
       dataIndex: "name",
-      width: 300,
       align: "center",
       render: (name, row) => (
         <Button type="link" onClick={() => {console.log(row.id); setStrategyName(strategyName => name); setStrategyID(strategyID => row.id); setAllRecord(false);}}>{name}</Button>
@@ -159,7 +158,7 @@ export default function Strategy() {
             </Title>
             {
               loading ? <p>Loading...</p> : 
-              <Table columns={columns} dataSource={data.GetStrategy.map((item, index) => {return {...item, num: index + 1};})} onRow={record => ({
+              <Table columns={columns} dataSource={data.GetStrategy.map((item, index) => {return {...item, num: index + 1, key: index};})} onRow={record => ({
                 onClick: () => {},
               })}/>
             }
