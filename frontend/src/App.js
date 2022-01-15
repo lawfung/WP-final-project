@@ -64,9 +64,10 @@ function App() {
             <LinkedButton to="/" sty2={{ fontSize: '4vh', "fontFamily": "Roboto", color:"black"}} text="Awesome"/>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Stack spacing={-0} direction="row" sx={{display: "flex", justifyContent: "space-around"}}>
-                <LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>
-                <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/>
-                {/* <LinkedButton to="/setting" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Setting"/> */}
+                { username ? 
+                <><LinkedButton to="/home" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Home"/>
+                <LinkedButton to="/trade" color="secondary" sty2={{ fontSize: '2.5vh', "fontFamily": "Nunito"}} text="Moniter &amp; Backtest"/></>
+                : <></> }
               </Stack>
             </Typography>
             
