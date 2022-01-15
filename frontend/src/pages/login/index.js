@@ -53,14 +53,14 @@ export default function LoginPage(){
             else{
                 displayStatus({
                     type: "error",
-                    msg: `Login fail`,
+                    msg: `Login failed`,
                 });
             }
           } catch (e) {
             console.log(e);
             displayStatus({
               type: "error",
-              msg: `Login fail`,
+              msg: `Login failed`,
             });
           
           }
