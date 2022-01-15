@@ -22,7 +22,7 @@ export default function Homepage() {
     <Wrapper>
       <Sidebar hideFooter={false} > 
         <NavItemsContainer>
-          <NavItem label="Profile" onClickAll={() => {setContent("profile");}} icon={<ViewList width="0.75rem" />} clean={false} />
+          <NavItem label="Record" onClickAll={() => {setContent("profile");}} icon={<ViewList width="0.75rem" />} clean={false} />
           <NavItem label="Strategy" onClickAll={() => {setContent("strategy");}} icon={<Sort width="0.75rem" />} clean={false} />
           <NavItem label="Setting" onClickAll={() => {setContent("setting");}} icon={<Settings width="0.75rem" />} clean={false} />
         </NavItemsContainer>

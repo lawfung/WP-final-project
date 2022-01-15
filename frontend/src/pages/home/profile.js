@@ -87,6 +87,10 @@ export default function Profile() {
       dataIndex: "num",
     },
     {
+      title: "Asset Type",
+      dataIndex: "assetType",
+    },
+    {
       title: "Start Time",
       dataIndex: "startTime",
       render: (time) => (TimestampToDate(time))

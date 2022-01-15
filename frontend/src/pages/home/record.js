@@ -87,6 +87,10 @@ export default function Record({ strategyName, setStrategyName, strategyID, setS
       dataIndex: "num",
     },
     {
+      title: "Asset Type",
+      dataIndex: "assetType",
+    },
+    {
       title: "Start Time",
       dataIndex: "startTime",
       render: (time) => (TimestampToDate(time))
